@@ -1,0 +1,41 @@
+# 冒烟：2 题 × 1（服务商固定 Alibaba 官方、不回退：Novita 6 次里 5 次空回复，2026-09-27 实测）
+job_name: stage0-qwen-coder30b-smoke
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 2
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openrouter/qwen/qwen3-coder-30b-a3b-instruct
+  kwargs:
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 262144
+      max_output_tokens: 0
+      input_cost_per_token: 2.9e-07
+      output_cost_per_token: 1.46e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    llm_call_kwargs:
+      extra_body:
+        provider:
+          order:
+          - alibaba
+          allow_fallbacks: false
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/fix-git
+  - terminal-bench/regex-log

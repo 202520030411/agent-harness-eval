@@ -1,0 +1,27 @@
+# 冒烟（只验证接线，不进分析）：H3
+# Qwen 四臂实验（docs/QWEN_PLAN.md §2）。qwen-code 装在题目容器里跑，经 Docker 网桥 172.17.0.1:8000（Hetzner 上第二条隧道）连同一个 vLLM；
+# api_key 填 EMPTY（vLLM 不校验，真 key 不进容器）；版本固定 0.24.6（2026-09-27 的 latest）
+job_name: qsmoke-h3-qwencode
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 2
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: qwen-coder
+  model_name: openai/coder30b
+  kwargs:
+    version: 0.24.6
+    base_url: http://172.17.0.1:8000/v1
+    api_key: EMPTY
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/fix-git
+  - terminal-bench/openssl-selfsigned-cert

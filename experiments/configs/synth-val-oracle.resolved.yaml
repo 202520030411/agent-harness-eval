@@ -1,0 +1,17 @@
+# 合成题校验（QWEN_PLAN §4.1）：oracle 代理跑一遍每道题；合格 = oracle 过、nop 不过（train/synth/collect_valid.py）
+job_name: synth-val-oracle
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: oracle
+datasets:
+- path: /root/work/train/synth_tasks

@@ -1,0 +1,4 @@
+# E0 oracle（2026-09-23，jobs/e0-oracle，56 题 19m39s）参考解在本环境未通过的题，剔除。都不是模型/环境能力问题。
+build-cython-ext	reward=0	10/11 测试通过；test_pyknotid_repository_tests 失败——依赖未钉版本，上游仓库测试随最新 numpy/sympy 变化（TASK：verifier 脆弱）
+qemu-alpine-ssh	reward=0	oracle 成功启动 VM；tests/test.sh 里 apt-get install curl 从 bullseye-security 拉包 404 → curl 缺失（TASK：verifier 过期）
+qemu-startup	reward=0	同上（TASK：verifier 过期）；另本机无 /dev/kvm

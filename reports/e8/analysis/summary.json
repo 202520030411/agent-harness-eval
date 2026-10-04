@@ -1,0 +1,55 @@
+{
+  "n_trials": 18,
+  "n_tasks": 6,
+  "env_success_rate": 1.0,
+  "agent_setup_success_rate": 1.0,
+  "reward_only_pass_rate": 0.4444444444444444,
+  "end_to_end_pass_rate": 0.4444444444444444,
+  "mean_over_trials (capability-evaluable)": 0.4444444444444444,
+  "pass_at_k (task level)": 0.5,
+  "status_counts": {
+    "ok": 12,
+    "agent_timeout": 6
+  },
+  "mean_turns": 15,
+  "mean_wall_clock_sec": 725.8896758333333,
+  "tokens_in_total": 6344804,
+  "tokens_out_total": 567682,
+  "cached_share": 0.08009955863096796,
+  "cost_total": 6.2020118,
+  "cost_per_trial": 0.3445562111111111,
+  "polling_turns_total": 0,
+  "parse_error_turns_total": 2,
+  "truncated_observations_total": 15,
+  "compactions_total": 0,
+  "n_failed_capability_evaluable": 10,
+  "failure_label_counts": {
+    "BUDGET_EXHAUSTED": 6,
+    "TRUNCATED_READ": 4,
+    "PREMATURE_COMPLETION": 4,
+    "COMMAND_NOT_FOUND": 1
+  },
+  "failure_label_rates": {
+    "BUDGET_EXHAUSTED": 0.6,
+    "TRUNCATED_READ": 0.4,
+    "PREMATURE_COMPLETION": 0.4,
+    "COMMAND_NOT_FOUND": 0.1
+  },
+  "patched_totals": {},
+  "task_mean": {
+    "cancel-async-tasks": 1.0,
+    "chess-best-move": 0.6666666666666666,
+    "dna-insert": 0.0,
+    "extract-elf": 1.0,
+    "path-tracing-reverse": 0.0,
+    "raman-fitting": 0.0
+  },
+  "task_pass_at_k": {
+    "cancel-async-tasks": 1.0,
+    "chess-best-move": 1.0,
+    "dna-insert": 0.0,
+    "extract-elf": 1.0,
+    "path-tracing-reverse": 0.0,
+    "raman-fitting": 0.0
+  }
+}

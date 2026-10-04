@@ -1,0 +1,37 @@
+# 训练数据采样第二轮（D-061）：原版 Qwen × H2 × 训练题（题面末尾加通用检查提示）3 次，导出时删掉提示；完整对话存 metadata.all_messages 供 SFT 导出
+job_name: qroll-h2-synth-train-hint
+jobs_dir: /root/work/jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 16
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coder30b
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: true
+    completion_gate: true
+    raw_log: true
+    store_all_messages: true
+datasets:
+- path: /root/work/train/synth_split/train_hinted

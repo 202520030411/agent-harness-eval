@@ -1,0 +1,40 @@
+{
+  "n_trials": 6,
+  "n_tasks": 2,
+  "env_success_rate": 1.0,
+  "agent_setup_success_rate": 1.0,
+  "reward_only_pass_rate": 0.5,
+  "end_to_end_pass_rate": 0.5,
+  "mean_over_trials (capability-evaluable)": 0.5,
+  "pass_at_k (task level)": 0.5,
+  "status_counts": {
+    "ok": 6
+  },
+  "mean_turns": 7,
+  "mean_wall_clock_sec": 179.91374483333334,
+  "tokens_in_total": 259442,
+  "tokens_out_total": 45347,
+  "cached_share": 0.22337169772049245,
+  "cost_total": 0.28362889999999996,
+  "cost_per_trial": 0.04727148333333333,
+  "polling_turns_total": 0,
+  "parse_error_turns_total": 0,
+  "truncated_observations_total": 0,
+  "compactions_total": 0,
+  "n_failed_capability_evaluable": 3,
+  "failure_label_counts": {
+    "PREMATURE_COMPLETION": 3
+  },
+  "failure_label_rates": {
+    "PREMATURE_COMPLETION": 1.0
+  },
+  "patched_totals": {},
+  "task_mean": {
+    "dna-insert": 1.0,
+    "raman-fitting": 0.0
+  },
+  "task_pass_at_k": {
+    "dna-insert": 1.0,
+    "raman-fitting": 0.0
+  }
+}

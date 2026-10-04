@@ -1,0 +1,63 @@
+job_name: e4s-baseline
+jobs_dir: /root/work/jobs
+n_attempts: 2
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/gpt-6-sol
+  kwargs:
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    record_terminal_session: true
+    store_all_messages: false
+    model_info:
+      max_input_tokens: 400000
+      max_output_tokens: 128000
+      input_cost_per_token: 2.0e-06
+      output_cost_per_token: 1.0e-05
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    assumption_ledger: false
+    budget_hint: false
+    stuck_reminder: false
+    exit_code_prompt: false
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/adaptive-rejection-sampler
+  - terminal-bench/cancel-async-tasks
+  - terminal-bench/chess-best-move
+  - terminal-bench/cobol-modernization
+  - terminal-bench/configure-git-webserver
+  - terminal-bench/count-dataset-tokens
+  - terminal-bench/dna-insert
+  - terminal-bench/extract-elf
+  - terminal-bench/gcode-to-text
+  - terminal-bench/headless-terminal
+  - terminal-bench/kv-store-grpc
+  - terminal-bench/largest-eigenval
+  - terminal-bench/llm-inference-batching-scheduler
+  - terminal-bench/mteb-retrieve
+  - terminal-bench/overfull-hbox
+  - terminal-bench/path-tracing-reverse
+  - terminal-bench/pytorch-model-cli
+  - terminal-bench/query-optimize
+  - terminal-bench/raman-fitting
+  - terminal-bench/sanitize-git-repo
+  - terminal-bench/sqlite-with-gcov
+  - terminal-bench/fix-git
+  - terminal-bench/regex-log
+  - terminal-bench/nginx-request-logging
+  - terminal-bench/sqlite-db-truncate
+  - terminal-bench/vulnerable-secret

@@ -1,0 +1,43 @@
+# E1 — Seed 基线（HYPOTHESES: M1 M4 M5 的数据来源）
+# 第 1 天核对：datasets 的写法（name+version 还是 "terminal-bench@2.1"）、Seed 的模型 ID、model_info 的窗口。
+job_name: e1-baseline-seed
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - name: terminus-2
+    # LiteLLM 的 OpenAI 兼容写法：openai/<方舟模型ID>；api_base 指向方舟端点
+    model_name: openai/doubao-seed-2-1-lite-260915   # 候选，第 1 天确认；不要用 doubao-seed-evolving（D-023）
+    kwargs:
+      api_base: https://ark.cn-beijing.volces.com/api/v3   # 以方舟控制台给出的为准
+      parser_name: json
+      # temperature 不设：用模型默认采样（D-026），否则 k=3 与噪声底失去意义
+      max_turns: 100
+      enable_summarize: true
+      proactive_summarization_threshold: 8000
+      record_terminal_session: true
+      store_all_messages: false
+      model_info:
+        max_input_tokens: 1024000        # 模型列表标 1024k；第 1 天核对。窗口这么大意味着压缩不会触发（D-004/D-023）
+        max_output_tokens: 0
+        input_cost_per_token: 0.0000008   # 0.8 元/百万 token（lite，2026-09-23 控制台）；cost 字段单位是元
+        output_cost_per_token: 0.0000027  # 2.7 元/百万 token；pro 为 6 / 30
+      # ---- 我们的开关（terminus2_patches），基线全部关闭；金标测试保证全关 == 上游 ----
+      verifier_gate: none
+      adaptive_wait: false
+      task_contract: false
+
+datasets:
+  - name: terminal-bench/terminal-bench-2-1   # Harbor Hub 注册名，89 题（2026-09-23 核对）
+    task_names: []   # 由 task_list.txt 生成，每项写成 terminal-bench/<题名>；留空 = 全集，不要留空跑

@@ -1,0 +1,11 @@
+# TB 4.0 冒烟（2026-09-26，seed 20260926）：66 题中排除 GPU 题（3）、cpus>4 或内存>8 GB 的题后，从 54 道里随机 10 道
+terminal-bench/cad-model
+terminal-bench/biped-contact-dynamics
+terminal-bench/batched-eval-parity
+terminal-bench/production-planning
+terminal-bench/freecad-platform-drawing
+terminal-bench/mvcc-lsm-compaction
+terminal-bench/fin-saccr-rwa
+terminal-bench/retro-console-soc
+terminal-bench/vpp-loss-divergence
+terminal-bench/ctr-optimization

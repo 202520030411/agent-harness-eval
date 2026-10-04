@@ -1,0 +1,148 @@
+{
+  "x": "judge",
+  "y": "human",
+  "n": 24,
+  "raw_agreement": 0.4166666666666667,
+  "kappa_primary": 0.3043478260869566,
+  "kappa_tb_class": 0.2985386221294363,
+  "raw_agreement_tb_class": 0.4166666666666667,
+  "lenient_agreement": 0.7083333333333334,
+  "onset_pairs": 22,
+  "onset_within_2_steps": 0.6363636363636364,
+  "disagreements": [
+    {
+      "trial_id": "cancel-async-tasks__QUCtLa7",
+      "judge": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "cancel-async-tasks__q9PocsZ",
+      "judge": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "chess-best-move__JGz74wZ",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "CAPABILITY",
+      "lenient": false
+    },
+    {
+      "trial_id": "chess-best-move__fNTJ2hp",
+      "judge": "BUDGET_EXHAUSTED",
+      "human": "CAPABILITY",
+      "lenient": true
+    },
+    {
+      "trial_id": "configure-git-webserver__URFvJwW",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "dna-insert__hiMuhVM",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__R33AW8P",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__stid6ks",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "gcode-to-text__gUNg5sK",
+      "judge": "CAPABILITY",
+      "human": "BUDGET_EXHAUSTED",
+      "lenient": true
+    },
+    {
+      "trial_id": "largest-eigenval__d5snCYj",
+      "judge": "CANNOT_JUDGE",
+      "human": "ENVIRONMENT",
+      "lenient": false
+    },
+    {
+      "trial_id": "overfull-hbox__QngQRz2",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__R67KqqC",
+      "judge": "CANNOT_JUDGE",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "query-optimize__fQZh7V8",
+      "judge": "CAPABILITY",
+      "human": "BUDGET_EXHAUSTED",
+      "lenient": false
+    },
+    {
+      "trial_id": "sqlite-with-gcov__NPYSmvJ",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    }
+  ],
+  "confusion_top": [
+    {
+      "pair": "SPEC_MISINTERPRETATION vs SPEC_MISINTERPRETATION",
+      "n": 3
+    },
+    {
+      "pair": "BUDGET_EXHAUSTED vs BUDGET_EXHAUSTED",
+      "n": 3
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs INSUFFICIENT_VERIFICATION",
+      "n": 3
+    },
+    {
+      "pair": "TASK_UNDERSPECIFIED vs TASK_UNDERSPECIFIED",
+      "n": 3
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs TASK_UNDERSPECIFIED",
+      "n": 3
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs TASK_UNDERSPECIFIED",
+      "n": 2
+    },
+    {
+      "pair": "CAPABILITY vs BUDGET_EXHAUSTED",
+      "n": 2
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs CAPABILITY",
+      "n": 1
+    },
+    {
+      "pair": "BUDGET_EXHAUSTED vs CAPABILITY",
+      "n": 1
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    },
+    {
+      "pair": "CANNOT_JUDGE vs ENVIRONMENT",
+      "n": 1
+    },
+    {
+      "pair": "CANNOT_JUDGE vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    }
+  ]
+}

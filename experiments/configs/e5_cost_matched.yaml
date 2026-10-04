@@ -1,0 +1,43 @@
+# E5 — 成本匹配基线（HYPOTHESES H1c）：不开核查关卡，但把 max_turns 放宽到
+# 使平均 token 与 e4_ablation_verifier_gate 相当。放宽幅度在 E4 跑完、算出 auditor 的平均 token 增量后填。
+job_name: e5-cost-matched-baseline
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - name: terminus-2
+    model_name: openai/doubao-seed-2-1-lite-260915   # 候选，第 1 天确认；不要用 doubao-seed-evolving（D-023）
+    kwargs:
+      api_base: https://ark.cn-beijing.volces.com/api/v3
+      parser_name: json
+      # temperature 不设：用模型默认采样（D-026），否则 k=3 与噪声底失去意义
+      max_turns: 100               # ← 放宽到与 auditor 臂等 token；数值待 E4 后填并记录计算过程
+      enable_summarize: true
+      proactive_summarization_threshold: 8000
+      model_info:
+        max_input_tokens: 1024000        # 模型列表标 1024k；第 1 天核对。窗口这么大意味着压缩不会触发（D-004/D-023）
+        max_output_tokens: 0
+        input_cost_per_token: 0.0000008   # 0.8 元/百万 token（lite，2026-09-23 控制台）；cost 字段单位是元
+        output_cost_per_token: 0.0000027  # 2.7 元/百万 token；pro 为 6 / 30
+      verifier_gate: none
+      adaptive_wait: false
+      task_contract: false
+      assumption_ledger: false
+      budget_hint: false
+      stuck_reminder: false
+      exit_code_prompt: false
+
+datasets:
+  - name: terminal-bench/terminal-bench-2-1   # Harbor Hub 注册名，89 题（2026-09-23 核对）
+    task_names: []

@@ -1,0 +1,55 @@
+# H3：Qwen 官方 harness（qwen-code，原生工具调用）
+# Qwen 四臂实验（docs/QWEN_PLAN.md §2）。qwen-code 装在题目容器里跑，经 Docker 网桥 172.17.0.1:8000（Hetzner 上第二条隧道）连同一个 vLLM；
+# api_key 填 EMPTY（vLLM 不校验，真 key 不进容器）；版本固定 0.24.6（2026-09-27 的 latest）
+job_name: qarm-h3-qwencode
+jobs_dir: /root/work/jobs
+n_attempts: 2
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: qwen-coder
+  model_name: openai/coder30b
+  kwargs:
+    version: 0.24.6
+    base_url: http://172.17.0.1:8000/v1
+    api_key: EMPTY
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/cobol-modernization
+  - terminal-bench/fix-git
+  - terminal-bench/prove-plus-comm
+  - terminal-bench/build-pmars
+  - terminal-bench/code-from-image
+  - terminal-bench/git-leak-recovery
+  - terminal-bench/headless-terminal
+  - terminal-bench/kv-store-grpc
+  - terminal-bench/polyglot-c-py
+  - terminal-bench/pypi-server
+  - terminal-bench/path-tracing-reverse
+  - terminal-bench/nginx-request-logging
+  - terminal-bench/sqlite-with-gcov
+  - terminal-bench/hf-model-inference
+  - terminal-bench/query-optimize
+  - terminal-bench/mteb-retrieve
+  - terminal-bench/openssl-selfsigned-cert
+  - terminal-bench/vulnerable-secret
+  - terminal-bench/adaptive-rejection-sampler
+  - terminal-bench/tune-mjcf
+  - terminal-bench/gcode-to-text
+  - terminal-bench/large-scale-text-editing
+  - terminal-bench/overfull-hbox
+  - terminal-bench/merge-diff-arc-agi-task
+  - terminal-bench/sqlite-db-truncate
+  - terminal-bench/regex-log
+  - terminal-bench/log-summary-date-ranges
+  - terminal-bench/llm-inference-batching-scheduler
+  - terminal-bench/chess-best-move
+  - terminal-bench/constraints-scheduling

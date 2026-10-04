@@ -1,0 +1,41 @@
+# 冒烟（只验证接线，不进分析）：H0：Terminus 2 原样（同批基线）；只多记原始回复（raw_log，不改行为）
+# Qwen 四臂实验（docs/QWEN_PLAN.md §2）：四臂同时启动、各 2 并发；Qwen3-Coder-30B-A3B-Instruct 在自己的 vLLM 上（bf16，served name coder30b，
+# Hetzner → RunPod 隧道 127.0.0.1:8000）；采样参数用 vLLM 默认的模型推荐值（temperature 0.7、top_p 0.8、top_k 20、repetition_penalty 1.05）
+job_name: qsmoke-h0-baseline
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 2
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coder30b
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: false
+    completion_gate: false
+    raw_log: true
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/fix-git
+  - terminal-bench/openssl-selfsigned-cert

@@ -1,0 +1,14 @@
+# E9 回归包：锚题（E1 与 E4 同批基线都 3/3 通过，不许退化）+ 修复目标题（两次基线都 0/3）。
+# 用法：agenteval regress <基线 job> <候选 job> --tasks experiments/regression_tasks.txt
+# --- anchors ---
+fix-git
+nginx-request-logging
+regex-log
+sqlite-db-truncate
+vulnerable-secret
+# --- fix targets ---
+extract-elf
+gcode-to-text
+path-tracing-reverse
+query-optimize
+raman-fitting

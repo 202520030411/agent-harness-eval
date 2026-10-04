@@ -1,0 +1,31 @@
+# E8b — E8 里仍失败的两道再补齐题面/环境说明：同一 Seed 基线 harness（全开关关闭），只换 instruction.md（experiments/e8_rewrites/）。
+job_name: e8b-rewrite-seed
+jobs_dir: /root/work/jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+  - name: terminus-2
+    model_name: openai/doubao-seed-2-1-lite-260915
+    kwargs:
+      api_base: https://ark.cn-beijing.volces.com/api/v3
+      parser_name: json
+      max_turns: 100
+      enable_summarize: true
+      proactive_summarization_threshold: 8000
+      record_terminal_session: true
+      store_all_messages: false
+      model_info:
+        max_input_tokens: 1024000
+        max_output_tokens: 0
+        input_cost_per_token: 0.0000008
+        output_cost_per_token: 0.0000027
+datasets:
+  - path: /root/work/tasks_e8b

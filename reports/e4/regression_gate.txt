@@ -1,0 +1,75 @@
+### e4-contract
+| fix-git | 1.00 | 1.00 | +0.0 | OK |
+| nginx-request-logging | 1.00 | 1.00 | +0.0 | OK |
+| regex-log | 1.00 | 1.00 | +0.0 | OK |
+| sqlite-db-truncate | 1.00 | 1.00 | +0.0 | OK |
+| vulnerable-secret | 1.00 | 1.00 | +0.0 | OK |
+| extract-elf | 0.00 | 0.67 | -66.7 | OK |
+| gcode-to-text | 0.00 | 0.00 | +0.0 | OK |
+| path-tracing-reverse | 0.00 | 0.00 | +0.0 | OK |
+| query-optimize | 0.00 | 0.00 | +0.0 | OK |
+| raman-fitting | 0.00 | 0.00 | +0.0 | OK |
+
+GATE PASSED
+
+exit=0
+### e4-selfcheck
+| fix-git | 1.00 | 1.00 | +0.0 | OK |
+| nginx-request-logging | 1.00 | 1.00 | +0.0 | OK |
+| regex-log | 1.00 | 1.00 | +0.0 | OK |
+| sqlite-db-truncate | 1.00 | 1.00 | +0.0 | OK |
+| vulnerable-secret | 1.00 | 1.00 | +0.0 | OK |
+| extract-elf | 0.00 | 0.33 | -33.3 | OK |
+| gcode-to-text | 0.00 | 0.00 | +0.0 | OK |
+| path-tracing-reverse | 0.00 | 0.00 | +0.0 | OK |
+| query-optimize | 0.00 | 0.00 | +0.0 | OK |
+| raman-fitting | 0.00 | 0.00 | +0.0 | OK |
+
+GATE PASSED
+
+exit=0
+### e4-auditor
+| fix-git | 1.00 | 1.00 | +0.0 | OK |
+| nginx-request-logging | 1.00 | 1.00 | +0.0 | OK |
+| regex-log | 1.00 | 1.00 | +0.0 | OK |
+| sqlite-db-truncate | 1.00 | 1.00 | +0.0 | OK |
+| vulnerable-secret | 1.00 | 1.00 | +0.0 | OK |
+| extract-elf | 0.00 | 0.33 | -33.3 | OK |
+| gcode-to-text | 0.00 | 0.00 | +0.0 | OK |
+| path-tracing-reverse | 0.00 | 0.00 | +0.0 | OK |
+| query-optimize | 0.00 | 0.33 | -33.3 | OK |
+| raman-fitting | 0.00 | 0.00 | +0.0 | OK |
+
+GATE PASSED
+
+exit=0
+### e4-hygiene
+| fix-git | 1.00 | 1.00 | +0.0 | OK |
+| nginx-request-logging | 1.00 | 1.00 | +0.0 | OK |
+| regex-log | 1.00 | 1.00 | +0.0 | OK |
+| sqlite-db-truncate | 1.00 | 1.00 | +0.0 | OK |
+| vulnerable-secret | 1.00 | 1.00 | +0.0 | OK |
+| extract-elf | 0.00 | 0.67 | -66.7 | OK |
+| gcode-to-text | 0.00 | 0.00 | +0.0 | OK |
+| path-tracing-reverse | 0.00 | 0.00 | +0.0 | OK |
+| query-optimize | 0.00 | 0.00 | +0.0 | OK |
+| raman-fitting | 0.00 | 0.00 | +0.0 | OK |
+
+GATE PASSED
+
+exit=0
+### e4-adaptive-wait
+| fix-git | 1.00 | 1.00 | +0.0 | OK |
+| nginx-request-logging | 1.00 | 1.00 | +0.0 | OK |
+| regex-log | 1.00 | 1.00 | +0.0 | OK |
+| sqlite-db-truncate | 1.00 | 1.00 | +0.0 | OK |
+| vulnerable-secret | 1.00 | 1.00 | +0.0 | OK |
+| extract-elf | 0.00 | 0.67 | -66.7 | OK |
+| gcode-to-text | 0.00 | 0.00 | +0.0 | OK |
+| path-tracing-reverse | 0.00 | 0.00 | +0.0 | OK |
+| query-optimize | 0.00 | 0.00 | +0.0 | OK |
+| raman-fitting | 0.00 | 0.00 | +0.0 | OK |
+
+GATE PASSED
+
+exit=0

@@ -1,0 +1,21 @@
+# SWE-bench Verified 冒烟清单（2026-09-26，seed 20260926）：按难度分层随机，同一仓库每层最多 2 道；<15 min 7、15 min–1 h 9、1–4 h 4
+swe-bench/django__django-10097
+swe-bench/django__django-14855
+swe-bench/scikit-learn__scikit-learn-14141
+swe-bench/pydata__xarray-4075
+swe-bench/matplotlib__matplotlib-20859
+swe-bench/sympy__sympy-19954
+swe-bench/matplotlib__matplotlib-25287
+swe-bench/django__django-14170
+swe-bench/sympy__sympy-20438
+swe-bench/django__django-15731
+swe-bench/mwaskom__seaborn-3069
+swe-bench/sympy__sympy-21930
+swe-bench/scikit-learn__scikit-learn-14710
+swe-bench/matplotlib__matplotlib-14623
+swe-bench/astropy__astropy-14539
+swe-bench/sphinx-doc__sphinx-7757
+swe-bench/django__django-14631
+swe-bench/django__django-15503
+swe-bench/astropy__astropy-13579
+swe-bench/sympy__sympy-18199

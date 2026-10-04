@@ -1,0 +1,36 @@
+# 共同进化 2×2（D-068）：base × H0（原版 Terminus，补丁全关，只记原始回复）× 留出合成题 3 次；与 H2 各臂同时跑
+job_name: qeval-base-synth-h0
+jobs_dir: /root/work/jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coder30b
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: false
+    completion_gate: false
+    raw_log: true
+datasets:
+- path: /root/work/train/synth_split/heldout

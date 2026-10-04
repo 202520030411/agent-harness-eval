@@ -1,0 +1,34 @@
+# SWE-bench Pro 模板（2026-09-26）：scale-ai/swe-bench-pro，731 题，每题 agent 时限 50 分钟，内存 4 GB
+job_name: swepro-TEMPLATE
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 6
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus-2
+  model_name: openai/doubao-seed-2-1-lite-260915
+  kwargs:
+    api_base: https://ark.cn-beijing.volces.com/api/v3
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 1024000
+      max_output_tokens: 0
+      input_cost_per_token: 8.0e-07
+      output_cost_per_token: 2.7e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+datasets:
+- name: scale-ai/swe-bench-pro
+  task_names: []

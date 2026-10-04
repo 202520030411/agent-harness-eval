@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+reports/figdata/*.trials.jsonl
+
+# Terminal-Bench 题面 / 测试 / 轨迹原文：带 canary，不得公开（见 README“数据说明”）
+reports/labeling_pack/
+reports/e8_materials*.txt
+reports/figdata/*.judge.jsonl
+reports/claude_prelabels.csv
+reports/human_labels.csv
+reports/human_*.csv
+reports/labels_seed.csv
+experiments/e8_rewrites/*/instruction.md
+experiments/e8b_rewrites/*/instruction.md
+
+# Raw data never distributed (Terminal-Bench content, trajectories, judge outputs, labels)
+tests/fixtures/
+reports/**/*.jsonl
+reports/*.jsonl
+reports/**/labeling_sheet.csv
+reports/*labeling_sheet.csv
+docs/prompts/

@@ -1,0 +1,7 @@
+[1/6] extract-elf#0: judge=TASK_UNDERSPECIFIED (onset 5) rules=['PREMATURE_COMPLETION', 'COMMAND_NOT_FOUND']
+[2/6] gcode-to-text#0: judge=SPEC_MISINTERPRETATION (onset 48) rules=['PREMATURE_COMPLETION']
+[3/6] gcode-to-text#1: judge=INSUFFICIENT_VERIFICATION (onset 32) rules=['PREMATURE_COMPLETION']
+[4/6] mteb-retrieve#0: judge=SPEC_MISINTERPRETATION (onset 19) rules=['PREMATURE_COMPLETION']
+[5/6] raman-fitting#0: judge=TASK_UNDERSPECIFIED (onset 11) rules=['PREMATURE_COMPLETION']
+[6/6] raman-fitting#1: judge=SPEC_MISINTERPRETATION (onset 6) rules=['PREMATURE_COMPLETION']
+calls=6 cache_hits=0 usage={'prompt_tokens': 114150, 'completion_tokens': 4692}; written /root/work/reports/e4s/e4s-contract.analysis/judge/judge.jsonl

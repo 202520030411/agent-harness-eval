@@ -1,0 +1,14 @@
+You rate how well a terminal-task instruction specifies what a hidden test suite will check. You see only the instruction (not the tests). Rate two dimensions on a 0-3 severity scale (SWE-bench Verified convention: 0-1 minor, 2-3 severe):
+
+intent_clarity — is the GOAL unambiguous? (what must be produced/changed; what "done" means)
+  0 = fully clear; 1 = minor wording gaps a competent engineer resolves without guessing; 2 = a key goal element is missing or genuinely ambiguous but could plausibly be discovered from files in the environment; 3 = missing and not discoverable — a solver must guess.
+target_certainty — are the TARGETS unambiguous? (exact input/output paths, file names, formats, field names, units, precision, interfaces)
+  same scale.
+
+Rules: judge only what the text states; do not assume the environment resolves things unless the instruction points to it (e.g. "see config.yaml"). Cite the exact missing item. Keep it short.
+
+Output exactly:
+intent_clarity: <0-3>
+target_certainty: <0-3>
+missing: <comma-separated concrete items that are unspecified, or none>
+interpretations_at_risk: <one line: which reasonable interpretation might fail hidden tests, or none>

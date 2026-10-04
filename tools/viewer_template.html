@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>轨迹标注台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#1c1e21;--muted:#6b7280;--line:#e5e7eb;--acc:#2563eb;--bad:#dc2626;--ok:#16a34a;--warn:#d97706;--term:#0f172a;--termink:#d1d5db;--say:#fff7ed}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1115;--panel:#181b22;--ink:#e5e7eb;--muted:#9ca3af;--line:#2a2f3a;--term:#05070a;--termink:#cbd5e1;--say:#2a2016}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,"PingFang SC","Hiragino Sans GB",Helvetica,Arial,sans-serif}
+.app{display:grid;grid-template-columns:300px 1fr 320px;height:100vh}
+.side{border-right:1px solid var(--line);overflow:auto;background:var(--panel)}
+.side h1{font-size:15px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
+.side .row{padding:8px 14px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:8px;align-items:center}
+.side .row:hover{background:var(--bg)}.side .row.cur{background:#dbeafe;color:#111}
+.side .n{width:26px;color:var(--muted);font-variant-numeric:tabular-nums}.side .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}.dot.dis{background:var(--bad)}.dot.agr{background:var(--muted)}.dot.done{background:var(--ok)}.dot.pre{background:var(--warn)}
+.main{overflow:auto;padding:16px 24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.card h2{font-size:14px;margin:0 0 6px}.muted{color:var(--muted)}
+pre{white-space:pre-wrap;word-break:break-word;margin:6px 0;font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace}
+.term{background:var(--term);color:var(--termink);padding:8px 10px;border-radius:6px;max-height:260px;overflow:auto}
+.term.open{max-height:none}
+.say{background:var(--say);padding:8px 10px;border-radius:6px;border-left:3px solid var(--warn)}
+.keys{background:#eef2ff;color:#1e1b4b;padding:6px 10px;border-radius:6px;border-left:3px solid var(--acc)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .keys{background:#1e1b4b;color:#e0e7ff}}
+.turn{border-left:3px solid var(--line);padding-left:12px;margin:14px 0}
+.turn.onset{border-left-color:var(--bad)}
+.turn .hd{display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:4px}
+.turn .hd button{font-size:12px}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:12px;background:var(--line);margin-right:4px}
+.tag.bad{background:#fee2e2;color:#7f1d1d}.tag.ok{background:#dcfce7;color:#14532d}
+.verifier{border:2px solid var(--bad)}
+.form{border-left:1px solid var(--line);overflow:auto;background:var(--panel);padding:14px}
+.form label{display:block;font-weight:600;margin:10px 0 4px}.form select,.form input,.form textarea{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.form textarea{min-height:90px}.form .help{font-size:12px;color:var(--muted);margin-top:4px}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:5px 10px;font:inherit}
+button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+details summary{cursor:pointer;font-weight:600}
+.small{font-size:12px}
+@media (max-width:1000px){.app{grid-template-columns:1fr;height:auto}.side{max-height:40vh}.form{border-left:none;border-top:1px solid var(--line)}.main{padding:12px 16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <h1>39 条失败轨迹 <span class="muted small" id="progress"></span></h1>
+    <div id="list"></div>
+  </aside>
+  <main class="main" id="main"></main>
+  <aside class="form" id="form"></aside>
+</div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const LABELS = [
+ ["", "（未选）"],
+ ["SPEC_MISINTERPRETATION", "SPEC_MISINTERPRETATION：把题意理解错了，交付的不是题目要的"],
+ ["INSUFFICIENT_VERIFICATION", "INSUFFICIENT_VERIFICATION：方向对，但没查就说完成"],
+ ["BUDGET_EXHAUSTED", "BUDGET_EXHAUSTED：一直在做，轮数 / 时间用完"],
+ ["TASK_UNDERSPECIFIED", "TASK_UNDERSPECIFIED：题本身说不清，换谁都得猜"],
+ ["CAPABILITY", "CAPABILITY：懂题也在查，就是做不出来"],
+ ["GOAL_DRIFT", "GOAL_DRIFT：中途目标漂移，去做别的了"],
+ ["ACKNOWLEDGED_BUT_IGNORED", "ACKNOWLEDGED_BUT_IGNORED：看到报错 / 提示却没处理"],
+ ["LOOP", "LOOP：反复执行同样的命令"],
+ ["ENVIRONMENT", "ENVIRONMENT：环境 / 验证器问题，不是模型的错"],
+ ["CANNOT_JUDGE", "CANNOT_JUDGE：看不出来"],
+];
+const KEY = 'agenteval_labels_v1';
+const SEED = __SEED__;
+let store = {}; try { store = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { store = {}; }
+for (const k in SEED) if (!store[k] || !store[k].primary) store[k] = SEED[k];
+let cur = 0, showJudge = false, lastN = 0;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function lab(t){ return store[t.trial_id] || {}; }
+function renderList(){
+  const el = document.getElementById('list'); el.innerHTML = '';
+  let done = 0;
+  DATA.forEach((t, i) => {
+    const l = lab(t); const dis = t.judge.gpt !== t.judge.claude || (t.judge.v3 && t.judge.v3 !== t.judge.gpt); if (l.primary && l.reviewed) done++;
+    const d = document.createElement('div'); d.className = 'row' + (i === cur ? ' cur' : '');
+    d.innerHTML = `<span class="n">${i+1}</span><span class="dot ${l.primary ? (l.reviewed ? 'done' : 'pre') : (dis ? 'dis' : 'agr')}"></span><span class="t">${esc(t.task)} #${t.attempt}</span><span class="muted small">${t.turns}轮</span>`;
+    d.onclick = () => { cur = i; lastN = 0; render(); };
+    el.appendChild(d);
+  });
+  document.getElementById('progress').textContent = `已核对 ${done}/${DATA.length}（黄=预标待核对）`;
+}
+function turnHtml(s, onset){
+  const keys = s.keystrokes.map(k => k.trim() ? `<pre class="keys">${esc(k)}</pre>` : `<div class="muted small">（空按键：等待）</div>`).join('');
+  return `<div class="turn ${onset == s.id ? 'onset' : ''}" id="turn-${s.id}">
+    <div class="hd">第 ${s.id} 轮 ${s.claimed_complete ? '<span class="tag bad">声称完成</span>' : ''}${s.parse_error ? '<span class="tag">上一轮解析失败</span>' : ''}${s.truncated ? '<span class="tag">输出被截断</span>' : ''}
+      <button onclick="setOnset(${s.id})">从这轮走偏 ▶</button></div>
+    ${s.message ? `<div class="say"><span class="muted small">模型自述（是声明，不是证据）</span><pre>${esc(s.message)}</pre></div>` : ''}
+    ${keys}
+    <pre class="term" onclick="this.classList.toggle('open')" title="点击展开/收起">${esc(s.terminal) || '（无输出）'}</pre>
+  </div>`;
+}
+function render(){
+  renderList();
+  const t = DATA[cur], l = lab(t);
+  const steps = lastN ? t.steps.slice(-lastN) : t.steps;
+  const m = document.getElementById('main');
+  m.innerHTML = `
+  <div class="toolbar">
+    <b>${cur+1}. ${esc(t.task)} #${t.attempt}</b>
+    <span class="tag ${t.status==='ok'?'':'bad'}">${t.status}</span><span class="tag">${t.turns} 轮</span><span class="tag">${Math.round(t.wall_clock_sec/60)} 分钟</span>
+    ${t.rule_labels.map(x => `<span class="tag">规则: ${x}</span>`).join('')}
+    <span style="flex:1"></span>
+    <button onclick="lastN=3;render()">只看最后 3 轮</button><button onclick="lastN=8;render()">最后 8 轮</button><button onclick="lastN=0;render()">全部</button>
+    <button onclick="cur=Math.max(0,cur-1);lastN=0;render()">◀ 上一条</button><button onclick="cur=Math.min(DATA.length-1,cur+1);lastN=0;render()">下一条 ▶</button>
+  </div>
+  <div class="card"><h2>题目</h2><pre>${esc(t.instruction)}</pre></div>
+  <div class="card verifier"><h2>验证器输出（末尾；模型没看过这个）—— 先看这里，知道挂在哪个测试</h2><pre>${esc(t.verifier_tail) || '（不可用）'}</pre></div>
+  ${lastN ? `<div class="muted small">只显示最后 ${lastN} 轮（共 ${t.steps.length} 轮）</div>` : ''}
+  ${steps.map(s => turnHtml(s, l.onset)).join('')}
+  `;
+  const f = document.getElementById('form');
+  f.innerHTML = `
+  <h2 style="margin:0;font-size:15px">你的标注</h2>
+  <label>主要原因 human_primary</label>
+  <select id="f_primary">${LABELS.map(([v,txt]) => `<option value="${v}" ${l.primary===v?'selected':''}>${txt}</option>`).join('')}</select>
+  <div class="help">最早把这条带偏的那个原因；后面的症状不算。</div>
+  <label>走偏的那一轮 human_onset</label>
+  <input id="f_onset" value="${l.onset ?? ''}" placeholder="点某一轮的“从这轮走偏”，或写 unknown">
+  <label>次要原因 human_secondary（可空）</label>
+  <input id="f_secondary" value="${esc(l.secondary||'')}" placeholder="逗号分隔">
+  <label>一句话证据 human_notes</label>
+  <textarea id="f_notes" placeholder="引用命令或终端输出">${esc(l.notes||'')}</textarea>
+  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="f_reviewed" style="width:auto" ${l.reviewed ? 'checked' : ''}> 我已核对这条（预标的要勾上才算你的标注）</label>
+  <label>题面清晰度 0–3（可空）</label>
+  <div style="display:flex;gap:6px"><input id="f_ci" value="${l.ci??''}" placeholder="意图 0-3"><input id="f_ct" value="${l.ct??''}" placeholder="目标 0-3"></div>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="primary" onclick="commit(true)">保存并下一条</button><button onclick="commit(false)">保存</button>
+  </div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  ${(t.judge.gpt !== t.judge.claude || (t.judge.v3 && t.judge.v3 !== t.judge.gpt) || showJudge) ? judgeHtml(t) : `<button onclick="showJudge=!showJudge;render()">显示判官答案（判官全一致的条目默认藏着）</button>`}
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  <button onclick="exportCsv()">导出 CSV（发给 Claude）</button>
+  <div class="help">标注存在这个浏览器里（localStorage），换浏览器会丢，标完记得导出。</div>
+  `;
+}
+function judgeHtml(t){
+  const dis = t.judge.gpt !== t.judge.claude || (t.judge.v3 && t.judge.v3 !== t.judge.gpt);
+  const one = (name, lab, onset, raw) => `<details ${dis ? 'open' : ''} style="margin-top:8px"><summary>${name}：<b>${lab}</b>（onset ${onset ?? '?'}）</summary><pre class="small" style="max-height:320px;overflow:auto">${esc(raw || '（无原文）')}</pre></details>`;
+  return `<div class="card" style="margin-top:8px;border-color:${dis ? 'var(--bad)' : 'var(--line)'}">
+    <div class="small ${dis ? '' : 'muted'}"><b>${dis ? '两家判官不一致，请你仲裁' : '两家判官一致'}</b>：读两边的证据，再对照轨迹里它们引用的那几轮，选你认同的一方，或都不认同就自己写。</div>
+    ${t.judge.v3 ? `<div class="small" style="margin-top:8px;color:var(--bad)"><b>v3 判官（全 context + 三票 + 判定规则）：${esc(t.judge.v3)}</b>${t.judge.v3 !== t.judge.gpt ? '　← 和旧判官不同，请你仲裁' : '　（与旧判官一致）'}</div>` : ''}
+    ${t.judge.v3 ? one('gpt v3（全 context）', t.judge.v3, t.judge.v3_onset, t.judge.v3_raw) : ''}
+    ${one('gpt-6-sol（旧·半盲）', t.judge.gpt, t.judge.gpt_onset, t.judge.gpt_raw)}${one('claude-sonnet-5（旧·半盲）', t.judge.claude, t.judge.claude_onset, t.judge.claude_raw)}
+    <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${t.judge.v3 ? `<button onclick="adopt('v3')">采纳 v3</button>` : ''}<button onclick="adopt('gpt')">采纳 gpt</button><button onclick="adopt('claude')">采纳 claude</button></div>
+  </div>`;
+}
+function adopt(w){ const t = DATA[cur]; readForm(); const l = store[t.trial_id]; l.primary = t.judge[w]; l.onset = String(t.judge[w + '_onset'] ?? ''); save(); render(); }
+function readForm(){ const t = DATA[cur]; store[t.trial_id] = {
+  primary: document.getElementById('f_primary').value, onset: document.getElementById('f_onset').value.trim(),
+  secondary: document.getElementById('f_secondary').value.trim(), notes: document.getElementById('f_notes').value.trim(),
+  ci: document.getElementById('f_ci').value.trim(), ct: document.getElementById('f_ct').value.trim(),
+  reviewed: document.getElementById('f_reviewed').checked }; save(); }
+function commit(next){ readForm(); if (next && cur < DATA.length-1) { cur++; lastN = 0; } render(); }
+function setOnset(id){ readForm(); store[DATA[cur].trial_id].onset = String(id); save(); render(); document.getElementById('turn-'+id)?.scrollIntoView({block:'center'}); }
+function exportCsv(){
+  readForm();
+  const q = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const rows = [['trial_id','task','attempt','human_primary','human_onset','human_secondary','human_notes','clarity_intent_0_3','clarity_target_0_3','reviewed']];
+  DATA.forEach(t => { const l = lab(t); rows.push([t.trial_id, t.task, t.attempt, l.primary||'', l.onset||'', l.secondary||'', l.notes||'', l.ci||'', l.ct||'', l.reviewed ? 'yes' : '']); });
+  const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'human_labels.csv'; a.click();
+}
+document.addEventListener('keydown', e => { if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'j') { cur = Math.min(DATA.length-1, cur+1); lastN = 0; render(); } if (e.key === 'k') { cur = Math.max(0, cur-1); lastN = 0; render(); } });
+render();
+</script>
+</body>
+</html>

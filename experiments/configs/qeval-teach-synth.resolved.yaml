@@ -1,0 +1,36 @@
+# 训练前后对比（D-067）：coderteach（第一、二轮 + 实时 Teacher 提示轮训的 LoRA，D-069） × H2 × 留出合成题 3 次；与另一臂同一个 vLLM（开 LoRA）、同时跑
+job_name: qeval-teach-synth
+jobs_dir: /root/work/jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coderteach
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: true
+    completion_gate: true
+    raw_log: true
+datasets:
+- path: /root/work/train/synth_split/heldout

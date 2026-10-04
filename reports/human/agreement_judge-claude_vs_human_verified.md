@@ -1,0 +1,25 @@
+# 一致率：judge-claude vs human（n=24）
+
+- 主标签：原始一致 33.3%，Cohen's κ = 0.221
+- 折叠到 TB 三大类：原始一致 45.8%，κ = 0.34
+- 宽松口径（主标签落在对方的主/次标签里）：75.0%
+- onset 相差 ≤2 轮的比例：52%（23 对）
+
+## 分歧
+
+- cancel-async-tasks__QUCtLa7: SPEC_MISINTERPRETATION / TASK_UNDERSPECIFIED
+- cancel-async-tasks__q9PocsZ: INSUFFICIENT_VERIFICATION / TASK_UNDERSPECIFIED（宽松口径下一致）
+- chess-best-move__JGz74wZ: BUDGET_EXHAUSTED / CAPABILITY（宽松口径下一致）
+- chess-best-move__fNTJ2hp: BUDGET_EXHAUSTED / CAPABILITY（宽松口径下一致）
+- configure-git-webserver__URFvJwW: PREMATURE_COMPLETION / INSUFFICIENT_VERIFICATION
+- dna-insert__b2wu5aN: INSUFFICIENT_VERIFICATION / TASK_UNDERSPECIFIED（宽松口径下一致）
+- dna-insert__hiMuhVM: INSUFFICIENT_VERIFICATION / TASK_UNDERSPECIFIED（宽松口径下一致）
+- extract-elf__R33AW8P: PREMATURE_COMPLETION / TASK_UNDERSPECIFIED
+- extract-elf__rMmwJWW: SPEC_MISINTERPRETATION / TASK_UNDERSPECIFIED
+- extract-elf__stid6ks: SPEC_MISINTERPRETATION / TASK_UNDERSPECIFIED
+- largest-eigenval__d5snCYj: INSUFFICIENT_VERIFICATION / ENVIRONMENT（宽松口径下一致）
+- overfull-hbox__QngQRz2: PREMATURE_COMPLETION / INSUFFICIENT_VERIFICATION（宽松口径下一致）
+- overfull-hbox__R67KqqC: SPEC_MISINTERPRETATION / INSUFFICIENT_VERIFICATION
+- raman-fitting__Cs232nc: CAPABILITY / SPEC_MISINTERPRETATION（宽松口径下一致）
+- sanitize-git-repo__h82YUJi: SPEC_MISINTERPRETATION / TASK_UNDERSPECIFIED（宽松口径下一致）
+- sqlite-with-gcov__NPYSmvJ: PREMATURE_COMPLETION / INSUFFICIENT_VERIFICATION（宽松口径下一致）

@@ -1,0 +1,22 @@
+{
+  "n_failed": 6,
+  "judge_primary": {
+    "NOT_JUDGED": 6
+  },
+  "judge_tb_class": {
+    "NONE": 6
+  },
+  "rule_x_judge": {
+    "PREMATURE_COMPLETION": {
+      "NOT_JUDGED": 6
+    },
+    "POLLING": {
+      "NOT_JUDGED": 1
+    },
+    "COMMAND_NOT_FOUND": {
+      "NOT_JUDGED": 1
+    }
+  },
+  "onset_median_frac": null,
+  "onset_first_third_share": null
+}

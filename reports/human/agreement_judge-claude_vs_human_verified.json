@@ -1,0 +1,156 @@
+{
+  "x": "judge-claude",
+  "y": "human",
+  "n": 24,
+  "raw_agreement": 0.3333333333333333,
+  "kappa_primary": 0.22109533468559836,
+  "kappa_tb_class": 0.3403805496828752,
+  "raw_agreement_tb_class": 0.4583333333333333,
+  "lenient_agreement": 0.75,
+  "onset_pairs": 23,
+  "onset_within_2_steps": 0.5217391304347826,
+  "disagreements": [
+    {
+      "trial_id": "cancel-async-tasks__QUCtLa7",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "cancel-async-tasks__q9PocsZ",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "chess-best-move__JGz74wZ",
+      "judge-claude": "BUDGET_EXHAUSTED",
+      "human": "CAPABILITY",
+      "lenient": true
+    },
+    {
+      "trial_id": "chess-best-move__fNTJ2hp",
+      "judge-claude": "BUDGET_EXHAUSTED",
+      "human": "CAPABILITY",
+      "lenient": true
+    },
+    {
+      "trial_id": "configure-git-webserver__URFvJwW",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "dna-insert__b2wu5aN",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "dna-insert__hiMuhVM",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "extract-elf__R33AW8P",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__rMmwJWW",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__stid6ks",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "largest-eigenval__d5snCYj",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "ENVIRONMENT",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__QngQRz2",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__R67KqqC",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "raman-fitting__Cs232nc",
+      "judge-claude": "CAPABILITY",
+      "human": "SPEC_MISINTERPRETATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "sanitize-git-repo__h82YUJi",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "sqlite-with-gcov__NPYSmvJ",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    }
+  ],
+  "confusion_top": [
+    {
+      "pair": "BUDGET_EXHAUSTED vs BUDGET_EXHAUSTED",
+      "n": 5
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs TASK_UNDERSPECIFIED",
+      "n": 4
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs TASK_UNDERSPECIFIED",
+      "n": 3
+    },
+    {
+      "pair": "PREMATURE_COMPLETION vs INSUFFICIENT_VERIFICATION",
+      "n": 3
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs SPEC_MISINTERPRETATION",
+      "n": 2
+    },
+    {
+      "pair": "BUDGET_EXHAUSTED vs CAPABILITY",
+      "n": 2
+    },
+    {
+      "pair": "PREMATURE_COMPLETION vs TASK_UNDERSPECIFIED",
+      "n": 1
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs ENVIRONMENT",
+      "n": 1
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    },
+    {
+      "pair": "CAPABILITY vs SPEC_MISINTERPRETATION",
+      "n": 1
+    }
+  ]
+}

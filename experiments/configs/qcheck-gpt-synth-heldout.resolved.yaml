@@ -1,0 +1,36 @@
+# 强弱模型排序一致性检验（D-064 补充）：gpt-6-sol（项目约定的强模型参照）× H2 × 37 道留出合成题 × 2 次。只用于评测、不进训练（不蒸馏）。
+# 模型设置照 E2（e2-baseline-strong）；启动时用宿主机的 OPENAI_API_KEY（不用 --ae，D-051）。
+job_name: qcheck-gpt-synth-heldout
+jobs_dir: /root/work/jobs
+n_attempts: 2
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/gpt-6-sol
+  kwargs:
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 400000
+      max_output_tokens: 128000
+      input_cost_per_token: 2.0e-06
+      output_cost_per_token: 1.0e-05
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: true
+    completion_gate: true
+    raw_log: true
+datasets:
+- path: /root/work/train/synth_split/heldout

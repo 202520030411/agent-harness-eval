@@ -1,0 +1,75 @@
+job_name: h17-conditional
+jobs_dir: /root/work/jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 6
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/doubao-seed-2-1-lite-260915
+  kwargs:
+    api_base: https://ark.cn-beijing.volces.com/api/v3
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 1024000
+      max_output_tokens: 0
+      input_cost_per_token: 8.0e-07
+      output_cost_per_token: 2.7e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: true
+    deliverable_checkpoint: false
+    contract_conditional: true
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/cobol-modernization
+  - terminal-bench/fix-git
+  - terminal-bench/prove-plus-comm
+  - terminal-bench/build-pmars
+  - terminal-bench/code-from-image
+  - terminal-bench/git-leak-recovery
+  - terminal-bench/headless-terminal
+  - terminal-bench/kv-store-grpc
+  - terminal-bench/polyglot-c-py
+  - terminal-bench/pypi-server
+  - terminal-bench/cancel-async-tasks
+  - terminal-bench/path-tracing-reverse
+  - terminal-bench/nginx-request-logging
+  - terminal-bench/sqlite-with-gcov
+  - terminal-bench/configure-git-webserver
+  - terminal-bench/git-multibranch
+  - terminal-bench/hf-model-inference
+  - terminal-bench/query-optimize
+  - terminal-bench/mteb-retrieve
+  - terminal-bench/openssl-selfsigned-cert
+  - terminal-bench/vulnerable-secret
+  - terminal-bench/sanitize-git-repo
+  - terminal-bench/fix-code-vulnerability
+  - terminal-bench/adaptive-rejection-sampler
+  - terminal-bench/raman-fitting
+  - terminal-bench/tune-mjcf
+  - terminal-bench/dna-insert
+  - terminal-bench/extract-elf
+  - terminal-bench/gcode-to-text
+  - terminal-bench/large-scale-text-editing
+  - terminal-bench/overfull-hbox
+  - terminal-bench/merge-diff-arc-agi-task
+  - terminal-bench/sqlite-db-truncate
+  - terminal-bench/largest-eigenval
+  - terminal-bench/regex-log
+  - terminal-bench/log-summary-date-ranges
+  - terminal-bench/pytorch-model-cli
+  - terminal-bench/count-dataset-tokens
+  - terminal-bench/llm-inference-batching-scheduler
+  - terminal-bench/chess-best-move
+  - terminal-bench/constraints-scheduling

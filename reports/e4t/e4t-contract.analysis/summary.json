@@ -1,0 +1,79 @@
+{
+  "n_trials": 42,
+  "n_tasks": 14,
+  "env_success_rate": 1.0,
+  "agent_setup_success_rate": 1.0,
+  "reward_only_pass_rate": 0.6904761904761905,
+  "end_to_end_pass_rate": 0.6904761904761905,
+  "mean_over_trials (capability-evaluable)": 0.6904761904761905,
+  "pass_at_k (task level)": 0.9285714285714286,
+  "status_counts": {
+    "agent_timeout": 4,
+    "ok": 38
+  },
+  "mean_turns": 12.833333333333334,
+  "mean_wall_clock_sec": 367.3511566428571,
+  "tokens_in_total": 6395554,
+  "tokens_out_total": 628579,
+  "cached_share": 0.25513348804497626,
+  "cost_total": 5.5082305,
+  "cost_per_trial": 0.13114834523809524,
+  "polling_turns_total": 10,
+  "parse_error_turns_total": 34,
+  "truncated_observations_total": 21,
+  "compactions_total": 0,
+  "n_failed_capability_evaluable": 13,
+  "failure_label_counts": {
+    "PREMATURE_COMPLETION": 12,
+    "TRUNCATED_READ": 2,
+    "BUDGET_EXHAUSTED": 1
+  },
+  "failure_label_rates": {
+    "BUDGET_EXHAUSTED": 0.07692307692307693,
+    "PREMATURE_COMPLETION": 0.9230769230769231,
+    "TRUNCATED_READ": 0.15384615384615385
+  },
+  "patched_totals": {
+    "first_turn_rejections": 30,
+    "stuck_reminders": 0,
+    "auditor_calls": 0,
+    "auditor_rejections": 0,
+    "adaptive_n": 0,
+    "adaptive_sentinel_finished": 0,
+    "adaptive_sentinel_timeout": 0,
+    "adaptive_prompt_detected": 0,
+    "adaptive_waited_sec_total": 0
+  },
+  "task_mean": {
+    "adaptive-rejection-sampler": 0.6666666666666666,
+    "build-pmars": 0.6666666666666666,
+    "cancel-async-tasks": 0.3333333333333333,
+    "chess-best-move": 0.3333333333333333,
+    "count-dataset-tokens": 1.0,
+    "dna-insert": 0.3333333333333333,
+    "extract-elf": 1.0,
+    "fix-code-vulnerability": 1.0,
+    "fix-git": 1.0,
+    "headless-terminal": 1.0,
+    "pytorch-model-cli": 1.0,
+    "raman-fitting": 0.0,
+    "sanitize-git-repo": 0.3333333333333333,
+    "vulnerable-secret": 1.0
+  },
+  "task_pass_at_k": {
+    "adaptive-rejection-sampler": 1.0,
+    "build-pmars": 1.0,
+    "cancel-async-tasks": 1.0,
+    "chess-best-move": 1.0,
+    "count-dataset-tokens": 1.0,
+    "dna-insert": 1.0,
+    "extract-elf": 1.0,
+    "fix-code-vulnerability": 1.0,
+    "fix-git": 1.0,
+    "headless-terminal": 1.0,
+    "pytorch-model-cli": 1.0,
+    "raman-fitting": 0.0,
+    "sanitize-git-repo": 1.0,
+    "vulnerable-secret": 1.0
+  }
+}

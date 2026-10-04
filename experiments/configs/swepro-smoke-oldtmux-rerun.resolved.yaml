@@ -1,0 +1,35 @@
+job_name: swepro-smoke-oldtmux-rerun
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 2
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/doubao-seed-2-1-lite-260915
+  kwargs:
+    api_base: https://ark.cn-beijing.volces.com/api/v3
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 1024000
+      max_output_tokens: 0
+      input_cost_per_token: 8.0e-07
+      output_cost_per_token: 2.7e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+datasets:
+- name: scale-ai/swe-bench-pro
+  task_names:
+  - scale-ai/instance_qutebrowser__qutebrowser-cc360cd4a34a126274c7b51f3b63afbaf3e05a02-v5fc38aaf22415ab0b70567368332beee7955b367
+  - scale-ai/instance_tutao__tutanota-1e516e989b3c0221f4af6b297d9c0e4c43e4adc3-vbc0d9ba8f0071fbe982809910959a6ff8884dbbf

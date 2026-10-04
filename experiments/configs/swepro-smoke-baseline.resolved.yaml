@@ -1,0 +1,43 @@
+job_name: swepro-smoke-baseline
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 3
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/doubao-seed-2-1-lite-260915
+  kwargs:
+    api_base: https://ark.cn-beijing.volces.com/api/v3
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 1024000
+      max_output_tokens: 0
+      input_cost_per_token: 8.0e-07
+      output_cost_per_token: 2.7e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+datasets:
+- name: scale-ai/swe-bench-pro
+  task_names:
+  - scale-ai/instance_internetarchive__openlibrary-9cd47f4dc21e273320d9e30d889c864f8cb20ccf-v0f5aece3601a5b4419f7ccec1dbda2071be28ee4
+  - scale-ai/instance_ansible__ansible-7e1a347695c7987ae56ef1b6919156d9254010ad-v390e508d27db7a51eece36bb6d9698b63a5b638a
+  - scale-ai/instance_qutebrowser__qutebrowser-cc360cd4a34a126274c7b51f3b63afbaf3e05a02-v5fc38aaf22415ab0b70567368332beee7955b367
+  - scale-ai/instance_future-architect__vuls-d576b6c6c15e56c47cc3e26f5878867677d4a9ea
+  - scale-ai/instance_flipt-io__flipt-5aef5a14890aa145c22d864a834694bae3a6f112
+  - scale-ai/instance_navidrome__navidrome-bf2bcb12799b21069f137749e0c331f761d1f693
+  - scale-ai/instance_protonmail__webclients-708ed4a299711f0fa79a907cc5847cfd39c0fc71
+  - scale-ai/instance_element-hq__element-web-a692fe21811f88d92e8f7047fc615e4f1f986b0f-vnan
+  - scale-ai/instance_tutao__tutanota-1e516e989b3c0221f4af6b297d9c0e4c43e4adc3-vbc0d9ba8f0071fbe982809910959a6ff8884dbbf
+  - scale-ai/instance_nodebb__nodebb-76c6e30282906ac664f2c9278fc90999b27b1f48-vd59a5728dfc977f44533186ace531248c2917516

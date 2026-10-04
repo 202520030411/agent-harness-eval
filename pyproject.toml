@@ -1,0 +1,20 @@
+[project]
+name = "agenteval"
+version = "0.0.1"
+description = "Failure-mode diagnosis pipeline for Harbor / Terminal-Bench trials"
+requires-python = ">=3.11"
+dependencies = ["pyyaml>=6.0"]
+
+[project.scripts]
+agenteval = "agenteval.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agenteval*", "terminus2_patches*"]
+
+[tool.setuptools.package-data]
+terminus2_patches = ["templates/*.txt", "prompts/*.txt"]
+agenteval = ["judge/prompts/*.txt"]

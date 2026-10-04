@@ -1,0 +1,37 @@
+# PSP 式开头规则试点（D-072）：原版 Qwen × H2 × 前两轮全挂的 51 道训练题（题面最前面是 gpt-6-sol 读过失败记录后写的 3–6 条规则）× 2 次；与 D-069 实时 Teacher 轮（同 51 题 × 2）直接对比
+job_name: qpilot-psp-rules
+jobs_dir: /root/work/jobs
+n_attempts: 2
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coder30b
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: true
+    completion_gate: true
+    raw_log: true
+    store_all_messages: true
+datasets:
+- path: /root/work/train/synth_split/train_psp

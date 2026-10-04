@@ -1,0 +1,130 @@
+{
+  "x": "judge-claude",
+  "y": "human",
+  "n": 15,
+  "raw_agreement": 0.13333333333333333,
+  "kappa_primary": 0.03465346534653464,
+  "kappa_tb_class": 0.19354838709677416,
+  "raw_agreement_tb_class": 0.3333333333333333,
+  "lenient_agreement": 0.6666666666666666,
+  "onset_pairs": 14,
+  "onset_within_2_steps": 0.42857142857142855,
+  "disagreements": [
+    {
+      "trial_id": "cancel-async-tasks__QUCtLa7",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "chess-best-move__JGz74wZ",
+      "judge-claude": "BUDGET_EXHAUSTED",
+      "human": "CAPABILITY",
+      "lenient": true
+    },
+    {
+      "trial_id": "configure-git-webserver__URFvJwW",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "dna-insert__b2wu5aN",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "dna-insert__hiMuhVM",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "extract-elf__R33AW8P",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__rMmwJWW",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "largest-eigenval__d5snCYj",
+      "judge-claude": "INSUFFICIENT_VERIFICATION",
+      "human": "ENVIRONMENT",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__QngQRz2",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__R67KqqC",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "raman-fitting__Cs232nc",
+      "judge-claude": "CAPABILITY",
+      "human": "SPEC_MISINTERPRETATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "sanitize-git-repo__h82YUJi",
+      "judge-claude": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "sqlite-with-gcov__NPYSmvJ",
+      "judge-claude": "PREMATURE_COMPLETION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    }
+  ],
+  "confusion_top": [
+    {
+      "pair": "SPEC_MISINTERPRETATION vs TASK_UNDERSPECIFIED",
+      "n": 3
+    },
+    {
+      "pair": "PREMATURE_COMPLETION vs INSUFFICIENT_VERIFICATION",
+      "n": 3
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs TASK_UNDERSPECIFIED",
+      "n": 2
+    },
+    {
+      "pair": "BUDGET_EXHAUSTED vs BUDGET_EXHAUSTED",
+      "n": 2
+    },
+    {
+      "pair": "BUDGET_EXHAUSTED vs CAPABILITY",
+      "n": 1
+    },
+    {
+      "pair": "PREMATURE_COMPLETION vs TASK_UNDERSPECIFIED",
+      "n": 1
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs ENVIRONMENT",
+      "n": 1
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    },
+    {
+      "pair": "CAPABILITY vs SPEC_MISINTERPRETATION",
+      "n": 1
+    }
+  ]
+}

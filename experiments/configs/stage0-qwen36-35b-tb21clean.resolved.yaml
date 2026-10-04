@@ -1,0 +1,63 @@
+# 阶段 0 摸底：openrouter/qwen/qwen3.6-35b-a3b（OpenRouter，需服务器 ~/.secrets.env 有 OPENROUTER_API_KEY），TB 2.1 干净子集 30 题 × 1；cost 字段单位为美元
+job_name: stage0-qwen36-35b-tb21clean
+jobs_dir: /root/work/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 6
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openrouter/qwen/qwen3.6-35b-a3b
+  kwargs:
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 262144
+      max_output_tokens: 0
+      input_cost_per_token: 1.5e-07
+      output_cost_per_token: 1.0e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/cobol-modernization
+  - terminal-bench/fix-git
+  - terminal-bench/prove-plus-comm
+  - terminal-bench/build-pmars
+  - terminal-bench/code-from-image
+  - terminal-bench/git-leak-recovery
+  - terminal-bench/headless-terminal
+  - terminal-bench/kv-store-grpc
+  - terminal-bench/polyglot-c-py
+  - terminal-bench/pypi-server
+  - terminal-bench/path-tracing-reverse
+  - terminal-bench/nginx-request-logging
+  - terminal-bench/sqlite-with-gcov
+  - terminal-bench/hf-model-inference
+  - terminal-bench/query-optimize
+  - terminal-bench/mteb-retrieve
+  - terminal-bench/openssl-selfsigned-cert
+  - terminal-bench/vulnerable-secret
+  - terminal-bench/adaptive-rejection-sampler
+  - terminal-bench/tune-mjcf
+  - terminal-bench/gcode-to-text
+  - terminal-bench/large-scale-text-editing
+  - terminal-bench/overfull-hbox
+  - terminal-bench/merge-diff-arc-agi-task
+  - terminal-bench/sqlite-db-truncate
+  - terminal-bench/regex-log
+  - terminal-bench/log-summary-date-ranges
+  - terminal-bench/llm-inference-batching-scheduler
+  - terminal-bench/chess-best-move
+  - terminal-bench/constraints-scheduling

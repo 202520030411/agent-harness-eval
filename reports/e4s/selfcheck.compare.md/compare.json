@@ -1,0 +1,180 @@
+{
+  "A": "e4s-baseline",
+  "B": "e4s-selfcheck",
+  "paired": {
+    "n_tasks": 24,
+    "delta_pp": -2.083333333333333,
+    "ci95_pp": [
+      -12.5,
+      8.333333333333332
+    ],
+    "flips_A_pass_B_fail": 2,
+    "flips_A_fail_B_pass": 1,
+    "mcnemar_p": 1.0,
+    "per_task": {
+      "adaptive-rejection-sampler": [
+        1.0,
+        1.0
+      ],
+      "cancel-async-tasks": [
+        1.0,
+        1.0
+      ],
+      "chess-best-move": [
+        1.0,
+        1.0
+      ],
+      "cobol-modernization": [
+        1.0,
+        1.0
+      ],
+      "configure-git-webserver": [
+        1.0,
+        1.0
+      ],
+      "count-dataset-tokens": [
+        1.0,
+        1.0
+      ],
+      "dna-insert": [
+        0.5,
+        0.0
+      ],
+      "extract-elf": [
+        0.0,
+        0.5
+      ],
+      "fix-git": [
+        1.0,
+        1.0
+      ],
+      "gcode-to-text": [
+        1.0,
+        0.5
+      ],
+      "headless-terminal": [
+        1.0,
+        1.0
+      ],
+      "kv-store-grpc": [
+        0.5,
+        1.0
+      ],
+      "largest-eigenval": [
+        1.0,
+        1.0
+      ],
+      "llm-inference-batching-scheduler": [
+        1.0,
+        1.0
+      ],
+      "mteb-retrieve": [
+        1.0,
+        1.0
+      ],
+      "nginx-request-logging": [
+        1.0,
+        1.0
+      ],
+      "overfull-hbox": [
+        1.0,
+        1.0
+      ],
+      "path-tracing-reverse": [
+        1.0,
+        1.0
+      ],
+      "pytorch-model-cli": [
+        1.0,
+        1.0
+      ],
+      "query-optimize": [
+        0.5,
+        1.0
+      ],
+      "raman-fitting": [
+        0.5,
+        0.0
+      ],
+      "regex-log": [
+        1.0,
+        1.0
+      ],
+      "sanitize-git-repo": [
+        1.0,
+        0.5
+      ],
+      "sqlite-db-truncate": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "aggA": {
+    "pass_mean": 0.88,
+    "turns": 11.58,
+    "tokens_in": 138474.62,
+    "tokens_out": 4467.5,
+    "cached_share": 0.9079767830379314,
+    "cost": 0.101274768,
+    "wall_sec": 113.27035476,
+    "timeouts": 0,
+    "n": 50
+  },
+  "aggB": {
+    "pass_mean": 0.8666666666666667,
+    "turns": 20.533333333333335,
+    "tokens_in": 327266.55555555556,
+    "tokens_out": 7809.488888888889,
+    "cached_share": 0.9502037584721119,
+    "cost": 0.18062526,
+    "wall_sec": 202.5310958888889,
+    "timeouts": 1,
+    "n": 45
+  },
+  "label_rates_A_B": {
+    "PREMATURE_COMPLETION": [
+      1.0,
+      0.8333333333333334
+    ],
+    "BUDGET_EXHAUSTED": [
+      0.0,
+      0.16666666666666666
+    ],
+    "TRUNCATED_READ": [
+      0.0,
+      0.0
+    ],
+    "COMMAND_NOT_FOUND": [
+      0.16666666666666666,
+      0.0
+    ],
+    "POLLING": [
+      0.16666666666666666,
+      0.16666666666666666
+    ],
+    "STUCK_AT_PROMPT": [
+      0.0,
+      0.0
+    ],
+    "LOOP": [
+      0.0,
+      0.0
+    ],
+    "FORMAT": [
+      0.0,
+      0.0
+    ]
+  },
+  "patched_B": {
+    "auditor_calls": 0,
+    "auditor_rejections": 0,
+    "first_turn_rejections": 0,
+    "stuck_reminders": 0,
+    "adaptive_n": 0,
+    "adaptive_sentinel_finished": 0,
+    "adaptive_sentinel_timeout": 0,
+    "adaptive_prompt_detected": 0,
+    "adaptive_waited_sec_total": 0
+  }
+}

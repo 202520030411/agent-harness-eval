@@ -1,0 +1,22 @@
+# E0 — oracle 检查：参考解在我们的环境里能不能过。挂的题剔除并记录（TASK / ENVIRONMENT，不算模型失败）。
+job_name: e0-oracle
+jobs_dir: jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - name: oracle
+
+datasets:
+  - name: terminal-bench/terminal-bench-2-1   # Harbor Hub 注册名，89 题（2026-09-23 核对）
+    task_names: []   # 由 task_list.txt 生成，每项写成 terminal-bench/<题名>（fnmatch 匹配完整题名）

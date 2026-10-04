@@ -1,0 +1,19 @@
+{
+  "n_failed": 2,
+  "judge_primary": {
+    "NOT_JUDGED": 2
+  },
+  "judge_tb_class": {
+    "NONE": 2
+  },
+  "rule_x_judge": {
+    "PREMATURE_COMPLETION": {
+      "NOT_JUDGED": 2
+    },
+    "TRUNCATED_READ": {
+      "NOT_JUDGED": 1
+    }
+  },
+  "onset_median_frac": null,
+  "onset_first_third_share": null
+}

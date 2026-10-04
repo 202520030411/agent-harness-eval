@@ -1,0 +1,118 @@
+{
+  "x": "judge",
+  "y": "human",
+  "n": 15,
+  "raw_agreement": 0.26666666666666666,
+  "kappa_primary": 0.14948453608247422,
+  "kappa_tb_class": 0.140625,
+  "raw_agreement_tb_class": 0.26666666666666666,
+  "lenient_agreement": 0.6,
+  "onset_pairs": 13,
+  "onset_within_2_steps": 0.6923076923076923,
+  "disagreements": [
+    {
+      "trial_id": "cancel-async-tasks__QUCtLa7",
+      "judge": "INSUFFICIENT_VERIFICATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": true
+    },
+    {
+      "trial_id": "chess-best-move__JGz74wZ",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "CAPABILITY",
+      "lenient": false
+    },
+    {
+      "trial_id": "configure-git-webserver__URFvJwW",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "dna-insert__hiMuhVM",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "extract-elf__R33AW8P",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "TASK_UNDERSPECIFIED",
+      "lenient": false
+    },
+    {
+      "trial_id": "gcode-to-text__gUNg5sK",
+      "judge": "CAPABILITY",
+      "human": "BUDGET_EXHAUSTED",
+      "lenient": true
+    },
+    {
+      "trial_id": "largest-eigenval__d5snCYj",
+      "judge": "CANNOT_JUDGE",
+      "human": "ENVIRONMENT",
+      "lenient": false
+    },
+    {
+      "trial_id": "overfull-hbox__QngQRz2",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    },
+    {
+      "trial_id": "overfull-hbox__R67KqqC",
+      "judge": "CANNOT_JUDGE",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": false
+    },
+    {
+      "trial_id": "query-optimize__fQZh7V8",
+      "judge": "CAPABILITY",
+      "human": "BUDGET_EXHAUSTED",
+      "lenient": false
+    },
+    {
+      "trial_id": "sqlite-with-gcov__NPYSmvJ",
+      "judge": "SPEC_MISINTERPRETATION",
+      "human": "INSUFFICIENT_VERIFICATION",
+      "lenient": true
+    }
+  ],
+  "confusion_top": [
+    {
+      "pair": "SPEC_MISINTERPRETATION vs INSUFFICIENT_VERIFICATION",
+      "n": 3
+    },
+    {
+      "pair": "TASK_UNDERSPECIFIED vs TASK_UNDERSPECIFIED",
+      "n": 3
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs TASK_UNDERSPECIFIED",
+      "n": 2
+    },
+    {
+      "pair": "CAPABILITY vs BUDGET_EXHAUSTED",
+      "n": 2
+    },
+    {
+      "pair": "INSUFFICIENT_VERIFICATION vs TASK_UNDERSPECIFIED",
+      "n": 1
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs CAPABILITY",
+      "n": 1
+    },
+    {
+      "pair": "CANNOT_JUDGE vs ENVIRONMENT",
+      "n": 1
+    },
+    {
+      "pair": "CANNOT_JUDGE vs INSUFFICIENT_VERIFICATION",
+      "n": 1
+    },
+    {
+      "pair": "SPEC_MISINTERPRETATION vs SPEC_MISINTERPRETATION",
+      "n": 1
+    }
+  ]
+}

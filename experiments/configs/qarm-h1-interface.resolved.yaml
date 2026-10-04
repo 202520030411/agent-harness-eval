@@ -1,0 +1,69 @@
+# H1：H0 + 接口修补（宽松解析、交卷确认简写、开跑前环境探测、续行提示），全部不占模型轮次
+# Qwen 四臂实验（docs/QWEN_PLAN.md §2）：四臂同时启动、各 4 并发；Qwen3-Coder-30B-A3B-Instruct 在自己的 vLLM 上（bf16，served name coder30b，
+# Hetzner → RunPod 隧道 127.0.0.1:8000）；采样参数用 vLLM 默认的模型推荐值（temperature 0.7、top_p 0.8、top_k 20、repetition_penalty 1.05）
+job_name: qarm-h1-interface
+jobs_dir: /root/work/jobs
+n_attempts: 2
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus2_patches.agent:Terminus2Patched
+  model_name: openai/coder30b
+  kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 0
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+    interface_fixes: true
+    completion_gate: false
+    raw_log: true
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names:
+  - terminal-bench/cobol-modernization
+  - terminal-bench/fix-git
+  - terminal-bench/prove-plus-comm
+  - terminal-bench/build-pmars
+  - terminal-bench/code-from-image
+  - terminal-bench/git-leak-recovery
+  - terminal-bench/headless-terminal
+  - terminal-bench/kv-store-grpc
+  - terminal-bench/polyglot-c-py
+  - terminal-bench/pypi-server
+  - terminal-bench/path-tracing-reverse
+  - terminal-bench/nginx-request-logging
+  - terminal-bench/sqlite-with-gcov
+  - terminal-bench/hf-model-inference
+  - terminal-bench/query-optimize
+  - terminal-bench/mteb-retrieve
+  - terminal-bench/openssl-selfsigned-cert
+  - terminal-bench/vulnerable-secret
+  - terminal-bench/adaptive-rejection-sampler
+  - terminal-bench/tune-mjcf
+  - terminal-bench/gcode-to-text
+  - terminal-bench/large-scale-text-editing
+  - terminal-bench/overfull-hbox
+  - terminal-bench/merge-diff-arc-agi-task
+  - terminal-bench/sqlite-db-truncate
+  - terminal-bench/regex-log
+  - terminal-bench/log-summary-date-ranges
+  - terminal-bench/llm-inference-batching-scheduler
+  - terminal-bench/chess-best-move
+  - terminal-bench/constraints-scheduling

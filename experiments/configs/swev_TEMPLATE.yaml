@@ -1,0 +1,36 @@
+# SWE-bench Verified 模板（2026-09-26）。与 e4_ablation_TEMPLATE.yaml 只差数据集与并发：
+#   数据集 swe-bench/swe-bench-verified（Harbor Hub，500 题，每题 agent 时限 3000 s = 50 分钟，内存 4 GB，允许联网）
+#   题名在清单里已带 swe-bench/ 前缀，resolve.py 原样保留。
+job_name: swev-TEMPLATE
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 6
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus-2
+  model_name: openai/doubao-seed-2-1-lite-260915
+  kwargs:
+    api_base: https://ark.cn-beijing.volces.com/api/v3
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    model_info:
+      max_input_tokens: 1024000
+      max_output_tokens: 0
+      input_cost_per_token: 8.0e-07
+      output_cost_per_token: 2.7e-06
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    deliverable_checkpoint: false
+datasets:
+- name: swe-bench/swe-bench-verified
+  task_names: []

@@ -1,0 +1,38 @@
+# E2 — 强模型基线（配对 A：同 harness、强 vs 弱模型）。gpt-6-sol，k=1，并发 4。成本字段单位：美元。
+job_name: e1-baseline-seed
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+  quiet: false
+environment:
+  type: docker
+  force_build: false
+  delete: true
+agents:
+- name: terminus-2
+  model_name: openai/gpt-6-sol
+  kwargs:
+    parser_name: json
+    max_turns: 100
+    enable_summarize: true
+    proactive_summarization_threshold: 8000
+    record_terminal_session: true
+    store_all_messages: false
+    model_info:
+      max_input_tokens: 400000
+      max_output_tokens: 128000
+      input_cost_per_token: 2.0e-06
+      output_cost_per_token: 1.0e-05
+    verifier_gate: none
+    adaptive_wait: false
+    task_contract: false
+    assumption_ledger: false
+    budget_hint: false
+    stuck_reminder: false
+    exit_code_prompt: false
+datasets:
+- name: terminal-bench/terminal-bench-2-1
+  task_names: []

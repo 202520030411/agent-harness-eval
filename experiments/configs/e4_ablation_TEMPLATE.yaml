@@ -1,0 +1,42 @@
+# E4 — 消融模板。复制为 e4_ablation_<flag>.yaml，只把对应开关打开，其余与 e4_baseline_rerun.yaml 逐字节一致。
+# 基线必须在同一批次重跑（e4_baseline_rerun.yaml），不得拿 E1 的数字来比（decisions.md D-013）。
+# 对应 HYPOTHESES: H1（verifier_gate）H2（adaptive_wait）H3（task_contract）H12（deliverable_checkpoint）H13（grader_check）；退役开关见 D-039
+job_name: e4-ablation-FLAG
+jobs_dir: jobs
+n_attempts: 3
+timeout_multiplier: 1.0
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 8
+  quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - name: terminus-2
+    model_name: openai/doubao-seed-2-1-lite-260915   # 候选，第 1 天确认；不要用 doubao-seed-evolving（D-023）
+    kwargs:
+      api_base: https://ark.cn-beijing.volces.com/api/v3
+      parser_name: json
+      # temperature 不设：用模型默认采样（D-026），否则 k=3 与噪声底失去意义
+      max_turns: 100
+      enable_summarize: true
+      proactive_summarization_threshold: 8000
+      model_info:
+        max_input_tokens: 1024000        # 模型列表标 1024k；第 1 天核对。窗口这么大意味着压缩不会触发（D-004/D-023）
+        max_output_tokens: 0
+        input_cost_per_token: 0.0000008   # 0.8 元/百万 token（lite，2026-09-23 控制台）；cost 字段单位是元
+        output_cost_per_token: 0.0000027  # 2.7 元/百万 token；pro 为 6 / 30
+      # 只改一行：
+      verifier_gate: none          # none | self_check | grader_check
+      adaptive_wait: false
+      task_contract: false
+      deliverable_checkpoint: false
+
+datasets:
+  - name: terminal-bench/terminal-bench-2-1   # Harbor Hub 注册名，89 题（2026-09-23 核对）
+    task_names: []   # 由 task_list.txt 生成，每项写成 terminal-bench/<题名>（fnmatch 匹配完整题名）

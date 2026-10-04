@@ -1,0 +1,36 @@
+<instruction>
+You are analyzing the execution trace of a coding agent working on a Terminal Bench task. The agent works inside a Linux container: it reads and writes files, installs packages, and runs shell commands until it believes the task is done.
+The trajectory below is a sequence of TURNS; each turn executes one or more ACTIONS (shell keystrokes).
+Classify the PURPOSE of EACH action into exactly one code. Judge by the SEMANTIC INTENT of the action, not merely the leading shell token.
+
+## Purpose codes
+- `I` Inspect: read file CONTENT to understand it (cat, head, tail, hexdump, od, strings, sed -n).
+- `S` Search: discover WHAT EXISTS: list a directory or search for files/text (ls, find, grep, which, tree).
+- `C` Create: author a NEW file — script, config, or output artifact (heredoc write, tee/echo redirect to a fresh path, touch).
+- `M` Modify: change an EXISTING file in place (sed -i, patch, append redirect, rewriting a file the agent already wrote).
+- `E` Environment: install or build dependencies (pip/apt/conda/npm install, make, cmake, ./configure).
+- `X` eXecute: run the agent's OWN work to produce a result (python solve.py, ./run.sh, an inline python -c / heredoc computation).
+- `T` Test: invoke a real test framework (pytest, unittest, cargo test, npm test, go test), including a task-provided test file.
+- `V` Verify: check an ALREADY-PRODUCED artifact against the task's stated success condition (re-read the answer file, diff/md5sum against expected).
+- `N` Navigate: move around the filesystem where that is the ENTIRE point (bare cd, pwd).
+- `W` Wait: empty keystrokes (waiting for a running command).
+- `G` General: anything else: git, echo, export, rm, shell plumbing, cleanup, misc.
+
+## Rules
+- Judge intent, not the leading token. `cd /app && python3 solve.py` is X; the cd is incidental.
+- X vs T vs V: X produces a result; T invokes a genuine test framework; V checks an existing artifact against the success condition. When a single run both produces and checks, prefer X.
+- C vs M: C authors a NEW path; M changes an existing one (including overwriting a path the agent wrote earlier in this trajectory).
+- Heredocs that EXECUTE code (python3 <<'EOF') are X, not C. Only a real write to a path is C.
+- E is setup, not building the answer. Compiling the agent's OWN deliverable is X.
+- Errors do not change the purpose: a failed pip install is still E.
+</instruction>
+<trajectory>
+{actions_block}
+</trajectory>
+<output_format>
+There are exactly {n_actions} actions above, numbered "[1]" through "[{n_actions}]".
+Respond with ONLY a JSON object mapping each action number (as a string key "1".."{n_actions}") to an object with exactly two fields, in this order:
+"reason": one short sentence (at most 20 words) citing the concrete command that decides it;
+"label": one of "I","S","C","M","E","X","T","V","N","W","G".
+Write "reason" FIRST and let it decide "label". Include every key from "1" to "{n_actions}". No preamble, no code fence — JUST the JSON object.
+</output_format>
