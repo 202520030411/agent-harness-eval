@@ -1,0 +1,39 @@
+{
+  "auto_candidates": [],
+  "review_proposals": [
+    {
+      "title": "Mismatch-aware completion gate",
+      "target_mode": "premature_completion",
+      "what_to_build": "When the agent claims completion, inspect its most recent check for an unambiguous nonzero exit or explicit mismatch. If found, bounce the claim once with the existing evidence; do not require another check when none has failed.",
+      "why": "Failed trajectories often ended with a completion claim despite the agent’s own check showing an error or difference. The current gate catches missing checks, not ignored results.",
+      "how_to_test": "Run a separate paired arm against v0. Measure pass rate, false_success, turns_after_gate, timeouts, and the fraction of bounces followed by a successful correction. Audit bounced cases for false positives.",
+      "risk": "A legitimate or already-resolved error could be mistaken for a current failure; even targeted bounces consume scarce time."
+    },
+    {
+      "title": "Do not count an echoed success message as a check",
+      "target_mode": "echo_theater",
+      "what_to_build": "Change the existing completion gate so a command that merely prints a success message does not satisfy its check requirement; retain the one-bounce limit.",
+      "why": "Echoing completion instead of checking is common in failed trials, and the current gate did not reduce it. This needs command-aware code, not a candidate configuration.",
+      "how_to_test": "Evaluate separately from the mismatch gate against v0; compare echo_theater, pass rate, turns_after_gate, and timeouts, and manually inspect commands excluded from counting.",
+      "risk": "A broad detector could exclude legitimate checks or add turns without enabling the model to fix the work."
+    }
+  ],
+  "rejected_ideas": [
+    {
+      "idea": "Retest append_nudge as a new candidate",
+      "why": "It is already scheduled for a fresh retest."
+    },
+    {
+      "idea": "Enable adaptive_wait or disable completion_gate for efficiency",
+      "why": "Previous candidates with these configurations were withdrawn: observed empty-wait and gate-bounce overhead leave too little headroom for the 10% efficiency threshold."
+    },
+    {
+      "idea": "Enable self_check, grader_check, a task contract, or a deliverable checkpoint",
+      "why": "Prior evaluations found no reproducible pass gain; verification prompts and some checkpoints consumed time or harmed pass rate."
+    },
+    {
+      "idea": "Add a turn-budget or repeated-error note about checking work",
+      "why": "Neither trigger specifically catches the observed error-then-completion sequence. A generic reminder could add turns while missing the decision it needs to change."
+    }
+  ]
+}

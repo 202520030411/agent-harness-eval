@@ -7,7 +7,7 @@ curl -sf -m 10 http://127.0.0.1:8000/v1/models > /tmp/models.json || { echo "vLL
 for J in "$@"; do
   m=$(grep -oE "model_name: openai/[a-z0-9]+" experiments/configs/$J.resolved.yaml | sed 's|.*/||')
   grep -q "\"$m\"" /tmp/models.json || { echo "$J needs model $m, not served"; exit 1; }
-  ds=$(grep -oE "path: /root/work/train/[a-z_/]+" experiments/configs/$J.resolved.yaml | sed 's/path: //' || true)
+  ds=$(grep -oE "path: /root/work/train/[a-z0-9_/]+" experiments/configs/$J.resolved.yaml | sed 's/path: //' || true)
   if [ -n "$ds" ] && [ -z "$(ls -A $ds 2>/dev/null)" ]; then echo "$J: dataset $ds missing or empty"; exit 1; fi
   [ -e /root/work/jobs/$J ] && { echo "/root/work/jobs/$J already exists; refusing to overwrite"; exit 1; }
   .venv/bin/harbor run -c experiments/configs/$J.resolved.yaml --dry-run > /dev/null 2>&1 || { echo "dry-run failed: $J"; exit 1; }

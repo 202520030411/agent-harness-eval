@@ -1,0 +1,120 @@
+{
+ "decision": "ACCEPT_EFFICIENCY",
+ "reasons": [
+  "cheaper and non-inferior: turns -21%, tokens_in -24%; pass +3.4 pp, CI lower -0.3 ≥ −3.5"
+ ],
+ "concurrent": true,
+ "validity": [],
+ "pass": {
+  "n_tasks": 74,
+  "base": 14.2,
+  "cand": 17.6,
+  "delta": 3.4,
+  "ci": [
+   -0.3,
+   7.4
+  ],
+  "rel": 0.238
+ },
+ "timeout": {
+  "n_tasks": 74,
+  "base": 14.5,
+  "cand": 11.1,
+  "delta": -3.4,
+  "ci": [
+   -7.8,
+   1.0
+  ],
+  "rel": -0.233
+ },
+ "efficiency": {
+  "turns": {
+   "n_tasks": 74,
+   "base": 44.037,
+   "cand": 34.774,
+   "delta": -9.264,
+   "ci": [
+    -14.152,
+    -4.797
+   ],
+   "rel": -0.21
+  },
+  "tokens_in": {
+   "n_tasks": 74,
+   "base": 729260.861,
+   "cand": 551191.824,
+   "delta": -178069.037,
+   "ci": [
+    -286789.361,
+    -73510.493
+   ],
+   "rel": -0.244
+  },
+  "minutes": {
+   "n_tasks": 74,
+   "base": 7.547,
+   "cand": 7.098,
+   "delta": -0.449,
+   "ci": [
+    -1.199,
+    0.324
+   ],
+   "rel": -0.059
+  }
+ },
+ "guards": {
+  "declared_fail": {
+   "n_tasks": 74,
+   "base": 61.1,
+   "cand": 72.0,
+   "delta": 10.8,
+   "ci": [
+    4.4,
+    17.2
+   ],
+   "rel": 0.177
+  },
+  "integrity_flag": {
+   "n_tasks": 74,
+   "base": 0.0,
+   "cand": 0.0,
+   "delta": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "rel": null
+  },
+  "fail_given_declared": {
+   "n_tasks": 73,
+   "base": 83.7,
+   "cand": 81.7,
+   "delta": -1.9,
+   "ci": [
+    -6.4,
+    2.4
+   ],
+   "rel": -0.023
+  }
+ },
+ "anchors": {
+  "n_anchors": 1,
+  "dropped_to_zero": [],
+  "failed": false
+ },
+ "mechanism": {
+  "metric": "append_turns",
+  "direction": "decrease",
+  "n_tasks": 74,
+  "base": 14.47,
+  "cand": 1.206,
+  "delta": -13.264,
+  "ci": [
+   -17.47,
+   -9.405
+  ],
+  "rel": -0.917,
+  "confirmed": true
+ },
+ "margin_pp": 3.5
+}

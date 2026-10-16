@@ -1,0 +1,282 @@
+{
+ "heldout": {
+  "decision": "PROVISIONAL",
+  "reasons": [
+   "cheaper, but the pass-rate CI cannot rule out a drop larger than 4.3 pp (-1.8 pp [-8.1, +3.6]); needs a larger confirmation batch"
+  ],
+  "concurrent": true,
+  "validity": [],
+  "pass": {
+   "n_tasks": 37,
+   "base": 17.1,
+   "cand": 15.3,
+   "delta": -1.8,
+   "ci": [
+    -8.1,
+    3.6
+   ],
+   "rel": -0.105
+  },
+  "timeout": {
+   "n_tasks": 37,
+   "base": 8.1,
+   "cand": 6.3,
+   "delta": -1.8,
+   "ci": [
+    -6.3,
+    3.6
+   ],
+   "rel": -0.222
+  },
+  "efficiency": {
+   "turns": {
+    "n_tasks": 37,
+    "base": 50.541,
+    "cand": 35.459,
+    "delta": -15.081,
+    "ci": [
+     -22.775,
+     -7.694
+    ],
+    "rel": -0.298
+   },
+   "tokens_in": {
+    "n_tasks": 37,
+    "base": 904035.162,
+    "cand": 621464.0,
+    "delta": -282571.162,
+    "ci": [
+     -485660.423,
+     -87275.108
+    ],
+    "rel": -0.313
+   },
+   "minutes": {
+    "n_tasks": 37,
+    "base": 6.329,
+    "cand": 6.131,
+    "delta": -0.198,
+    "ci": [
+     -1.355,
+     0.886
+    ],
+    "rel": -0.031
+   }
+  },
+  "guards": {
+   "declared_fail": {
+    "n_tasks": 37,
+    "base": 54.1,
+    "cand": 78.4,
+    "delta": 24.3,
+    "ci": [
+     14.4,
+     34.2
+    ],
+    "rel": 0.45
+   },
+   "integrity_flag": {
+    "n_tasks": 37,
+    "base": 0.0,
+    "cand": 0.0,
+    "delta": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "rel": null
+   },
+   "fail_given_declared": {
+    "n_tasks": 36,
+    "base": 80.1,
+    "cand": 83.3,
+    "delta": 3.2,
+    "ci": [
+     -3.2,
+     10.6
+    ],
+    "rel": 0.04
+   }
+  },
+  "anchors": {
+   "n_anchors": 4,
+   "dropped_to_zero": [],
+   "failed": false
+  },
+  "mechanism": {
+   "metric": "append_turns",
+   "direction": "decrease",
+   "n_tasks": 37,
+   "base": 18.55,
+   "cand": 0.973,
+   "delta": -17.577,
+   "ci": [
+    -25.027,
+    -10.784
+   ],
+   "rel": -0.948,
+   "confirmed": true
+  },
+  "margin_pp": 4.3,
+  "concurrency": {
+   "start_gap_min": 0.0,
+   "overlap_frac": 1.0
+  },
+  "integrity_flags": [
+   0,
+   0
+  ],
+  "cheat_confirmed": [
+   0,
+   0
+  ],
+  "n_trials": [
+   111,
+   111
+  ],
+  "infra": [
+   0,
+   0
+  ]
+ },
+ "tb": {
+  "decision": "ACCEPT_QUALITY",
+  "reasons": [
+   "pass rate +10.0 pp [+1.1, +20.0] ≥ noise floor 8.0 pp"
+  ],
+  "concurrent": true,
+  "validity": [],
+  "pass": {
+   "n_tasks": 30,
+   "base": 13.3,
+   "cand": 23.3,
+   "delta": 10.0,
+   "ci": [
+    1.1,
+    20.0
+   ],
+   "rel": 0.75
+  },
+  "timeout": {
+   "n_tasks": 30,
+   "base": 2.2,
+   "cand": 3.3,
+   "delta": 1.1,
+   "ci": [
+    -2.2,
+    4.4
+   ],
+   "rel": 0.5
+  },
+  "efficiency": {
+   "turns": {
+    "n_tasks": 30,
+    "base": 35.711,
+    "cand": 29.356,
+    "delta": -6.356,
+    "ci": [
+     -12.333,
+     -1.511
+    ],
+    "rel": -0.178
+   },
+   "tokens_in": {
+    "n_tasks": 30,
+    "base": 443598.833,
+    "cand": 345476.367,
+    "delta": -98122.467,
+    "ci": [
+     -205701.144,
+     -6473.222
+    ],
+    "rel": -0.221
+   },
+   "minutes": {
+    "n_tasks": 30,
+    "base": 4.09,
+    "cand": 3.944,
+    "delta": -0.146,
+    "ci": [
+     -1.038,
+     0.897
+    ],
+    "rel": -0.036
+   }
+  },
+  "guards": {
+   "declared_fail": {
+    "n_tasks": 30,
+    "base": 80.0,
+    "cand": 73.3,
+    "delta": -6.7,
+    "ci": [
+     -17.8,
+     3.3
+    ],
+    "rel": -0.083
+   },
+   "integrity_flag": {
+    "n_tasks": 30,
+    "base": 0.0,
+    "cand": 0.0,
+    "delta": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "rel": null
+   },
+   "fail_given_declared": {
+    "n_tasks": 30,
+    "base": 86.7,
+    "cand": 76.7,
+    "delta": -10.0,
+    "ci": [
+     -20.0,
+     -1.1
+    ],
+    "rel": -0.115
+   }
+  },
+  "anchors": {
+   "n_anchors": 2,
+   "dropped_to_zero": [],
+   "failed": false
+  },
+  "mechanism": {
+   "metric": "append_turns",
+   "direction": "decrease",
+   "n_tasks": 30,
+   "base": 2.033,
+   "cand": 0.244,
+   "delta": -1.789,
+   "ci": [
+    -4.211,
+    -0.1
+   ],
+   "rel": -0.88,
+   "confirmed": true
+  },
+  "margin_pp": 3.3,
+  "concurrency": {
+   "start_gap_min": 0.0,
+   "overlap_frac": 1.0
+  },
+  "integrity_flags": [
+   0,
+   0
+  ],
+  "cheat_confirmed": [
+   0,
+   0
+  ],
+  "n_trials": [
+   90,
+   90
+  ],
+  "infra": [
+   0,
+   0
+  ]
+ }
+}

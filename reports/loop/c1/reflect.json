@@ -1,0 +1,496 @@
+{
+ "harness_targets": [
+  {
+   "mode": "premature_completion",
+   "label": "宣布完成但判分失败（PREMATURE_COMPLETION）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "Seed：规则层 64% 的失败；判官把它拆成误读 / 验证不足 / 题面不清",
+   "levers": [
+    "completion_gate",
+    "verifier_gate",
+    "task_contract"
+   ],
+   "n": 140,
+   "denominator": 189,
+   "rate": 0.7407407407407407,
+   "share_of_failures": 0.7407407407407407,
+   "n_tasks": 65,
+   "examples": [
+    "data-transform--bird-survey-form__B8rzG7e",
+    "data-transform--bus-stop-departu__9oQDjP9",
+    "data-transform--bus-stop-departu__KUjEiQL"
+   ],
+   "tried": [
+    {
+     "id": "E4-contract",
+     "switches": "task_contract+assumption_ledger",
+     "model": "Seed lite",
+     "pass_delta_pp": 7.7,
+     "verdict": "not significant; the ambiguous-task subset effect did not replicate over 4 batches (D-050)"
+    },
+    {
+     "id": "E4-selfcheck",
+     "switches": "verifier_gate=self_check",
+     "model": "Seed lite",
+     "pass_delta_pp": 6.4,
+     "verdict": "not significant; on gpt-6-sol it was -2.1 pp with turns nearly doubled (E4s)"
+    },
+    {
+     "id": "E4-auditor",
+     "switches": "verifier_gate=auditor",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "retired (D-039)"
+    },
+    {
+     "id": "E4v2-gradercheck",
+     "switches": "verifier_gate=grader_check",
+     "model": "Seed lite",
+     "pass_delta_pp": -6.4,
+     "verdict": "harmful under a hard time limit: extra verification turns crowd out the budget (D-047)"
+    },
+    {
+     "id": "E4p-contract-v1",
+     "switches": "task_contract contract_version=1",
+     "model": "Seed lite",
+     "pass_delta_pp": -2.4,
+     "verdict": "no reproducible effect (D-050)"
+    },
+    {
+     "id": "E4p-contract-v2",
+     "switches": "task_contract contract_version=2",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "no effect; forcing written resolutions changed correct decisions"
+    },
+    {
+     "id": "H17-conditional",
+     "switches": "task_contract+contract_conditional",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "pre-registered prediction falsified (D-050)"
+    },
+    {
+     "id": "E4s-contract",
+     "switches": "task_contract",
+     "model": "gpt-6-sol",
+     "pass_delta_pp": 0.0,
+     "verdict": "crutch test: weak model +7.7, strong model 0"
+    },
+    {
+     "id": "E4s-selfcheck",
+     "switches": "verifier_gate=self_check",
+     "model": "gpt-6-sol",
+     "pass_delta_pp": -2.1,
+     "verdict": "harmful for the strong model"
+    },
+    {
+     "id": "QARM-H2-vs-H1",
+     "switches": "completion_gate",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 0.8,
+     "verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ]
+  },
+  {
+   "mode": "echo_theater",
+   "label": "用 echo 打印“完成”代替真正的检查",
+   "among": "failed",
+   "prior": "HARNESS",
+   "evidence": "接口产物：Terminus 里失败 trial 59%，qwen-code 2%；交卷把关压不下去（42%→49%）——要靠新机制（需人审）",
+   "levers": [
+    "completion_gate"
+   ],
+   "n": 82,
+   "denominator": 189,
+   "rate": 0.43386243386243384,
+   "share_of_failures": 0.43386243386243384,
+   "n_tasks": 52,
+   "examples": [
+    "data-transform--bird-survey-form__B8rzG7e",
+    "data-transform--bus-stop-departu__9oQDjP9",
+    "data-transform--course-roster-js__KjvVyjA"
+   ],
+   "tried": [
+    {
+     "id": "QARM-H2-vs-H1",
+     "switches": "completion_gate",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 0.8,
+     "verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ]
+  },
+  {
+   "mode": "truncated_read",
+   "label": "读类命令的输出被截断（TRUNCATED_READ）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "证据互相矛盾：README 归责节说换强模型后消失、改 harness 不变；但 E4 adaptive_wait 臂失败里占比 33%→14%（未同时跑，约 10→4 条）；D-043：判官给的证据 0/11 提到截断 → 更像伴随症状而不是原因。规则本身把它标成 harness 侧候选",
+   "levers": [
+    "adaptive_wait"
+   ],
+   "n": 76,
+   "denominator": 189,
+   "rate": 0.4021164021164021,
+   "share_of_failures": 0.4021164021164021,
+   "n_tasks": 36,
+   "examples": [
+    "data-transform--course-roster-js__KjvVyjA",
+    "data-transform--course-roster-js__PVNJd5F",
+    "data-transform--fleet-rental-mon__8CFNbNK"
+   ],
+   "tried": [
+    {
+     "id": "E4-adaptive-wait",
+     "switches": "adaptive_wait",
+     "model": "Seed lite",
+     "pass_delta_pp": -2.6,
+     "verdict": "the only stable gain in the project: efficiency, not pass rate"
+    },
+    {
+     "id": "SWEV-adaptive-wait",
+     "switches": "adaptive_wait",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+    }
+   ]
+  },
+  {
+   "mode": "budget_exhausted",
+   "label": "没宣布完成就用完预算（BUDGET_EXHAUSTED）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "Seed 归责：强模型上消失、改 harness 不变 → 偏模型；交付检查点让无交付 11→6",
+   "levers": [
+    "deliverable_checkpoint",
+    "adaptive_wait"
+   ],
+   "n": 48,
+   "denominator": 189,
+   "rate": 0.25396825396825395,
+   "share_of_failures": 0.25396825396825395,
+   "n_tasks": 34,
+   "examples": [
+    "data-transform--bus-stop-departu__Ru3KcYP",
+    "data-transform--fleet-rental-mon__PVbNYM4",
+    "data-transform--game-event-score__SmvDy5V"
+   ],
+   "tried": [
+    {
+     "id": "E4-adaptive-wait",
+     "switches": "adaptive_wait",
+     "model": "Seed lite",
+     "pass_delta_pp": -2.6,
+     "verdict": "the only stable gain in the project: efficiency, not pass rate"
+    },
+    {
+     "id": "SWEV-adaptive-wait",
+     "switches": "adaptive_wait",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+    },
+    {
+     "id": "E4v2-checkpoint",
+     "switches": "deliverable_checkpoint",
+     "model": "Seed lite",
+     "pass_delta_pp": -5.1,
+     "verdict": "mechanism works, pass rate did not go up (D-047)"
+    }
+   ]
+  },
+  {
+   "mode": "turn_cap",
+   "label": "跑满轮数上限",
+   "among": "all",
+   "prior": "MIXED",
+   "evidence": "Qwen 四臂：H0 9 → H1 1（多半是写坏 JSON 或把代码拆成一行行追加把轮数耗光）",
+   "levers": [
+    "interface_fixes",
+    "deliverable_checkpoint"
+   ],
+   "n": 42,
+   "denominator": 222,
+   "rate": 0.1891891891891892,
+   "share_of_failures": 0.2222222222222222,
+   "n_tasks": 31,
+   "examples": [
+    "data-transform--fleet-rental-mon__PVbNYM4",
+    "data-transform--game-event-score__SmvDy5V",
+    "data-transform--hospital-appoint__HjmDskM"
+   ],
+   "tried": [
+    {
+     "id": "E4v2-checkpoint",
+     "switches": "deliverable_checkpoint",
+     "model": "Seed lite",
+     "pass_delta_pp": -5.1,
+     "verdict": "mechanism works, pass rate did not go up (D-047)"
+    },
+    {
+     "id": "QARM-H1",
+     "switches": "interface_fixes",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 5.0,
+     "verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ]
+  },
+  {
+   "mode": "format_error",
+   "label": "出现过格式错误（回复不是 harness 要的 JSON）",
+   "among": "all",
+   "prior": "HARNESS",
+   "evidence": "Qwen 四臂：H0 57% → H1 8%（宽松解析）→ H3 0%（原生工具调用）；D-055 / QWEN_PLAN §2–3",
+   "levers": [
+    "interface_fixes"
+   ],
+   "n": 42,
+   "denominator": 222,
+   "rate": 0.1891891891891892,
+   "share_of_failures": 0.21164021164021163,
+   "n_tasks": 30,
+   "examples": [
+    "data-transform--iot-daily-readin__fSV2jdE",
+    "data-transform--library-loan-sna__J2bvS26",
+    "data-transform--meter-daily-bill__9xRudDx"
+   ],
+   "tried": [
+    {
+     "id": "QARM-H1",
+     "switches": "interface_fixes",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 5.0,
+     "verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ]
+  },
+  {
+   "mode": "claim_without_run",
+   "label": "宣布完成前最后一次改文件后没运行过任何东西",
+   "among": "all",
+   "prior": "MIXED",
+   "evidence": "H2 交卷把关打回 37/120，只有 4 个最终通过：能逼它查，查出来修不好",
+   "levers": [
+    "completion_gate",
+    "verifier_gate"
+   ],
+   "n": 19,
+   "denominator": 222,
+   "rate": 0.08558558558558559,
+   "share_of_failures": 0.10052910052910052,
+   "n_tasks": 17,
+   "examples": [
+    "data-transform--bus-stop-departu__KUjEiQL",
+    "data-transform--podcast-daily-do__QYN2YU4",
+    "git-repair--recover-approved-win__JgytrxU"
+   ],
+   "tried": [
+    {
+     "id": "E4-selfcheck",
+     "switches": "verifier_gate=self_check",
+     "model": "Seed lite",
+     "pass_delta_pp": 6.4,
+     "verdict": "not significant; on gpt-6-sol it was -2.1 pp with turns nearly doubled (E4s)"
+    },
+    {
+     "id": "E4-auditor",
+     "switches": "verifier_gate=auditor",
+     "model": "Seed lite",
+     "pass_delta_pp": 0.0,
+     "verdict": "retired (D-039)"
+    },
+    {
+     "id": "E4v2-gradercheck",
+     "switches": "verifier_gate=grader_check",
+     "model": "Seed lite",
+     "pass_delta_pp": -6.4,
+     "verdict": "harmful under a hard time limit: extra verification turns crowd out the budget (D-047)"
+    },
+    {
+     "id": "E4s-selfcheck",
+     "switches": "verifier_gate=self_check",
+     "model": "gpt-6-sol",
+     "pass_delta_pp": -2.1,
+     "verdict": "harmful for the strong model"
+    },
+    {
+     "id": "QARM-H2-vs-H1",
+     "switches": "completion_gate",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 0.8,
+     "verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ]
+  }
+ ],
+ "model_targets": [
+  {
+   "mode": "false_success",
+   "label": "明知没做成仍宣布完成",
+   "among": "failed",
+   "prior": "MODEL",
+   "evidence": "任何 harness 下都占失败的 23–31%，交卷把关压不下去 → 训练目标（QWEN_PLAN §3）",
+   "levers": [],
+   "n": 23,
+   "denominator": 189,
+   "rate": 0.12169312169312169,
+   "share_of_failures": 0.12169312169312169,
+   "n_tasks": 16,
+   "examples": [
+    "data-transform--game-event-score__S45UP52",
+    "data-transform--game-event-score__iLZEf8V",
+    "git-repair--recover-podcast-dige__MRKf6vJ"
+   ],
+   "tried": []
+  }
+ ],
+ "human_review": [
+  {
+   "mode": "command_not_found",
+   "label": "用了环境里没有的命令",
+   "among": "all",
+   "prior": "UNKNOWN",
+   "evidence": "Qwen 40% / gpt-6-sol 同规则 31%：不是 Qwen 特有；开跑前环境探测没用（40%→38%）",
+   "levers": [
+    "interface_fixes"
+   ],
+   "n": 99,
+   "denominator": 222,
+   "rate": 0.44594594594594594,
+   "share_of_failures": 0.4497354497354497,
+   "n_tasks": 49,
+   "examples": [
+    "data-transform--course-roster-js__KjvVyjA",
+    "data-transform--hospital-appoint__8C2GCHX",
+    "data-transform--hospital-appoint__HjmDskM"
+   ],
+   "tried": [
+    {
+     "id": "QARM-H1",
+     "switches": "interface_fixes",
+     "model": "Qwen3-Coder-30B",
+     "pass_delta_pp": 5.0,
+     "verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+    },
+    {
+     "id": "QEVAL-2x2",
+     "switches": "interface_fixes+completion_gate",
+     "model": "Qwen3-Coder-30B (base / SFT)",
+     "pass_delta_pp": -0.9,
+     "verdict": "not significant"
+    }
+   ],
+   "why": "attribution unknown: needs a cross-harness or cross-model comparison"
+  },
+  {
+   "mode": "never_solved",
+   "label": "每次都做不出来的题",
+   "n": 56,
+   "tasks": [
+    "data-transform--bus-stop-departure-board",
+    "data-transform--course-roster-jsonl",
+    "data-transform--fleet-rental-monthly-report",
+    "data-transform--game-event-score-report",
+    "data-transform--iot-daily-reading-export",
+    "data-transform--library-loan-snapshot",
+    "data-transform--meter-daily-billing",
+    "data-transform--podcast-daily-download-report",
+    "data-transform--recipe-shopping-converter",
+    "data-transform--review-comment-digest",
+    "data-transform--warehouse-movement-report",
+    "git-repair--recover-clinic-release-history",
+    "local-service--appointment-slot-api",
+    "local-service--bank-transfer-ledger-service",
+    "local-service--bird-survey-json-service",
+    "local-service--chess-club-tournament-api",
+    "local-service--course-enrollment-http-service",
+    "local-service--delivery-status-api-19",
+    "local-service--flight-schedule-booking-api",
+    "local-service--library-loan-http-service",
+    "local-service--order-reservation-api",
+    "local-service--payroll-weekly-http-api",
+    "local-service--podcast-download-stats-api",
+    "local-service--rental-fleet-api",
+    "local-service--reservation-seat-service",
+    "local-service--review-comment-http-service",
+    "local-service--warehouse-reservation-http-api",
+    "log-regex--appointment-log-summary",
+    "log-regex--bank-log-daily-summary",
+    "log-regex--bird-survey-log-rollup",
+    "log-regex--coastal-league-log-standings",
+    "log-regex--delivery-log-summary",
+    "log-regex--game-event-log-summary",
+    "log-regex--iot-reading-log-summary",
+    "log-regex--library-loan-log-summary",
+    "log-regex--meter-log-daily-consumption",
+    "log-regex--order-event-log-summary",
+    "log-regex--podcast-download-log-summary",
+    "log-regex--scheduler-log-rollup",
+    "log-regex--weather-log-daily-summary",
+    "port-program--appointment-log-awk-port",
+    "port-program--delivery-scan-c-port",
+    "port-program--port-bird-survey-aggregator",
+    "port-program--port-energy-meter-report",
+    "port-program--port-game-eventboard",
+    "port-program--port-library-overdue-report",
+    "port-program--port-review-digest",
+    "port-program--recipe-scaler-c-to-python",
+    "port-program--weather-station-c-port",
+    "sqlite-query--bird-survey-region-leaders",
+    "sqlite-query--delivery-service-level-report",
+    "sqlite-query--library-overdue-return-report",
+    "sqlite-query--podcast-monthly-download-leaders",
+    "sqlite-query--q2-fulfilled-buyer-revenue",
+    "sqlite-query--reservation-no-show-exposure",
+    "sqlite-query--weekly-recipe-shopping-sql"
+   ],
+   "why": "task defect or capability gap: audit a sample with the 'only edit the instruction' test before using them"
+  }
+ ],
+ "task_difficulty": {
+  "never_solved": 56,
+  "mixed_outcome": 13,
+  "always_solved": 5,
+  "n_tasks": 74
+ }
+}

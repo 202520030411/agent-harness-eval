@@ -1,0 +1,192 @@
+{
+ "changes": [
+  {
+   "change": "Require baseline-frequency and maximum-headroom checks before proposing efficiency changes.",
+   "evidence": [
+    "v0+c01",
+    "v0+c02"
+   ],
+   "expected_effect": "Fewer proposals whose achievable savings fall below the gate."
+  },
+  {
+   "change": "Require non-double-counted headroom and a distinct rationale for combinations.",
+   "evidence": [
+    "v0+c01",
+    "v0+c02",
+    "v0+c03"
+   ],
+   "expected_effect": "Avoid optimistic predictions from stacking low-headroom changes."
+  },
+  {
+   "change": "Separate direct mechanism, resource, time, and pass predictions and require falsification of claimed downstream gains.",
+   "evidence": [
+    "v0+c04"
+   ],
+   "expected_effect": "Better-calibrated predictions when a mechanism works but broader outcomes remain uncertain."
+  },
+  {
+   "change": "Account for changes in terminal-outcome mix and distinguish corrected interpretations from fresh-run evidence.",
+   "evidence": [
+    "v0+c04"
+   ],
+   "expected_effect": "Avoid mistaking reclassified failures for earlier giving up, or an inconclusive result for a confirmed improvement."
+  }
+ ],
+ "problems": [],
+ "cost_usd": 0.0182,
+ "evidence": [
+  {
+   "version": "v0+c01",
+   "proposed_by": "proposer:gpt-6-sol#0",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "status": "withdrawn",
+   "prediction": {
+    "target_mode": "budget_exhausted",
+    "mechanism_metric": "tokens_in",
+    "predicted_mechanism_change": "Input tokens down roughly 10–16%; empty-wait turns down roughly 15–30%.",
+    "predicted_pass_change": "-4 to +4 pp",
+    "falsified_if": "Input tokens fall less than 10%, polling turns do not fall, the pass-rate CI lower bound is below -8 pp, or timeouts or wall-clock cost rise without a pass-rate gain."
+   },
+   "outcome": {
+    "decision": "withdrawn",
+    "reasons": [
+     "headroom below the gate: empty-wait turns are 0.045 per trial on the dev set (8 of 222 trials), which is what adaptive_wait mainly removes; on Seed its token saving (-11%) was not significant in the backtest"
+    ]
+   }
+  },
+  {
+   "version": "v0+c02",
+   "proposed_by": "proposer:gpt-6-sol#1",
+   "change": {
+    "completion_gate": false
+   },
+   "status": "withdrawn",
+   "prediction": {
+    "target_mode": "turn_cap",
+    "mechanism_metric": "turn_cap",
+    "predicted_mechanism_change": "2–5 pp fewer turn-cap hits, from 18.9% under v0",
+    "predicted_pass_change": "-4 to +2 pp",
+    "falsified_if": "Turn-cap hits do not decrease, neither turns nor input tokens improve by at least 10%, or the paired pass-rate CI lower bound is below -8 pp."
+   },
+   "outcome": {
+    "decision": "withdrawn",
+    "reasons": [
+     "headroom below the gate: turns spent after the gate bounce are 2.8% of all dev-set turns and 5.7% of input tokens (< 10% efficiency threshold); none of the 28 bounced trials passed, so removing the gate cannot gain passes either"
+    ]
+   }
+  },
+  {
+   "version": "v0+c03",
+   "proposed_by": "proposer:claude-sonnet-5#0",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "completion_gate": false,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "status": "withdrawn",
+   "prediction": {
+    "target_mode": "budget_exhausted",
+    "mechanism_metric": "turns",
+    "predicted_mechanism_change": "mean turns per trial down 10-15% from current 49.8",
+    "predicted_pass_change": "0 to +4 pp",
+    "falsified_if": "mean turns does not fall by at least 5%, or pass rate CI lower bound is below -8pp, or either single-change candidate above falsifies its own mechanism (making the combination uninterpretable)"
+   },
+   "outcome": {
+    "decision": "withdrawn",
+    "reasons": [
+     "headroom below the gate: the two single changes together bound the saving at about 3% of turns and 6% of input tokens"
+    ]
+   }
+  },
+  {
+   "version": "v0+c04",
+   "proposed_by": "human:user-approved-2026-10-13",
+   "change": {
+    "append_nudge": true
+   },
+   "status": "evaluated",
+   "prediction": {
+    "target_mode": "line_by_line_write",
+    "mechanism_metric": "append_turns",
+    "predicted_mechanism_change": "append_turns per trial down by at least 30%; secondary: total turns down 10% to 25%",
+    "predicted_pass_change": "0 to +4 pp",
+    "falsified_if": "append_turns per trial not down by at least 30%, or total turns not down by at least 10%, or the pass-rate drop exceeds the allowed margin"
+   },
+   "outcome": {
+    "decision": "INCONCLUSIVE",
+    "reasons": [
+     "cheaper, but 'declared complete but failed' is up +8.2 pp [+0.5, +16.1]: the saving looks like giving up earlier",
+     "no reliable difference: pass +1.6 pp [-3.2, +6.2]; efficiency changes turns, tokens_in, minutes not significant"
+    ],
+    "pass_pp": {
+     "n_tasks": 74,
+     "base": 15.7,
+     "cand": 17.2,
+     "delta": 1.6,
+     "ci": [
+      -3.2,
+      6.2
+     ],
+     "rel": 0.101
+    },
+    "mechanism": {
+     "metric": "append_turns",
+     "direction": "decrease",
+     "n_tasks": 74,
+     "base": 14.919,
+     "cand": 0.929,
+     "delta": -13.99,
+     "ci": [
+      -17.895,
+      -10.189
+     ],
+     "rel": -0.938,
+     "confirmed": true
+    },
+    "efficiency": {
+     "turns": {
+      "n_tasks": 74,
+      "base": 45.66,
+      "cand": 33.571,
+      "delta": -12.089,
+      "ci": [
+       -16.528,
+       -7.58
+      ],
+      "rel": -0.265
+     },
+     "tokens_in": {
+      "n_tasks": 74,
+      "base": 734063.702,
+      "cand": 503648.318,
+      "delta": -230415.384,
+      "ci": [
+       -324943.358,
+       -135728.622
+      ],
+      "rel": -0.314
+     },
+     "minutes": {
+      "n_tasks": 74,
+      "base": 8.136,
+      "cand": 7.982,
+      "delta": -0.154,
+      "ci": [
+       -0.943,
+       0.588
+      ],
+      "rel": -0.019
+     }
+    },
+    "later_notes": [
+     "D-088 correction (2026-10-14): the give-up guard that made this INCONCLUSIVE was confounded: turn-cap endings fell from 43 to 1, so trials that used to run out of turns now submitted (and mostly still failed). Among submitted attempts the share that failed was unchanged (80.7% vs 80.5%, paired by task, -0.2 pp [-6.1, +5.8]). There is no evidence of earlier giving up. The guard was replaced and this version is retested on fresh runs."
+    ]
+   }
+  }
+ ]
+}

@@ -170,3 +170,115 @@ def test_continuation_note_appended_only_with_interface_fixes():
         a = _mk(Terminus2Patched, interface_fixes=flag)
         timeout, out = asyncio.run(a._execute_commands([], FakeSession()))
         assert ("continuation prompt" in out) is expect and a._patched_stats["continuation_notes"] == int(expect)
+
+
+def test_append_nudge_fires_at_3_and_10_consecutive_appends_and_only_when_on():
+    from harbor.agents.terminus_2.terminus_2 import Command
+
+    class FakeSession:
+        async def send_keys(self, *a, **k):
+            return None
+
+        async def get_incremental_output(self):
+            return "root@x:/app# "
+    for flag in (True, False):
+        a = _mk(Terminus2Patched, interface_fixes=True, append_nudge=flag)
+        fired = []
+        for i in range(12):
+            ks = f"echo 'line {i}' >> /app/port.py\n" if i != 11 else "python3 /app/port.py\n"
+            _, out = asyncio.run(a._execute_commands([Command(keystrokes=ks, duration_sec=0.1)], FakeSession()))
+            fired.append("appending to /app/port.py" in out and "cat > /app/port.py << 'EOF'" in out)
+        assert fired == ([i + 1 in (3, 10) for i in range(12)] if flag else [False] * 12)
+        assert [n["streak"] for n in a._patched_stats["append_nudges"]] == ([3, 10] if flag else [])
+        assert all(n["files"] == ["/app/port.py"] for n in a._patched_stats["append_nudges"])
+    assert not _mk(Terminus2Patched, append_nudge=True).all_flags_off
+
+
+def test_append_nudge_names_every_file_that_hits_the_threshold_in_the_same_turn():
+    from harbor.agents.terminus_2.terminus_2 import Command
+
+    class FakeSession:
+        async def send_keys(self, *a, **k):
+            return None
+
+        async def get_incremental_output(self):
+            return "root@x:/app# "
+    a = _mk(Terminus2Patched, append_nudge=True)
+    for i in range(3):
+        cmds = [Command(keystrokes=f"echo {i} >> /app/a.py\n", duration_sec=0.1), Command(keystrokes=f"echo {i} >> /app/b.py\n", duration_sec=0.1)]
+        _, out = asyncio.run(a._execute_commands(cmds, FakeSession()))
+    assert "/app/a.py, /app/b.py" in out and a._patched_stats["append_nudges"][0]["files"] == ["/app/a.py", "/app/b.py"]
+
+
+def test_continuation_note_is_not_hidden_by_adaptive_wait_notes():
+    from terminus2_patches.tmux_adaptive import AdaptiveTmuxSession
+
+    class FakeAdaptive(AdaptiveTmuxSession):
+        def __init__(self):
+            pass
+
+        async def run_adaptive(self, keystrokes, duration, cap, stable):
+            return {"finished": False, "waited_sec": 30, "prompt": None}
+
+        async def get_incremental_output(self):
+            return "root@x:/app# python3 -c 'print(1)\n> "
+    from harbor.agents.terminus_2.terminus_2 import Command
+    a = _mk(Terminus2Patched, interface_fixes=True, adaptive_wait=True)
+    _, out = asyncio.run(a._execute_commands([Command(keystrokes="python3 -c 'print(1)\n", duration_sec=1)], FakeAdaptive()))
+    assert "continuation prompt" in out and "still running" not in out
+
+
+def test_custom_notes_fire_on_their_trigger_with_a_cap_and_count_toward_flags():
+    # D-089：提议模型写的提醒挂在固定触发条件上；每条每个 trial 最多 3 次；默认没有提醒时行为不变
+    from harbor.agents.terminus_2.terminus_2 import Command
+
+    class FakeSession:
+        async def send_keys(self, *a, **k):
+            return None
+
+        async def get_incremental_output(self):
+            return "root@x:/app# "
+    note = {"trigger": "repeat_command", "text": "You sent the same command {n} times; change something before retrying."}
+    a = _mk(Terminus2Patched, custom_notes=[note])
+    a._note_triggers = __import__("terminus2_patches.helpers", fromlist=["NoteTriggers"]).NoteTriggers(100)
+    outs = []
+    for i in range(1, 13):
+        a._n_episodes = i
+        _, out = asyncio.run(a._execute_commands([Command(keystrokes="curl -s localhost:8000/\n", duration_sec=0.1)], FakeSession()))
+        outs.append("[harness] You sent the same command" in out)
+    assert outs.count(True) == 2 and outs[2] and outs[5]                  # 第 3、6 次；之后计数不再落在 3 / 6 上
+    assert [x["n"] for x in a._patched_stats["custom_notes"]] == [3, 6]
+    assert not a.all_flags_off and _mk(Terminus2Patched).all_flags_off
+    assert not _mk(Terminus2Patched, skills=[{"name": "x", "description": "y", "body": "z"}]).all_flags_off
+
+
+def test_skills_are_written_outside_app_and_listed_by_upstream():
+    import base64
+
+    class FakeEnv:
+        def __init__(self):
+            self.files = {}
+
+        async def exec(self, command, user=None, timeout_sec=None, **k):
+            if "base64 -d >" in command:
+                b64 = command.split("echo ")[1].split(" |")[0]
+                path = command.rsplit("> ", 1)[1].strip().strip("'")
+                self.files[path] = base64.b64decode(b64).decode()
+                return SimpleNamespace(return_code=0, stdout="", stderr="")
+            if command.startswith("find "):
+                return SimpleNamespace(return_code=0, stdout="\n".join(sorted(self.files)), stderr="")
+            if command.startswith("cat "):
+                path = command[4:].strip().strip("'")
+                return SimpleNamespace(return_code=0, stdout=self.files.get(path, ""), stderr="")
+            return SimpleNamespace(return_code=0, stdout="", stderr="")
+
+        async def is_dir(self, path, **k):
+            return any(f.startswith(path + "/") for f in self.files)
+
+    sk = {"name": "write-whole-files", "description": "How to write a file: in one command", "body": "Use cat > file << 'EOF'."}
+    a = _mk(Terminus2Patched, skills=[sk])
+    env = FakeEnv()
+    section = asyncio.run(a._build_skills_section(env))
+    assert list(env.files) == ["/opt/harness-skills/write-whole-files/SKILL.md"]
+    assert "<name>write-whole-files</name>" in section and "How to write a file: in one command" in section
+    assert a._patched_stats["skills_written"] == ["write-whole-files"]

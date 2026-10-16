@@ -1,0 +1,423 @@
+{
+ "current": "v0",
+ "versions": {
+  "v0": {
+   "version": "v0",
+   "parent": null,
+   "agent": "terminus2_patches.agent:Terminus2Patched",
+   "options": {
+    "interface_fixes": true,
+    "completion_gate": true,
+    "adaptive_wait": false,
+    "wait_stable_sec": 3.0,
+    "wait_cap_sec": 30.0,
+    "deliverable_checkpoint": false,
+    "checkpoint_after_sec": 480.0,
+    "checkpoint_repeat_sec": 180.0,
+    "verifier_gate": "none",
+    "task_contract": false,
+    "contract_version": 1,
+    "contract_conditional": false,
+    "gate_timeout_sec": 180.0
+   },
+   "fingerprint": "0e38697dad94",
+   "status": "promoted",
+   "created_at": "2026-10-12T01:56:18+00:00",
+   "change": {},
+   "rationale": "H2 = interface_fixes + completion_gate: the harness used for Qwen rollouts and evaluation since D-059/D-060",
+   "prereg": {},
+   "source": "human",
+   "evaluations": [],
+   "notes": [],
+   "model": "openai/coder30b"
+  },
+  "v0+c01": {
+   "version": "v0+c01",
+   "parent": "v0",
+   "agent": "terminus2_patches.agent:Terminus2Patched",
+   "options": {
+    "interface_fixes": true,
+    "completion_gate": true,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0,
+    "wait_cap_sec": 30.0,
+    "deliverable_checkpoint": false,
+    "checkpoint_after_sec": 480.0,
+    "checkpoint_repeat_sec": 180.0,
+    "verifier_gate": "none",
+    "task_contract": false,
+    "contract_version": 1,
+    "contract_conditional": false,
+    "gate_timeout_sec": 180.0
+   },
+   "fingerprint": "6d1456814048",
+   "status": "withdrawn",
+   "created_at": "2026-10-12T01:57:24+00:00",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "rationale": "Detecting command completion and interactive prompts should replace empty polling turns without asking the model to do more work.",
+   "prereg": {
+    "target_mode": "budget_exhausted",
+    "mechanism": "Detecting command completion and interactive prompts should replace empty polling turns without asking the model to do more work.",
+    "mechanism_metric": "tokens_in",
+    "predicted_mechanism_change": "Input tokens down roughly 10–16%; empty-wait turns down roughly 15–30%.",
+    "predicted_pass_change": "-4 to +4 pp",
+    "falsified_if": "Input tokens fall less than 10%, polling turns do not fall, the pass-rate CI lower bound is below -8 pp, or timeouts or wall-clock cost rise without a pass-rate gain.",
+    "why_now": "This was the only previously stable efficiency mechanism, but it was tested on Seed lite rather than this Qwen model. The development set still averages 49.8 turns and 874k input tokens per trial; this is a test of efficiency, not a claimed fix for truncated reads.",
+    "risk": "Prompt detection could mishandle interactive commands, and the earlier test reduced tokens while increasing wall-clock time about 4%.",
+    "mechanism_direction": "decrease"
+   },
+   "source": "proposer:gpt-6-sol#0",
+   "evaluations": [],
+   "notes": [
+    "headroom below the gate: empty-wait turns are 0.045 per trial on the dev set (8 of 222 trials), which is what adaptive_wait mainly removes; on Seed its token saving (-11%) was not significant in the backtest"
+   ],
+   "model": "openai/coder30b"
+  },
+  "v0+c02": {
+   "version": "v0+c02",
+   "parent": "v0",
+   "agent": "terminus2_patches.agent:Terminus2Patched",
+   "options": {
+    "interface_fixes": true,
+    "completion_gate": false,
+    "adaptive_wait": false,
+    "wait_stable_sec": 3.0,
+    "wait_cap_sec": 30.0,
+    "deliverable_checkpoint": false,
+    "checkpoint_after_sec": 480.0,
+    "checkpoint_repeat_sec": 180.0,
+    "verifier_gate": "none",
+    "task_contract": false,
+    "contract_version": 1,
+    "contract_conditional": false,
+    "gate_timeout_sec": 180.0
+   },
+   "fingerprint": "f91c9945e3a2",
+   "status": "withdrawn",
+   "created_at": "2026-10-12T01:57:59+00:00",
+   "change": {
+    "completion_gate": false
+   },
+   "rationale": "Removing the one-time completion bounce should avoid spending scarce turns on checks that rarely led to a passing repair.",
+   "prereg": {
+    "target_mode": "turn_cap",
+    "mechanism": "Removing the one-time completion bounce should avoid spending scarce turns on checks that rarely led to a passing repair.",
+    "mechanism_metric": "turn_cap",
+    "predicted_mechanism_change": "2–5 pp fewer turn-cap hits, from 18.9% under v0",
+    "predicted_pass_change": "-4 to +2 pp",
+    "falsified_if": "Turn-cap hits do not decrease, neither turns nor input tokens improve by at least 10%, or the paired pass-rate CI lower bound is below -8 pp.",
+    "why_now": "This reverses an already tested switch for a different objective, not a renewed pass-rate claim: H2 gained only 0.8 pp over H1, while turn-cap hits rose from 1 to 6. The current development set has a substantially higher turn-cap rate (42/222), and only 4 of 37 previously bounced trials ultimately passed.",
+    "risk": "The gate may prevent some unsupported completion claims and was part of the selected v0; removing it could lose passes despite saving turns.",
+    "mechanism_direction": "decrease"
+   },
+   "source": "proposer:gpt-6-sol#1",
+   "evaluations": [],
+   "notes": [
+    "headroom below the gate: turns spent after the gate bounce are 2.8% of all dev-set turns and 5.7% of input tokens (< 10% efficiency threshold); none of the 28 bounced trials passed, so removing the gate cannot gain passes either"
+   ],
+   "model": "openai/coder30b"
+  },
+  "v0+c03": {
+   "version": "v0+c03",
+   "parent": "v0",
+   "agent": "terminus2_patches.agent:Terminus2Patched",
+   "options": {
+    "interface_fixes": true,
+    "completion_gate": false,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0,
+    "wait_cap_sec": 30.0,
+    "deliverable_checkpoint": false,
+    "checkpoint_after_sec": 480.0,
+    "checkpoint_repeat_sec": 180.0,
+    "verifier_gate": "none",
+    "task_contract": false,
+    "contract_version": 1,
+    "contract_conditional": false,
+    "gate_timeout_sec": 180.0
+   },
+   "fingerprint": "15abc81f456b",
+   "status": "withdrawn",
+   "created_at": "2026-10-12T01:59:11+00:00",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "completion_gate": false,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "rationale": "Combining removal of the unproductive completion bounce with adaptive waiting frees turn budget from two independent sources of waste, which should reduce both turn_cap and budget_exhausted failures together.",
+   "prereg": {
+    "target_mode": "budget_exhausted",
+    "mechanism": "Combining removal of the unproductive completion bounce with adaptive waiting frees turn budget from two independent sources of waste, which should reduce both turn_cap and budget_exhausted failures together.",
+    "mechanism_metric": "turns",
+    "predicted_mechanism_change": "mean turns per trial down 10-15% from current 49.8",
+    "predicted_pass_change": "0 to +4 pp",
+    "falsified_if": "mean turns does not fall by at least 5%, or pass rate CI lower bound is below -8pp, or either single-change candidate above falsifies its own mechanism (making the combination uninterpretable)",
+    "why_now": "Both components target distinct, large, still-unaddressed failure shares (turn_cap 19%, budget_exhausted 25%) via mechanisms that cost no extra model turns; neither has been tried together on Qwen.",
+    "risk": "Medium: stacking two changes makes it harder to attribute any observed effect to one mechanism if the combination is accepted; also doubles the chance of an unexpected interaction with the JSON keystroke protocol.",
+    "mechanism_direction": "decrease"
+   },
+   "source": "proposer:claude-sonnet-5#0",
+   "evaluations": [],
+   "notes": [
+    "headroom below the gate: the two single changes together bound the saving at about 3% of turns and 6% of input tokens"
+   ],
+   "model": "openai/coder30b"
+  },
+  "v0+c04": {
+   "version": "v0+c04",
+   "parent": "v0",
+   "agent": "terminus2_patches.agent:Terminus2Patched",
+   "options": {
+    "interface_fixes": true,
+    "completion_gate": true,
+    "adaptive_wait": false,
+    "wait_stable_sec": 3.0,
+    "wait_cap_sec": 30.0,
+    "deliverable_checkpoint": false,
+    "checkpoint_after_sec": 480.0,
+    "checkpoint_repeat_sec": 180.0,
+    "verifier_gate": "none",
+    "task_contract": false,
+    "contract_version": 1,
+    "contract_conditional": false,
+    "gate_timeout_sec": 180.0,
+    "append_nudge": true
+   },
+   "fingerprint": "8277a77b13a9",
+   "status": "evaluated",
+   "created_at": "2026-10-13T15:52:08+00:00",
+   "change": {
+    "append_nudge": true
+   },
+   "rationale": "round 1 (D-085/D-086): test the line-by-line writing note on the hardened dev set",
+   "prereg": {
+    "target_mode": "line_by_line_write",
+    "mechanism": "when the same file is appended to with echo/printf in 3 executed turns in a row (and again at 10), the harness appends one note telling the model to write the whole file in one command; no extra model turn",
+    "mechanism_metric": "append_turns",
+    "predicted_mechanism_change": "append_turns per trial down by at least 30%; secondary: total turns down 10% to 25%",
+    "predicted_pass_change": "0 to +4 pp",
+    "falsified_if": "append_turns per trial not down by at least 30%, or total turns not down by at least 10%, or the pass-rate drop exceeds the allowed margin",
+    "why_now": "26% of dev trials write files one echo line per turn until the 100-turn cap; about 230 such trials across runs and 1 passed; no existing switch (H0 vs H2) or training (SFT/RL) reduced it",
+    "risk": "one-command writes put long strings into the JSON reply, so format errors could rise",
+    "mechanism_direction": "decrease"
+   },
+   "source": "human:user-approved-2026-10-13",
+   "evaluations": [
+    {
+     "at": "2026-10-14T09:13:59+00:00",
+     "purpose": "primary",
+     "baseline_job": "loop-r1-base",
+     "candidate_job": "loop-r1-v0-c04",
+     "decision": "INCONCLUSIVE",
+     "reasons": [
+      "cheaper, but 'declared complete but failed' is up +8.2 pp [+0.5, +16.1]: the saving looks like giving up earlier",
+      "no reliable difference: pass +1.6 pp [-3.2, +6.2]; efficiency changes turns, tokens_in, minutes not significant"
+     ],
+     "pass": {
+      "n_tasks": 74,
+      "base": 15.7,
+      "cand": 17.2,
+      "delta": 1.6,
+      "ci": [
+       -3.2,
+       6.2
+      ],
+      "rel": 0.101
+     },
+     "efficiency": {
+      "turns": {
+       "n_tasks": 74,
+       "base": 45.66,
+       "cand": 33.571,
+       "delta": -12.089,
+       "ci": [
+        -16.528,
+        -7.58
+       ],
+       "rel": -0.265
+      },
+      "tokens_in": {
+       "n_tasks": 74,
+       "base": 734063.702,
+       "cand": 503648.318,
+       "delta": -230415.384,
+       "ci": [
+        -324943.358,
+        -135728.622
+       ],
+       "rel": -0.314
+      },
+      "minutes": {
+       "n_tasks": 74,
+       "base": 8.136,
+       "cand": 7.982,
+       "delta": -0.154,
+       "ci": [
+        -0.943,
+        0.588
+       ],
+       "rel": -0.019
+      }
+     },
+     "guards": {
+      "declared_fail": {
+       "n_tasks": 74,
+       "base": 54.6,
+       "cand": 62.8,
+       "delta": 8.2,
+       "ci": [
+        0.5,
+        16.1
+       ],
+       "rel": 0.151
+      },
+      "integrity_flag": {
+       "n_tasks": 74,
+       "base": 0.0,
+       "cand": 0.0,
+       "delta": 0.0,
+       "ci": [
+        0.0,
+        0.0
+       ],
+       "rel": null
+      }
+     },
+     "mechanism": {
+      "metric": "append_turns",
+      "direction": "decrease",
+      "n_tasks": 74,
+      "base": 14.919,
+      "cand": 0.929,
+      "delta": -13.99,
+      "ci": [
+       -17.895,
+       -10.189
+      ],
+      "rel": -0.938,
+      "confirmed": true
+     },
+     "concurrency": {
+      "start_gap_min": 0.0,
+      "overlap_frac": 1.0
+     },
+     "gate_code": "a2651a63a7e4",
+     "harness_code": [
+      "d942321946bb"
+     ],
+     "n_comparisons": 1,
+     "margin_pp": 3.9
+    }
+   ],
+   "notes": [],
+   "model": "openai/coder30b"
+  }
+ },
+ "log": [
+  {
+   "at": "2026-10-12T01:56:18+00:00",
+   "event": "init",
+   "version": "v0"
+  },
+  {
+   "at": "2026-10-12T01:57:24+00:00",
+   "event": "propose",
+   "version": "v0+c01",
+   "parent": "v0",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "source": "proposer:gpt-6-sol#0"
+  },
+  {
+   "at": "2026-10-12T01:57:59+00:00",
+   "event": "propose",
+   "version": "v0+c02",
+   "parent": "v0",
+   "change": {
+    "completion_gate": false
+   },
+   "source": "proposer:gpt-6-sol#1"
+  },
+  {
+   "at": "2026-10-12T01:59:11+00:00",
+   "event": "propose",
+   "version": "v0+c03",
+   "parent": "v0",
+   "change": {
+    "wait_cap_sec": 30.0,
+    "completion_gate": false,
+    "adaptive_wait": true,
+    "wait_stable_sec": 3.0
+   },
+   "source": "proposer:claude-sonnet-5#0"
+  },
+  {
+   "at": "2026-10-12T02:05+00:00",
+   "event": "refingerprint",
+   "version": "*",
+   "reason": "fingerprint now ignores options at their default",
+   "note": "migration run by hand (not by Registry code); exact time not recorded: between the c03 propose (01:59:11 UTC) and the withdraws (02:11:40 UTC). An earlier hand-written time 22:45-04:00 was wrong."
+  },
+  {
+   "at": "2026-10-12T02:11:40+00:00",
+   "event": "withdraw",
+   "version": "v0+c01",
+   "reason": "headroom below the gate: empty-wait turns are 0.045 per trial on the dev set (8 of 222 trials), which is what adaptive_wait mainly removes; on Seed its token saving (-11%) was not significant in the backtest"
+  },
+  {
+   "at": "2026-10-12T02:11:40+00:00",
+   "event": "withdraw",
+   "version": "v0+c02",
+   "reason": "headroom below the gate: turns spent after the gate bounce are 2.8% of all dev-set turns and 5.7% of input tokens (< 10% efficiency threshold); none of the 28 bounced trials passed, so removing the gate cannot gain passes either"
+  },
+  {
+   "at": "2026-10-12T02:11:40+00:00",
+   "event": "withdraw",
+   "version": "v0+c03",
+   "reason": "headroom below the gate: the two single changes together bound the saving at about 3% of turns and 6% of input tokens"
+  },
+  {
+   "at": "2026-10-12T23:28:16+00:00",
+   "event": "migrate",
+   "version": "*",
+   "what": "added the model field (openai/coder30b) to existing versions; fingerprints recomputed with transitive dependencies and normalised numbers",
+   "fingerprint_changes": []
+  },
+  {
+   "at": "2026-10-12T23:28:16+00:00",
+   "event": "code_change",
+   "version": "v0",
+   "what": "v0.1 (D-085): completion_gate no longer treats 2>/dev/null, 2>&1, or > / << inside quotes as file writes (8 of 88 past no-run bounces were false); append_nudge names every hot file and resets per run; the continuation note is no longer hidden by adaptive_wait notes",
+   "harness_code": "1118738d503b",
+   "gate_code": "49d18c03fd85"
+  },
+  {
+   "at": "2026-10-13T15:52:08+00:00",
+   "event": "propose",
+   "version": "v0+c04",
+   "parent": "v0",
+   "change": {
+    "append_nudge": true
+   },
+   "source": "human:user-approved-2026-10-13"
+  },
+  {
+   "at": "2026-10-14T09:13:59+00:00",
+   "event": "evaluate",
+   "version": "v0+c04",
+   "decision": "INCONCLUSIVE",
+   "purpose": "primary",
+   "baseline_job": "loop-r1-base",
+   "candidate_job": "loop-r1-v0-c04"
+  }
+ ],
+ "state_hash": "f8cc57aa558cd7c343c89e2b904b7a6d0535d9cda3f13e563e19e94ffe34f6f3"
+}

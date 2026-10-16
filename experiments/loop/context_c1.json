@@ -1,0 +1,9 @@
+{
+ "model": "Qwen3-Coder-30B-A3B-Instruct served by our own vLLM (bf16); the same weights in every arm. This loop changes only the harness, never the weights.",
+ "agent": "Terminus 2 fork (terminus2_patches.agent:Terminus2Patched). The model replies in a JSON keystroke protocol. max_turns=100 and context summarization are part of the evaluation protocol (frozen).",
+ "current_version": "v0 = H2 = interface_fixes + completion_gate (picked in the four-arm experiment on TB 2.1, D-059)",
+ "development_set": "74 synthetic training tasks (6 skill families), 3 attempts each under v0 (job qroll-h2-synth-train)",
+ "evaluation_of_candidates": "Each candidate runs at the same time as v0 on the development set, 4 attempts per task. Accept: paired-by-task bootstrap; a pass-rate gain needs a 95% CI above 0 and >= 8 pp, or an efficiency gain (turns, input tokens or minutes) >= 10% with the pass-rate CI lower bound >= -8 pp. Reject: pass rate significantly lower, an always-solved task dropping to 0, or timeouts / cost rising without a pass-rate gain. A second independent batch must confirm before the change is promoted.",
+ "reserved_for_final_check": "37 held-out synthetic tasks and 30 TB 2.1 tasks are never used to choose changes",
+ "cost_note": "Every evaluation round costs GPU time (about 4.6 USD per hour, roughly 1 hour per arm-pair at k=4). Fewer, well-motivated candidates are better than many weak ones."
+}

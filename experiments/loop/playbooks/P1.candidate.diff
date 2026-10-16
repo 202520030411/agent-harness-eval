@@ -1,0 +1,33 @@
+--- P0
++++ P1
+@@ -1,20 +1,13 @@
+ Propose harness changes for the next evaluation round.
+ 
+ Rules:
+-- Candidates may only change options whose tier is "auto" or "text" in the scope table, within the allowed values, respecting "requires".
+-  Never touch frozen options. Each candidate is ONE configuration relative to the current version (it may change several options).
+-- Text-tier options are custom_notes and skills. A note is one short sentence the harness appends to the terminal output when a fixed
+-  trigger fires; pick the trigger from the menu in the scope table and write the sentence. A skill is a short how-to document the model
+-  can open when it wants. Write general advice about how to work in a terminal (how to write files, how to check your own work, how to
+-  get unstuck), never anything about a particular task, its expected output format, tests, grading or answers. Text is screened
+-  automatically and a human approves it before it is evaluated.
+-- Prefer mechanisms that do not consume model turns: on a hard time limit, prompts that make the model do extra verification have
+-  cost more than they gained (see history: grader_check, auditor, self_check).
+-- Use the history. Do not re-propose a change that already failed for the same reason unless the model or the failure profile
+-  is different here, and say why in "why_now".
+-- Every candidate needs a pre-registration: target_mode (one of the harness targets), mechanism_metric (one of the metric keys),
+-  predicted_mechanism_change (direction and rough size), predicted_pass_change (pp range; "0" is allowed for efficiency changes),
+-  falsified_if (what result would show the idea is wrong).
+-- Ideas that need new code (a new trigger, a new mechanism) go to REVIEW proposals (a human will decide), never to candidates.
+-- Also list obvious changes you considered and rejected, with the reason.
+-- Rank candidates best first. Fewer is fine if the evidence is weak.
++- Candidates may change only auto- or text-tier options, within allowed values and respecting requires. Never touch frozen options. Each candidate is one configuration relative to the current version, even if it changes several options. Follow the enforced output format and candidate-count limit.
++- For custom_notes, choose an available trigger and write one short sentence appended when it fires. Skills are short, optional how-to documents containing only general terminal-working advice. Do not include task-specific content, expected output formats, tests, grading, or answers. Text is screened and human-approved.
++- Prefer mechanisms that do not consume model turns under a hard time limit. Do not assume that extra verification pays for itself.
++- Before proposing an efficiency change, check how often its target behavior occurs and how much total cost it can possibly remove. Compare that upper bound with the relevant statistical-gate threshold. Withdraw ideas with insufficient headroom rather than predicting gains from a large change to a rare behavior. [v0+c01, v0+c02]
++- For combinations, estimate total headroom from the component behaviors without double-counting. Do not use a combination to rescue components whose combined upper bound is still too small; say what distinct interaction would make it different if proposing one. [v0+c01, v0+c02, v0+c03]
++- Separate the direct mechanism, overall turns and tokens, wall-clock time, and passes in predictions. A large reduction in a targeted behavior does not establish a time or pass improvement. Predict each outcome conservatively and allow zero pass change when appropriate. [v0+c04]
++- Interpret apparent early stopping using terminal-outcome mix and comparable attempts, not an unconditional failure category alone: removing one stopping mode can move failures into another. Treat corrected interpretations as provisional until fresh-run results arrive. If decision prose and reported intervals appear inconsistent, flag both rather than silently choosing one. [v0+c04]
++- Use the history. Do not re-propose a screened-out or unsuccessful change for the same reason unless the model, baseline frequency, or failure profile differs; explain the difference in why_now. Do not label a withdrawn idea an evaluated failure, or an inconclusive result a win. [v0+c01, v0+c02, v0+c03, v0+c04]
++- Pre-register every candidate with target_mode, mechanism_metric, predicted_mechanism_change (direction and rough size), predicted_pass_change (pp range; zero is allowed for efficiency changes), and falsified_if. Make falsification cover the proposed mechanism and any claimed downstream gain. [v0+c04]
++- Put ideas requiring new code or mechanisms in REVIEW proposals, not candidates. List obvious rejected changes with reasons. Rank candidates best first; propose fewer when evidence is weak. The statistical gate decides, and candidates cannot change their evaluation.

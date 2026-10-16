@@ -1,0 +1,320 @@
+[
+ {
+  "id": "E4 契约",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4-contract"
+  ],
+  "concurrent": false,
+  "expected": "不确定 +7.7 [−1.3, +17.9]；之后四批没复现",
+  "null": false
+ },
+ {
+  "id": "E4 self_check",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4-selfcheck"
+  ],
+  "concurrent": false,
+  "expected": "不确定 +6.4 [−2.6, +15.4]；成本 +35%",
+  "null": false
+ },
+ {
+  "id": "E4 auditor",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4-auditor"
+  ],
+  "concurrent": false,
+  "expected": "退役：+0.0，超时 10→17，成本 +29%",
+  "null": false
+ },
+ {
+  "id": "E4 hygiene",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4-hygiene"
+  ],
+  "concurrent": false,
+  "expected": "退役：−1.3",
+  "null": false
+ },
+ {
+  "id": "E4 adaptive_wait",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4-adaptive-wait"
+  ],
+  "concurrent": false,
+  "expected": "只省资源：空等待轮 −27%、token −11%",
+  "null": false
+ },
+ {
+  "id": "E4t 契约（模糊题）",
+  "baseline": [
+   "e4t-baseline"
+  ],
+  "candidate": [
+   "e4t-contract"
+  ],
+  "concurrent": false,
+  "expected": "+3.6 [−8.3, +20.2]",
+  "null": false
+ },
+ {
+  "id": "E4v2 交付检查点",
+  "baseline": [
+   "e4v2-baseline"
+  ],
+  "candidate": [
+   "e4v2-checkpoint"
+  ],
+  "concurrent": true,
+  "expected": "机制成立，通过率 −5.1，成本 −17%",
+  "null": false
+ },
+ {
+  "id": "E4v2 grader_check",
+  "baseline": [
+   "e4v2-baseline"
+  ],
+  "candidate": [
+   "e4v2-gradercheck"
+  ],
+  "concurrent": true,
+  "expected": "有害：超时 9→34，成本 +110%",
+  "null": false
+ },
+ {
+  "id": "E4p 契约 v1",
+  "baseline": [
+   "e4p-baseline"
+  ],
+  "candidate": [
+   "e4p-contract-v1"
+  ],
+  "concurrent": true,
+  "expected": "无效 −2.4 [−8.9, +4.1]",
+  "null": false
+ },
+ {
+  "id": "E4p 契约 v2",
+  "baseline": [
+   "e4p-baseline"
+  ],
+  "candidate": [
+   "e4p-contract-v2"
+  ],
+  "concurrent": true,
+  "expected": "无效 +0.0 [−9.8, +8.9]",
+  "null": false
+ },
+ {
+  "id": "H17 条件式契约",
+  "baseline": [
+   "h17-baseline"
+  ],
+  "candidate": [
+   "h17-conditional"
+  ],
+  "concurrent": true,
+  "expected": "预测证伪 +0.0 [−6.5, +6.5]",
+  "null": false
+ },
+ {
+  "id": "E4s 契约（gpt-6-sol，k=2）",
+  "baseline": [
+   "e4s-baseline"
+  ],
+  "candidate": [
+   "e4s-contract"
+  ],
+  "concurrent": false,
+  "expected": "拐杖：+0.0，成本 +57%",
+  "null": false
+ },
+ {
+  "id": "E4s self_check（gpt-6-sol，k=2）",
+  "baseline": [
+   "e4s-baseline"
+  ],
+  "candidate": [
+   "e4s-selfcheck"
+  ],
+  "concurrent": false,
+  "expected": "有害：−2.1，轮数近翻倍",
+  "null": false
+ },
+ {
+  "id": "Qwen H1 接口修补",
+  "baseline": [
+   "qarm-h0-baseline",
+   "qarm2-h0-baseline"
+  ],
+  "candidate": [
+   "qarm-h1-interface",
+   "qarm2-h1-interface"
+  ],
+  "concurrent": true,
+  "expected": "+5.0 [−5.0, +16.7] 不显著；格式错误轮 −93%",
+  "null": false
+ },
+ {
+  "id": "Qwen H2 vs H0",
+  "baseline": [
+   "qarm-h0-baseline",
+   "qarm2-h0-baseline"
+  ],
+  "candidate": [
+   "qarm-h2-gate",
+   "qarm2-h2-gate"
+  ],
+  "concurrent": true,
+  "expected": "+5.8 [−5.0, +17.5] 不显著",
+  "null": false
+ },
+ {
+  "id": "Qwen 交卷把关（H2 vs H1）",
+  "baseline": [
+   "qarm-h1-interface",
+   "qarm2-h1-interface"
+  ],
+  "candidate": [
+   "qarm-h2-gate",
+   "qarm2-h2-gate"
+  ],
+  "concurrent": true,
+  "expected": "+0.8 [−4.2, +6.7]，预注册预测证伪",
+  "null": false
+ },
+ {
+  "id": "合成留出题 H2 vs H0（原版）",
+  "baseline": [
+   "qeval-base-synth-h0"
+  ],
+  "candidate": [
+   "qeval-base-synth"
+  ],
+  "concurrent": true,
+  "expected": "−0.9 不显著",
+  "null": false
+ },
+ {
+  "id": "合成留出题 H2 vs H0（SFT）",
+  "baseline": [
+   "qeval-teach-synth-h0"
+  ],
+  "candidate": [
+   "qeval-teach-synth"
+  ],
+  "concurrent": true,
+  "expected": "+2.7 不显著",
+  "null": false
+ },
+ {
+  "id": "SWE-bench Verified adaptive_wait（k=1）",
+  "baseline": [
+   "swev-smoke-baseline"
+  ],
+  "candidate": [
+   "swev-smoke-adaptive"
+  ],
+  "concurrent": true,
+  "expected": "通过相同；用时 −32%",
+  "null": false
+ },
+ {
+  "id": "空对照 E1 → E4 基线（隔 3 小时）",
+  "baseline": [
+   "e1-baseline-seed"
+  ],
+  "candidate": [
+   "e4-baseline-rerun"
+  ],
+  "concurrent": false,
+  "expected": "D-040 记为批次漂移 +11.5 [+2.6, +21.8]",
+  "null": true
+ },
+ {
+  "id": "空对照 E4 → E4v2 基线",
+  "baseline": [
+   "e4-baseline-rerun"
+  ],
+  "candidate": [
+   "e4v2-baseline"
+  ],
+  "concurrent": false,
+  "expected": "+3.8 [−7.7, +14.1]",
+  "null": true
+ },
+ {
+  "id": "空对照 E4p → H17 基线（41 题）",
+  "baseline": [
+   "e4p-baseline"
+  ],
+  "candidate": [
+   "h17-baseline"
+  ],
+  "concurrent": false,
+  "expected": "76.4% vs 76.4%",
+  "null": true
+ },
+ {
+  "id": "空对照 Qwen H0 两批（k=2）",
+  "baseline": [
+   "qarm-h0-baseline"
+  ],
+  "candidate": [
+   "qarm2-h0-baseline"
+  ],
+  "concurrent": false,
+  "expected": "−1.7",
+  "null": true
+ },
+ {
+  "id": "空对照 Qwen 原版 合成留出题（隔一天）",
+  "baseline": [
+   "qeval-base-synth"
+  ],
+  "candidate": [
+   "qfinal-base-synth"
+  ],
+  "concurrent": false,
+  "expected": "14% vs 16%",
+  "null": true
+ },
+ {
+  "id": "空对照 Qwen 原版 TB（隔一天）",
+  "baseline": [
+   "qeval-base-tb"
+  ],
+  "candidate": [
+   "qfinal-base-tb"
+  ],
+  "concurrent": false,
+  "expected": "—",
+  "null": true
+ },
+ {
+  "id": "空对照 Qwen SFT 合成留出题（隔一天）",
+  "baseline": [
+   "qeval-teach-synth"
+  ],
+  "candidate": [
+   "qfinal-teach-synth"
+  ],
+  "concurrent": false,
+  "expected": "16% vs 14%",
+  "null": true
+ }
+]

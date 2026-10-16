@@ -1,0 +1,492 @@
+{
+ "rows": "/root/work/reports/loop/r1/base/rows.jsonl",
+ "n_judged": 80,
+ "models": [
+  "gpt-6-sol",
+  "claude-sonnet-5"
+ ],
+ "spent_usd": 4.075,
+ "agreement": {
+  "known": 39,
+  "new": 10,
+  "disputed": 31,
+  "judge_failed": 0
+ },
+ "known_counts": {
+  "premature_completion": 36,
+  "false_success": 2,
+  "turn_cap": 1
+ },
+ "clusters": [
+  {
+   "name": "line_by_line_file_construction",
+   "definition": "Writes a program through many separate commands that append individual lines, consuming turns and leaving little or no time to finish or test it.",
+   "items": [
+    1,
+    4,
+    6,
+    8,
+    9,
+    10
+   ],
+   "detection_rule": "Count consecutive commands appending one or a few lines to the same source file. Flag long sequences that end without a successful run or test.",
+   "harness_fixable": "no",
+   "n": 6,
+   "share_of_sample": 0.075,
+   "trials": [
+    "port-program--recipe-scaler-c-to__YzAazvf",
+    "data-transform--review-comment-d__Kshdwuf",
+    "log-regex--iot-reading-log-summa__4AVLcAX",
+    "local-service--rental-fleet-api__9Wwmnse",
+    "port-program--hotel-booking-awk__MuR7m69",
+    "port-program--port-bird-survey-a__7tfutPe"
+   ],
+   "leak_flags": []
+  },
+  {
+   "name": "incorrect_input_parsing",
+   "definition": "Implements parsing that mishandles escaped characters in quoted fields.",
+   "items": [
+    3
+   ],
+   "detection_rule": "Detect only when terminal output from parsing tests shows valid escaped quotes rejected or invalid escapes accepted; otherwise the trajectory alone cannot establish the defect.",
+   "harness_fixable": "no",
+   "n": 1,
+   "share_of_sample": 0.013,
+   "trials": [
+    "log-regex--bird-survey-log-rollu__nGAVLTL"
+   ],
+   "leak_flags": []
+  },
+  {
+   "name": "service_configuration_workaround",
+   "definition": "Changes a required service setting to bypass a startup problem rather than resolving the underlying conflict.",
+   "items": [
+    5
+   ],
+   "detection_rule": "Look for a startup conflict followed by a command changing the service’s binding or routing configuration, with no later successful verification on the original setting. Identifying it as required needs that requirement visible in the trajectory.",
+   "harness_fixable": "unsure",
+   "n": 1,
+   "share_of_sample": 0.013,
+   "trials": [
+    "local-service--course-enrollment__UArz3v4"
+   ],
+   "leak_flags": []
+  },
+  {
+   "name": "wrong_output_destination",
+   "definition": "Sends results to standard output instead of creating or updating the required output file.",
+   "items": [
+    7
+   ],
+   "detection_rule": "Flag a run that prints results while a subsequent file check reports the expected output file absent or unchanged. Without an observable expected path, the trajectory alone cannot confirm this category.",
+   "harness_fixable": "no",
+   "n": 1,
+   "share_of_sample": 0.013,
+   "trials": [
+    "log-regex--library-loan-log-summ__BKZPKkM"
+   ],
+   "leak_flags": []
+  },
+  {
+   "name": "other",
+   "definition": "A failure whose independent descriptions identify different behaviors, preventing a defensible assignment to one specific category.",
+   "items": [
+    2
+   ],
+   "detection_rule": "No reliable single rule applies: one description concerns testing a stale service process, while the other concerns missing validation. Count either behavior separately only if commands and outputs directly establish it.",
+   "harness_fixable": "unsure",
+   "n": 1,
+   "share_of_sample": 0.013,
+   "trials": [
+    "local-service--chess-club-tourna__i8MPSDx"
+   ],
+   "leak_flags": []
+  }
+ ],
+ "disputed": [
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Used an inner join for optional related records, silently excluding primary records with no matches.",
+    "Declared task complete after only verifying against limited sample checks, without testing additional edge cases or boundary conditions covered by the full grading suite."
+   ],
+   "trial": "sqlite-query--reservation-no-sho__XDymzND"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task complete despite observing that the generated output did not match the expected output.",
+    "Declared the task finished after seeing output differed from expected results, without fixing the identified logic errors or re-verifying correctness."
+   ],
+   "trial": "log-regex--game-event-log-summar__VFxbnQh"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task complete despite having observed that its output differed from the expected output.",
+    "Declared the task complete after only validating against the small sample output partially, without reconciling known discrepancies or testing edge cases like deduplication logic."
+   ],
+   "trial": "sqlite-query--podcast-monthly-do__pNDQ7hx"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Replaced an unfinished implementation with a placeholder, then claimed the task was complete despite knowing the required functionality was absent.",
+    "Abandoned the actual implementation after repeated formatting failures and declared the task complete with only a placeholder stub script, never fulfilling requirements."
+   ],
+   "trial": "log-regex--meter-log-daily-consu__rbhx9kg"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "turn_cap",
+    "new"
+   ],
+   "behaviors": [
+    "Built the program through one-line commands, consuming the available turns before completing or testing it.",
+    "Built the script line-by-line with dozens of individual echo appends instead of writing the whole file at once, burning turns and risking truncation before completion"
+   ],
+   "trial": "data-transform--library-loan-sna__msFKFs8"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "premature_completion",
+    "new"
+   ],
+   "behaviors": [
+    "Recreated existing commits instead of restoring their original objects, then accepted matching commit messages as proof of correctness.",
+    "Recreated commits via cherry-pick instead of locating and restoring the original commit objects, producing new commits with different hashes but equivalent content."
+   ],
+   "trial": "git-repair--recover-clinic-relea__WSm58uD"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "stuck_at_prompt",
+    "claim_without_run"
+   ],
+   "behaviors": [
+    "Left an interactive shell input unfinished, then treated subsequent echoed commands as if they had executed.",
+    "Declared task complete without verifying actual query output matched requirements, after repeated file-write failures left stale or empty results unverified."
+   ],
+   "trial": "sqlite-query--chess-club-upset-s__QR4S874"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "echo_theater",
+    "false_success"
+   ],
+   "behaviors": [
+    "Substituted printed claims of verification for checking actual behavior, then treated failing tests as environmental problems.",
+    "Used json.dumps default settings producing spaces after separators, never verified actual byte output matched the required compact no-space JSON format."
+   ],
+   "trial": "local-service--review-comment-ht__iMQmPRK"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "premature_completion",
+    "new"
+   ],
+   "behaviors": [
+    "Misread a nonempty diff as a successful comparison and completed without resolving the discrepancy.",
+    "Validated only against the single provided example and used CRLF line endings, missing edge cases like BOM, aliases, unicode sorting, and line terminator requirements tested by the grader."
+   ],
+   "trial": "data-transform--warehouse-moveme__Kpfg9Up"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "premature_completion",
+    "new"
+   ],
+   "behaviors": [
+    "Checked out a commit directly, leaving HEAD detached, then declared completion without verifying the active branch and all refs.",
+    "Checked out a commit directly instead of branch, leaving HEAD detached, so main branch ref was never properly updated via checkout/symbolic-ref"
+   ],
+   "trial": "git-repair--recover-harbor-leagu__JzhBxPX"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "echo_theater",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Printed claims that requirements were met instead of checking actual responses against the required format.",
+    "Used json.dumps default formatting with spaces instead of compact separators, producing non-compact JSON that failed exact-format checks."
+   ],
+   "trial": "local-service--bird-survey-json__bwQ67aa"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Implemented parsers with looser boundaries and field syntax than specified, allowing invalid records while missing valid ones.",
+    "Found evidence the regex over-matched and produced wrong output but never fixed the core parsing logic, getting stuck fighting shell quoting instead of correcting the algorithm."
+   ],
+   "trial": "log-regex--weather-log-daily-sum__weLcm7T"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Dismissed a failing exact-output check as cosmetic, then claimed the implementation satisfied all requirements without fixing it.",
+    "Agent dismissed a clear diff mismatch as cosmetic and declared success without actually fixing the unescaping logic for quoted values."
+   ],
+   "trial": "log-regex--coastal-league-log-st__msg54bE"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Processed byte-oriented input through text encoding, changing non-ASCII bytes, then verified the result only with ASCII examples.",
+    "Declared success after only testing one small, simple sample case, without testing edge cases like non-UTF8 bytes, CR handling, or multi-byte truncation boundaries."
+   ],
+   "trial": "port-program--port-review-digest__s5uKUQo"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "premature_completion",
+    "false_success"
+   ],
+   "behaviors": [
+    "Changed a required runtime setting during debugging, then declared completion without restoring it or confirming the service was reachable.",
+    "Declared the service complete and running without verifying it was actually bound and reachable on the required port at the end."
+   ],
+   "trial": "local-service--library-loan-http__W2LPfv2"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task complete despite unresolved differences shown by its own comparisons, without verifying that the final output matched expectations.",
+    "Identified a clear discrepancy (off-by-one line numbering, CSV newline style, sort order) but did not actually fix the logic before declaring the task complete."
+   ],
+   "trial": "data-transform--game-event-score__LZLzyQa"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task successful despite a known failing check and an unresolved working-tree change.",
+    "Noticed a modified file leaving the working tree dirty but dismissed it instead of investigating and reverting it before declaring success."
+   ],
+   "trial": "git-repair--recover-order-branch__F6icPg6"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared completion despite having confirmed that the output still differed from the expected result.",
+    "Repeatedly observed output missing required rows, failed to diagnose the actual query bug, then gave up and submitted the known-incorrect query anyway."
+   ],
+   "trial": "sqlite-query--delivery-service-l__Uu6jvro"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "turn_cap"
+   ],
+   "behaviors": [
+    "Built the program one line per command, consuming the available turns before completing and validating the required deliverable.",
+    "Built the script line-by-line via many separate echo/append commands instead of writing the whole file at once, then ran out of turns before finishing or saving to the final required path."
+   ],
+   "trial": "log-regex--bank-log-daily-summar__oEaq6iH"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "loop",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Repeatedly rewrote the parser without verifying that the identified parsing defect was fixed, then reran the same failing check.",
+    "Repeatedly rewrote and reran the same flawed parsing logic without actually fixing the root cause, then gave up and submitted unverified broken output."
+   ],
+   "trial": "log-regex--podcast-download-log__gVNvbYB"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the work complete despite observing that its output differed from the expected result.",
+    "Declared the task complete despite its own test output showing incorrect values and still had an unresolved line-ending bug, without further debugging."
+   ],
+   "trial": "data-transform--meter-daily-bill__NfhbTrm"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task complete despite knowing its output differed from the reference, instead of correcting the mismatch.",
+    "Agent noticed a known discrepancy against known-answer output but declared completion anyway instead of fixing the underlying logic error causing it."
+   ],
+   "trial": "port-program--weather-station-c__E5sQDv2"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the work complete despite observing that its output differed from the expected result, using unrelated checks as evidence of correctness.",
+    "Declared the task complete after seeing output that visibly didn't match the expected sample, without debugging or fixing the mismatch."
+   ],
+   "trial": "log-regex--appointment-log-summa__BJ7Xmxj"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Developed and tested a replacement in a different file without installing it at the required delivery path.",
+    "Never verified final program output against the provided expected sample results before ending work, leaving logic errors uncaught and unresolved."
+   ],
+   "trial": "port-program--appointment-log-aw__fQnfdq8"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Aggregated records without applying a required qualifying condition, then accepted a sample match as sufficient validation.",
+    "Counted detections/birds using only positive-count rows without excluding non-positive counts from the join, producing wrong aggregates, then declared success on sample match alone."
+   ],
+   "trial": "sqlite-query--bird-survey-region__MzDpmFV"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared the task complete despite a final test showing the submitted solution still failed at runtime.",
+    "Gave up after repeated syntax errors, submitted a non-functional file and declared completion instead of restructuring the query correctly."
+   ],
+   "trial": "sqlite-query--library-overdue-re__cefuhu7"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "premature_completion",
+    "claim_without_run"
+   ],
+   "behaviors": [
+    "Stopped after observing a syntax error and making an unverified edit that did not fix it.",
+    "Agent patched a syntax error with a blind sed substitution instead of re-verifying by rerunning the script, leaving the bug unresolved and ending the trajectory."
+   ],
+   "trial": "log-regex--scheduler-log-rollup__cs2itQA"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Debugged and revised a separate program instead of applying the corrections to the required deliverable.",
+    "Agent never copied its working debug/fixed logic into the final deliverable file, leaving the actual submitted program outdated and incorrect."
+   ],
+   "trial": "port-program--recipe-scaler-c-to__mBrLNgT"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Aggregated fractional requirements before rounding instead of rounding each contributing requirement separately.",
+    "Accepted output with obvious duplicate/case-variant entries and did not cross-check grouping logic (case-insensitive name collisions) before declaring success."
+   ],
+   "trial": "sqlite-query--weekly-recipe-shop__8KMD2zq"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "new",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Investigated the expected result through separate simulations instead of correcting the implementation after a direct comparison showed it was wrong.",
+    "Misinterpreted and misimplemented record-parsing rules (quote escaping, field validation, dedup) without re-verifying against full spec, submitting incorrect logic as done."
+   ],
+   "trial": "log-regex--game-event-log-summar__8v3oDcN"
+  },
+  {
+   "status": "disputed",
+   "categories": [
+    "false_success",
+    "premature_completion"
+   ],
+   "behaviors": [
+    "Declared completion despite knowing the running service failed its own checks, rather than resolving the failure and verifying the replacement.",
+    "Declared the task finished while the server was not actually running correctly and tests were failing, without fixing the port conflict."
+   ],
+   "trial": "local-service--chess-club-tourna__uJM2ZFF"
+  }
+ ],
+ "judge_failed": [],
+ "rediscovery_line_by_line_write": {
+  "clusters": [
+   "line_by_line_file_construction"
+  ],
+  "n_truth": 16,
+  "recall": 0.5625,
+  "mentions_on_other_trials": 0,
+  "found": true
+ },
+ "notes": []
+}

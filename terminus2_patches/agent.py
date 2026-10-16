@@ -19,6 +19,7 @@ assumption_ledger（无单独证据）、verifier_gate=auditor（0 提升、成�
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import re
 import shlex
@@ -33,13 +34,15 @@ from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 from harbor.models.trial.paths import EnvironmentPaths
 
-from terminus2_patches.helpers import (admission_quote, ends_in_continuation_prompt, extract_deliverables, extract_json_fields,
-                                       is_write_command, no_run_after_last_write)
+from terminus2_patches.helpers import (NOTE_MAX_PER_TRIAL, AppendStreak, NoteTriggers, admission_quote, ends_in_continuation_prompt,
+                                       extract_deliverables, extract_json_fields, is_write_command, no_run_after_last_write, render_note)
 from terminus2_patches.lenient_parser import LenientJSONParser
 from terminus2_patches.teacher import MARK, SYSTEM as TEACHER_SYSTEM, Breaker, build_user, parse_hint, render_view
 from terminus2_patches.tmux_adaptive import AdaptiveTmuxSession
 
 HERE = Path(__file__).parent
+# 这份 harness 代码的指纹（本目录所有 .py）：写进每个 trial 的 metadata，评测时核对两臂用的是同一份代码（D-085）
+CODE_HASH = hashlib.sha256(b"".join(f.name.encode() + f.read_bytes() for f in sorted(HERE.glob("*.py")))).hexdigest()[:12]
 # interface_fixes 的环境探测要查的命令：阶段 0 里 Qwen 撞到 “command not found” 最多的（file、ps、netstat、hexdump、git、ss、curl、
 # sqlite3、xxd …）加上常用的解释器、编译器、编辑器和包管理器
 PROBE_CMDS = ("python3", "python", "pip3", "pip", "gcc", "g++", "make", "cmake", "git", "curl", "wget", "file", "ps", "netstat", "ss",
@@ -48,6 +51,14 @@ PROBE_CMDS = ("python3", "python", "pip3", "pip", "gcc", "g++", "make", "cmake",
 CONTINUATION_NOTE = ("[harness] The shell is showing the '>' continuation prompt: it is still waiting for the rest of an unfinished command "
                      "(an unclosed quote, or a heredoc without its end marker), so that command has NOT run. Send C-c to cancel it, "
                      "then send the whole command again in complete form.")
+# append_nudge（闭环第 1 轮，review 档，默认关）：同一个文件连续第 3 轮、第 10 轮被 echo / printf >> 逐行追加时提醒一次，不占模型轮次
+APPEND_NUDGE_AT = (3, 10)
+APPEND_NOTE = ("[harness] You have been appending to {files} with echo/printf for {n} turns in a row, and every turn counts against "
+               "your turn limit. Write the complete file in ONE command instead, for example:\n"
+               "cat > {file} << 'EOF'\n<the whole file>\nEOF\n"
+               "and then run it to check.")
+# skills（D-089）：只写文字，放在 /app 之外（判分只带走 /app）
+SKILL_DIR = "/opt/harness-skills"
 GATE_NO_RUN = ("[harness] You marked the task complete, but after your last change to the files you have not run anything that "
                "exercises the result (echo, cat and ls only display text; they are not checks). Run the program, script or tests the "
                "task describes, the way a grader would, and read the real output. If it fails or shows errors, fix the problem. "
@@ -75,6 +86,12 @@ class Terminus2PatchedOptions(Terminus2Options):
                                   "开跑前环境探测（有 / 没有哪些命令）附在题面后、终端停在续行提示 '>' 时在观察末尾说明")
     completion_gate: bool = Field(default=False, description="H2（Qwen）：交卷把关。第一次宣布完成时，若“最后一次改文件后没再运行过任何东西”"
                                   "或“analysis / plan 里承认没做成”，打回一次（每个 trial 最多一次），之后照上游确认")
+    append_nudge: bool = Field(default=False, description="闭环第 1 轮（review 档，待批准）：同一个文件连续 3 轮（以及 10 轮）"
+                               "被 echo / printf >> 逐行追加时，在观察末尾提醒一次整块写文件；每个 trial 最多 3 次，不占模型轮次")
+    custom_notes: list[dict] = Field(default_factory=list, description="闭环第 2 轮起（text 档，D-089）：[{trigger, text}]，trigger 从 "
+                                     "helpers.NOTE_TRIGGERS 里选；触发时在观察末尾附 '[harness] ' + text，每条每个 trial 最多 3 次，不占模型轮次")
+    skills: list[dict] = Field(default_factory=list, description="闭环第 2 轮起（text 档，D-089）：[{name, description, body}]，开跑前写成 "
+                               "SKILL_DIR/<name>/SKILL.md（只有文字），上游把名字和简介列在题面后，模型需要时自己 cat；不在 /app 里，不进判分")
     raw_log: bool = Field(default=False, description="每轮模型原始回复写进 agent/raw_responses.jsonl；不改轨迹格式"
                           "（上游 raw_content 模式会去掉 tool_calls，规则标签和判官都读 tool_calls）")
     teacher_hint: bool = Field(default=False, description="实时 Teacher 提示（D-069，照实习的 teacher-guided rollout）：每 hint_every 轮、"
@@ -102,13 +119,16 @@ class Terminus2Patched(Terminus2):
         self._executed: list[str] = []; self._last_text = ""; self._gate_rejections = 0; self._raw_log_path: Path | None = None
         self._turns: list[dict] = []; self._claim_this_turn = False; self._claim_hint: str | None = None
         self._teacher_ctx: dict | None = None; self._breaker = Breaker(3)
+        self._append_streak = AppendStreak()
+        self._note_triggers = NoteTriggers(0)
 
     @staticmethod
     def _fresh_stats(deliverables: list[str]) -> dict:
         return {"first_turn_rejections": 0, "adaptive": [], "contract_gate": None,
                 "checkpoint_checks": 0, "checkpoint_missing": 0, "deliverables": list(deliverables),
-                "parse_fixes": {}, "env_probe": None, "continuation_notes": 0,
-                "completion_gate_checks": 0, "completion_gate": [],
+                "parse_fixes": {}, "env_probe": None, "continuation_notes": 0, "append_nudges": [],
+                "completion_gate_checks": 0, "completion_gate": [], "code_hash": CODE_HASH,
+                "custom_notes": [], "skills_written": [], "skill_reads": 0,
                 "teacher": {"calls": [], "hints": [], "breaker_open": False}}
 
     @staticmethod
@@ -122,7 +142,8 @@ class Terminus2Patched(Terminus2):
     def all_flags_off(self) -> bool:
         o = self.options
         return (o.verifier_gate == "none" and not o.adaptive_wait and not o.task_contract and not o.deliverable_checkpoint
-                and not o.interface_fixes and not o.completion_gate and not o.teacher_hint)
+                and not o.interface_fixes and not o.completion_gate and not o.teacher_hint and not o.append_nudge
+                and not o.custom_notes and not o.skills)
 
     # ---------------------------------------------------------------- setup
     async def setup(self, environment: BaseEnvironment) -> None:
@@ -167,11 +188,32 @@ class Terminus2Patched(Terminus2):
 
     async def _build_skills_section(self, environment: BaseEnvironment) -> str | None:
         """上游在这里把 skills 列表接到题面后面；interface_fixes 顺带接上环境探测结果（不占模型轮次）。"""
+        if self.options.skills:
+            await self._write_skills(environment)
         base = await super()._build_skills_section(environment)
         if not self.options.interface_fixes:
             return base
         probe = await self._probe_environment(environment)
         return ((base or "") + probe) or None
+
+    async def _write_skills(self, environment: BaseEnvironment) -> None:
+        """把 options.skills 写成 SKILL_DIR/<name>/SKILL.md（上游的格式：YAML 头里有 name、description），再让上游去扫这个目录。
+        内容用 base64 传进容器，避免引号和换行出问题。"""
+        import base64
+        written = []
+        if self.skills_dir is None:
+            self.skills_dir = SKILL_DIR
+        for sk in self.options.skills:
+            # name / description 用 JSON 字符串写（也是合法的 YAML），简介里有冒号也不会让上游读不出来
+            md = (f"---\nname: {json.dumps(sk['name'])}\ndescription: {json.dumps(sk['description'], ensure_ascii=False)}\n---\n\n"
+                  f"{sk['body'].strip()}\n")
+            b64 = base64.b64encode(md.encode()).decode()
+            d = f"{self.skills_dir}/{sk['name']}"
+            r = await environment.exec(command=f"mkdir -p {shlex.quote(d)} && echo {b64} | base64 -d > {shlex.quote(d)}/SKILL.md",
+                                       user="root", timeout_sec=30)
+            if r.return_code == 0:
+                written.append(sk["name"])
+        self._patched_stats["skills_written"] = written
 
     async def _probe_environment(self, environment: BaseEnvironment) -> str:
         """开跑前在容器里查一次：系统版本、Python 版本、PROBE_CMDS 里哪些命令有 / 没有。只看机器本身，不碰 tests/ 和 solution/。"""
@@ -310,11 +352,16 @@ class Terminus2Patched(Terminus2):
                 if info["prompt"]:
                     notes.append(f"[harness] the terminal appears to be waiting for input: {info['prompt']!r}. Answer it or send C-c.")
             terminal_output = self._limit_output_length(await session.get_incremental_output())
+            screen = terminal_output
+            if o.interface_fixes and ends_in_continuation_prompt(screen):
+                # 停在续行提示 '>' 时命令根本没运行：不能再说"还在运行、请继续等"，交给下面的续行说明（D-085 修）
+                notes = [x for x in notes if "still running" not in x]
             if notes:
                 terminal_output += "\n" + "\n".join(dict.fromkeys(notes))
             timeout_occurred = False
         else:
             timeout_occurred, terminal_output = await super()._execute_commands(commands, session)
+            screen = terminal_output
         # D-009：动态内容只追加在末尾
         tail = []
         if o.deliverable_checkpoint and self._deliverables and self._checkpoint_fired < 3:
@@ -328,9 +375,26 @@ class Terminus2Patched(Terminus2):
                     self._patched_stats["checkpoint_missing"] += 1
                     tail.append(f"[harness checkpoint] {int(elapsed // 60)} min elapsed; required output {', '.join(missing)} does not exist yet. "
                                 "Write your current best answer to it NOW (even if imperfect), then keep refining. A missing file scores zero.")
-        if o.interface_fixes and ends_in_continuation_prompt(terminal_output):
+        if o.interface_fixes and ends_in_continuation_prompt(screen):   # 看命令输出本身，不看上面追加的说明
             self._patched_stats["continuation_notes"] += 1
             tail.append(CONTINUATION_NOTE)
+        if o.append_nudge:
+            streak = self._append_streak.observe([c.keystrokes for c in commands])
+            hot = sorted(f for f, n in streak.items() if n in APPEND_NUDGE_AT)
+            if hot and len(self._patched_stats["append_nudges"]) < 3:
+                n = max(streak[f] for f in hot)
+                self._patched_stats["append_nudges"].append({"turn": self._n_episodes, "files": hot, "streak": n})
+                tail.append(APPEND_NOTE.format(files=", ".join(hot), file=hot[0], n=n))
+        if o.custom_notes:
+            fired = self._note_triggers.observe(self._n_episodes, [c.keystrokes for c in commands], screen)
+            sent = self._patched_stats["custom_notes"]
+            for i, spec in enumerate(o.custom_notes):
+                info = fired.get(spec.get("trigger"))
+                if info and sum(1 for x in sent if x["note"] == i) < NOTE_MAX_PER_TRIAL:
+                    sent.append({"note": i, "trigger": spec["trigger"], "turn": self._n_episodes, "n": info["n"]})
+                    tail.append(render_note(spec["text"], info))
+        if o.skills and self.skills_dir and any(self.skills_dir in c.keystrokes for c in commands):
+            self._patched_stats["skill_reads"] += 1
         self._turns.append({"turn": self._n_episodes, "commands": [c.keystrokes for c in commands], "output": terminal_output})
         if o.teacher_hint:
             if self._claim_this_turn:
@@ -426,6 +490,8 @@ class Terminus2Patched(Terminus2):
         self._executed, self._last_text, self._gate_rejections = [], "", 0
         self._turns, self._claim_this_turn, self._claim_hint, self._breaker = [], False, None, Breaker(3)
         self._teacher_ctx = None
+        self._append_streak = AppendStreak()
+        self._note_triggers = NoteTriggers(getattr(self, "_max_episodes", 0) or 0)
         if self.options.teacher_hint:   # 开了却缺配置 → 直接报错，绝不悄悄退化成普通 rollout（实习版的规矩）
             import os
             if not os.environ.get(self.options.teacher_api_key_env):
@@ -461,7 +527,7 @@ class Terminus2Patched(Terminus2):
                     context.cost_usd = (context.cost_usd or 0.0) + gate["cost_usd"]
             flags = {k: getattr(self.options, k) for k in ("verifier_gate", "adaptive_wait", "task_contract", "contract_version", "contract_conditional",
                                                            "deliverable_checkpoint", "interface_fixes", "completion_gate", "raw_log",
-                                                           "teacher_hint")}
+                                                           "teacher_hint", "append_nudge")}
             stats = dict(self._patched_stats)
             ad = stats.pop("adaptive")
             stats["adaptive_n"] = len(ad)

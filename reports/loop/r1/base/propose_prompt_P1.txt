@@ -1,0 +1,897 @@
+You improve the harness (the control program around a fixed LLM) of a terminal coding agent. You only propose changes; a statistical gate decides. Be concrete, conservative, and honest about weak evidence.
+
+Propose harness changes for the next evaluation round.
+
+Rules:
+- Candidates may change only auto- or text-tier options, within allowed values and respecting requires. Never touch frozen options. Each candidate is one configuration relative to the current version, even if it changes several options. Follow the enforced output format and candidate-count limit.
+- For custom_notes, choose an available trigger and write one short sentence appended when it fires. Skills are short, optional how-to documents containing only general terminal-working advice. Do not include task-specific content, expected output formats, tests, grading, or answers. Text is screened and human-approved.
+- Prefer mechanisms that do not consume model turns under a hard time limit. Do not assume that extra verification pays for itself.
+- Before proposing an efficiency change, check how often its target behavior occurs and how much total cost it can possibly remove. Compare that upper bound with the relevant statistical-gate threshold. Withdraw ideas with insufficient headroom rather than predicting gains from a large change to a rare behavior. [v0+c01, v0+c02]
+- For combinations, estimate total headroom from the component behaviors without double-counting. Do not use a combination to rescue components whose combined upper bound is still too small; say what distinct interaction would make it different if proposing one. [v0+c01, v0+c02, v0+c03]
+- Separate the direct mechanism, overall turns and tokens, wall-clock time, and passes in predictions. A large reduction in a targeted behavior does not establish a time or pass improvement. Predict each outcome conservatively and allow zero pass change when appropriate. [v0+c04]
+- Interpret apparent early stopping using terminal-outcome mix and comparable attempts, not an unconditional failure category alone: removing one stopping mode can move failures into another. Treat corrected interpretations as provisional until fresh-run results arrive. If decision prose and reported intervals appear inconsistent, flag both rather than silently choosing one. [v0+c04]
+- Use the history. Do not re-propose a screened-out or unsuccessful change for the same reason unless the model, baseline frequency, or failure profile differs; explain the difference in why_now. Do not label a withdrawn idea an evaluated failure, or an inconclusive result a win. [v0+c01, v0+c02, v0+c03, v0+c04]
+- Pre-register every candidate with target_mode, mechanism_metric, predicted_mechanism_change (direction and rough size), predicted_pass_change (pp range; zero is allowed for efficiency changes), and falsified_if. Make falsification cover the proposed mechanism and any claimed downstream gain. [v0+c04]
+- Put ideas requiring new code or mechanisms in REVIEW proposals, not candidates. List obvious rejected changes with reasons. Rank candidates best first; propose fewer when evidence is weak. The statistical gate decides, and candidates cannot change their evaluation.
+
+Limits: at most 2 candidates and 2 REVIEW proposals.
+
+Return ONLY a JSON object:
+{"auto_candidates": [{"changes": {"option": value}, "target_mode": "...", "mechanism": "one sentence: how it reduces the target",
+   "mechanism_metric": "...", "predicted_mechanism_change": "...", "predicted_pass_change": "...", "falsified_if": "...",
+   "why_now": "...", "risk": "..."}],
+  "review_proposals": [{"title": "...", "target_mode": "...", "what_to_build": "...", "why": "...", "how_to_test": "...", "risk": "..."}],
+  "rejected_ideas": [{"idea": "...", "why": "..."}]}
+For text-tier options the value is a list, for example
+  "custom_notes": [{"trigger": "<a trigger from the menu>", "text": "<one sentence>"}]
+  "skills": [{"name": "lowercase-with-hyphens", "description": "<one line: when to open it>", "body": "<the how-to>"}]
+
+
+CONTEXT:
+{
+ "model": "Qwen3-Coder-30B-A3B-Instruct served by our own vLLM (bf16); the same weights in every arm. This loop changes only the harness, never the weights.",
+ "agent": "Terminus 2 fork (terminus2_patches.agent:Terminus2Patched). The model replies in a JSON keystroke protocol. max_turns=100, a 15-minute time limit per task and context summarization are part of the evaluation protocol (frozen).",
+ "current_version": "v0 = interface_fixes + completion_gate",
+ "development_set": "74 synthetic training tasks in 6 families. Round 1 ran v0 with 4 attempts per task: pass rate 15.7%; 48 tasks never solved, 24 solved sometimes, 2 always solved.",
+ "evaluation_of_candidates": "Each candidate runs at the same time as v0 on the development set, 4 attempts per task. Quality path: pass-rate gain with a 95% CI above 0 and at least 8 pp. Efficiency path: turns, input tokens or minutes at least 10% lower (each metric tested at alpha/3, and alpha is further divided by the number of candidates in the round), with the lower bound of the pass-rate CI no worse than -min(8 pp, 25% of the baseline pass rate), i.e. about -3.9 pp now; this path is closed if the share of submissions that fail rises by 8 pp or more. Reject: pass rate significantly lower, an always-solved task dropping to 0, cheating flags rising, or timeouts / cost rising without a quality gain. A second independent batch must confirm before anything is promoted.",
+ "round_1": "v0 + append_nudge (a note telling the model to write a whole file in one command when it keeps appending lines with echo/printf >>) cut appending turns by 94%, total turns by 26% and input tokens by 31% with no detectable pass-rate change (+1.6 pp, CI -3.2 to +6.2). It was INCONCLUSIVE under the old give-up guard and is retested in this round alongside the new candidates; do not re-propose it.",
+ "failure_discovery": "Two models independently read 80 failed development-set trajectories under v0. Most common: the agent declared the task complete although the result was wrong; in many of these, its own last comparison or check had already shown a mismatch or an error and it declared completion anyway or called the difference cosmetic. Also seen: building a program through many one-line append commands (addressed by append_nudge); getting stuck at an unfinished shell input; replacing an unfinished implementation with a placeholder. All other behaviors were rare (1 case each).",
+ "new_options": "Besides the existing switches you may now propose text: custom_notes (one sentence attached to a fixed trigger from the menu in the scope table) and skills (a short how-to the model can open). A human reads and approves every text before it is evaluated.",
+ "this_round": "At most one candidate from you will be evaluated, the first one in your ranking that passes the scope, text and duplicate checks. Rank carefully.",
+ "reserved_for_final_check": "37 held-out synthetic tasks and 30 Terminal-Bench tasks are never used to choose changes.",
+ "cost_note": "Each extra arm in this round costs about 1.5 GPU hours (about 7 USD). Fewer, well-motivated candidates are better than many weak ones.",
+ "development_set_summary": {
+  "n_trials": 296,
+  "n_infra": 1,
+  "n_tasks": 74,
+  "pass_rate": 0.15593220338983052,
+  "timeouts": 49,
+  "mean_turns": 45.630508474576274,
+  "mean_minutes": 8.149082709209038,
+  "mean_tokens_in": 734695.3220338983
+ }
+}
+
+CURRENT VERSION (effective options):
+{
+ "interface_fixes": true,
+ "completion_gate": true,
+ "adaptive_wait": false,
+ "deliverable_checkpoint": false,
+ "verifier_gate": "none",
+ "task_contract": false,
+ "append_nudge": false,
+ "custom_notes": [],
+ "skills": []
+}
+
+SCOPE TABLE:
+[
+ {
+  "option": "interface_fixes",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "H1：宽松解析 + 开跑前环境探测 + 续行提示（Qwen 格式错误轮 −93%）"
+ },
+ {
+  "option": "completion_gate",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "H2：第一次宣布完成时，没运行过检查或承认没做成就打回一次"
+ },
+ {
+  "option": "adaptive_wait",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "哨兵 + 超时 + 交互提示正则（Seed 空等待轮 −27%、token −11%）"
+ },
+ {
+  "option": "wait_stable_sec",
+  "tier": "auto",
+  "type": "float",
+  "default": 3.0,
+  "allowed": [
+   1.0,
+   10.0
+  ],
+  "requires": [
+   "adaptive_wait"
+  ],
+  "note": "退化路径：屏幕连续无变化秒数"
+ },
+ {
+  "option": "wait_cap_sec",
+  "tier": "auto",
+  "type": "float",
+  "default": 30.0,
+  "allowed": [
+   10.0,
+   120.0
+  ],
+  "requires": [
+   "adaptive_wait"
+  ],
+  "note": "单条命令最长等待"
+ },
+ {
+  "option": "deliverable_checkpoint",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "到时间阈值时交付文件还不存在就提醒先写答案（Seed：无交付 11→6，通过率 −5.1）"
+ },
+ {
+  "option": "checkpoint_after_sec",
+  "tier": "auto",
+  "type": "float",
+  "default": 480.0,
+  "allowed": [
+   240.0,
+   720.0
+  ],
+  "requires": [
+   "deliverable_checkpoint"
+  ],
+  "note": ""
+ },
+ {
+  "option": "checkpoint_repeat_sec",
+  "tier": "auto",
+  "type": "float",
+  "default": 180.0,
+  "allowed": [
+   60.0,
+   300.0
+  ],
+  "requires": [
+   "deliverable_checkpoint"
+  ],
+  "note": ""
+ },
+ {
+  "option": "verifier_gate",
+  "tier": "auto",
+  "type": "enum",
+  "default": "none",
+  "allowed": [
+   "none",
+   "self_check",
+   "grader_check"
+  ],
+  "requires": [],
+  "note": "完成前让模型自查；Seed 上 self_check +6.4（不显著、成本 +35%），grader_check 超时 9→34"
+ },
+ {
+  "option": "task_contract",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "开工前拆解需求与模糊点、第一轮只读；四批合并无可复现效果（D-050）"
+ },
+ {
+  "option": "contract_version",
+  "tier": "auto",
+  "type": "int",
+  "default": 1,
+  "allowed": [
+   1,
+   2
+  ],
+  "requires": [
+   "task_contract"
+  ],
+  "note": ""
+ },
+ {
+  "option": "contract_conditional",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [
+   "task_contract"
+  ],
+  "note": "H17：只在题面被评为模糊时启用契约"
+ },
+ {
+  "option": "gate_timeout_sec",
+  "tier": "auto",
+  "type": "float",
+  "default": 180.0,
+  "allowed": [
+   60.0,
+   240.0
+  ],
+  "requires": [
+   "contract_conditional"
+  ],
+  "note": ""
+ },
+ {
+  "option": "append_nudge",
+  "tier": "auto",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "闭环第 1 轮发现：同一个文件连续 3 轮被 echo/printf >> 逐行追加时提醒整块写；2026-10-13 用户批准进入第 1 轮评测（\"先跑吧\"）"
+ },
+ {
+  "option": "custom_notes",
+  "tier": "text",
+  "type": "notes",
+  "default": [],
+  "allowed": {
+   "triggers": {
+    "append_streak": "the same file was appended to with echo/printf >> in 3 executed turns in a row (fires again at 10)",
+    "repeat_command": "the exact same non-empty command batch was sent in 3 turns in a row (fires again at 6)",
+    "same_error": "the same error line (Traceback / error: / No such file / command not found / Permission denied) ended the output of 3 turns in a row (fires again at 6)",
+    "turn_budget": "half of the turn limit has been used (fires once; once more at 80%)"
+   },
+   "placeholders": [
+    "{n}",
+    "{files}"
+   ],
+   "max_notes": 2,
+   "max_words": 60
+  },
+  "requires": [],
+  "note": "提醒：[{trigger, text}]，trigger 从固定菜单选（见 note_triggers），text ≤60 词、只能用 {n} / {files} 两个占位符；最多 2 条；触发时附在终端输出末尾，每条每个 trial 最多 3 次"
+ },
+ {
+  "option": "skills",
+  "tier": "text",
+  "type": "skills",
+  "default": [],
+  "allowed": {
+   "max_skills": 2,
+   "description_max_words": 30,
+   "body_max_words": 300
+  },
+  "requires": [],
+  "note": "只含文字的 skill：[{name, description, body}]，name 小写字母数字和连字符，description ≤30 词，body ≤300 词；最多 2 个；题面后面列出名字和简介，模型需要时自己打开全文"
+ },
+ {
+  "option": "raw_log",
+  "tier": "frozen",
+  "type": "bool",
+  "default": true,
+  "allowed": null,
+  "requires": [],
+  "note": "观察阶段要读原始回复：闭环生成的配置一律开（agent.py 里默认关）"
+ },
+ {
+  "option": "teacher_hint",
+  "tier": "frozen",
+  "type": "bool",
+  "default": false,
+  "allowed": null,
+  "requires": [],
+  "note": "Teacher 看参考解与隐藏测试：只能用于训练采样，部署用的 harness 绝不能开"
+ },
+ {
+  "option": "max_turns",
+  "tier": "frozen",
+  "type": "int",
+  "default": 100,
+  "allowed": null,
+  "requires": [],
+  "note": "评测协议"
+ },
+ {
+  "option": "enable_summarize",
+  "tier": "frozen",
+  "type": "bool",
+  "default": true,
+  "allowed": null,
+  "requires": [],
+  "note": "评测协议"
+ },
+ {
+  "option": "proactive_summarization_threshold",
+  "tier": "frozen",
+  "type": "int",
+  "default": 8000,
+  "allowed": null,
+  "requires": [],
+  "note": "评测协议"
+ }
+]
+
+METRIC KEYS (for mechanism_metric):
+{
+ "n_parse_err": "format-error turns per trial",
+ "json_loop_end": "ends stuck in format errors (0/1)",
+ "turns": "agent turns per trial",
+ "tokens_in": "input tokens per trial",
+ "minutes": "agent wall-clock minutes per trial",
+ "timeout": "hit the agent time limit (0/1)",
+ "turn_cap": "hit the turn limit (0/1)",
+ "polling_turns": "empty-wait turns per trial",
+ "echo_theater": "printed 'done' with echo instead of checking (0/1)",
+ "false_success": "claimed success while admitting failure (0/1)",
+ "no_run_before_claim": "claimed completion with no run after the last edit (0/1)",
+ "cnf": "used a command missing from the image (0/1)",
+ "append_turns": "turns that append to a file one line at a time with echo/printf >> (per trial)",
+ "turns_after_gate": "turns spent after the completion gate bounced the first claim (per trial)"
+}
+
+HARNESS TARGETS observed on the development set (most important first):
+[
+ {
+  "mode": "premature_completion",
+  "label": "宣布完成但判分失败（PREMATURE_COMPLETION）",
+  "among": "failed",
+  "prior": "MIXED",
+  "evidence": "Seed：规则层 64% 的失败；判官把它拆成误读 / 验证不足 / 题面不清",
+  "levers": [
+   "completion_gate",
+   "verifier_gate",
+   "task_contract"
+  ],
+  "n": 166,
+  "denominator": 249,
+  "rate": 0.667,
+  "share_of_failures": 0.667,
+  "n_tasks": 69,
+  "tried": [
+   {
+    "id": "E4-contract",
+    "switches": "task_contract+assumption_ledger",
+    "model": "Seed lite",
+    "pass_delta_pp": 7.7,
+    "verdict": "not significant; the ambiguous-task subset effect did not replicate over 4 batches (D-050)"
+   },
+   {
+    "id": "E4-selfcheck",
+    "switches": "verifier_gate=self_check",
+    "model": "Seed lite",
+    "pass_delta_pp": 6.4,
+    "verdict": "not significant; on gpt-6-sol it was -2.1 pp with turns nearly doubled (E4s)"
+   },
+   {
+    "id": "E4-auditor",
+    "switches": "verifier_gate=auditor",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "retired (D-039)"
+   },
+   {
+    "id": "E4v2-gradercheck",
+    "switches": "verifier_gate=grader_check",
+    "model": "Seed lite",
+    "pass_delta_pp": -6.4,
+    "verdict": "harmful under a hard time limit: extra verification turns crowd out the budget (D-047)"
+   },
+   {
+    "id": "E4p-contract-v1",
+    "switches": "task_contract contract_version=1",
+    "model": "Seed lite",
+    "pass_delta_pp": -2.4,
+    "verdict": "no reproducible effect (D-050)"
+   },
+   {
+    "id": "E4p-contract-v2",
+    "switches": "task_contract contract_version=2",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "no effect; forcing written resolutions changed correct decisions"
+   },
+   {
+    "id": "H17-conditional",
+    "switches": "task_contract+contract_conditional",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "pre-registered prediction falsified (D-050)"
+   },
+   {
+    "id": "E4s-contract",
+    "switches": "task_contract",
+    "model": "gpt-6-sol",
+    "pass_delta_pp": 0.0,
+    "verdict": "crutch test: weak model +7.7, strong model 0"
+   },
+   {
+    "id": "E4s-selfcheck",
+    "switches": "verifier_gate=self_check",
+    "model": "gpt-6-sol",
+    "pass_delta_pp": -2.1,
+    "verdict": "harmful for the strong model"
+   },
+   {
+    "id": "QARM-H2-vs-H1",
+    "switches": "completion_gate",
+    "model": "Qwen3-Coder-30B",
+    "pass_delta_pp": 0.8,
+    "verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+   },
+   {
+    "id": "QEVAL-2x2",
+    "switches": "interface_fixes+completion_gate",
+    "model": "Qwen3-Coder-30B (base / SFT)",
+    "pass_delta_pp": -0.9,
+    "verdict": "not significant"
+   }
+  ]
+ },
+ {
+  "mode": "echo_theater",
+  "label": "用 echo 打印“完成”代替真正的检查",
+  "among": "failed",
+  "prior": "HARNESS",
+  "evidence": "接口产物：Terminus 里失败 trial 59%，qwen-code 2%；交卷把关压不下去（42%→49%）——要靠新机制（需人审）",
+  "levers": [
+   "completion_gate"
+  ],
+  "n": 92,
+  "denominator": 249,
+  "rate": 0.369,
+  "share_of_failures": 0.369,
+  "n_tasks": 57,
+  "tried": [
+   {
+    "id": "QARM-H2-vs-H1",
+    "switches": "completion_gate",
+    "model": "Qwen3-Coder-30B",
+    "pass_delta_pp": 0.8,
+    "verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+   },
+   {
+    "id": "QEVAL-2x2",
+    "switches": "interface_fixes+completion_gate",
+    "model": "Qwen3-Coder-30B (base / SFT)",
+    "pass_delta_pp": -0.9,
+    "verdict": "not significant"
+   }
+  ]
+ },
+ {
+  "mode": "truncated_read",
+  "label": "读类命令的输出被截断（TRUNCATED_READ）",
+  "among": "failed",
+  "prior": "MIXED",
+  "evidence": "证据互相矛盾：README 归责节说换强模型后消失、改 harness 不变；但 E4 adaptive_wait 臂失败里占比 33%→14%（未同时跑，约 10→4 条）；D-043：判官给的证据 0/11 提到截断 → 更像伴随症状而不是原因。规则本身把它标成 harness 侧候选",
+  "levers": [
+   "adaptive_wait"
+  ],
+  "n": 90,
+  "denominator": 249,
+  "rate": 0.361,
+  "share_of_failures": 0.361,
+  "n_tasks": 33,
+  "tried": [
+   {
+    "id": "E4-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": -2.6,
+    "verdict": "the only stable gain in the project: efficiency, not pass rate"
+   },
+   {
+    "id": "SWEV-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+   }
+  ]
+ },
+ {
+  "mode": "budget_exhausted",
+  "label": "没宣布完成就用完预算（BUDGET_EXHAUSTED）",
+  "among": "failed",
+  "prior": "MIXED",
+  "evidence": "Seed 归责：强模型上消失、改 harness 不变 → 偏模型；交付检查点让无交付 11→6",
+  "levers": [
+   "deliverable_checkpoint",
+   "adaptive_wait"
+  ],
+  "n": 83,
+  "denominator": 249,
+  "rate": 0.333,
+  "share_of_failures": 0.333,
+  "n_tasks": 45,
+  "tried": [
+   {
+    "id": "E4-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": -2.6,
+    "verdict": "the only stable gain in the project: efficiency, not pass rate"
+   },
+   {
+    "id": "SWEV-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+   },
+   {
+    "id": "E4v2-checkpoint",
+    "switches": "deliverable_checkpoint",
+    "model": "Seed lite",
+    "pass_delta_pp": -5.1,
+    "verdict": "mechanism works, pass rate did not go up (D-047)"
+   }
+  ]
+ },
+ {
+  "mode": "timeout",
+  "label": "超时（agent 时限用完）",
+  "among": "all",
+  "prior": "MIXED",
+  "evidence": "Seed：验证类改动把超时推高（grader_check 9→34）；adaptive_wait 不改通过率、省轮数",
+  "levers": [
+   "adaptive_wait",
+   "deliverable_checkpoint"
+  ],
+  "n": 49,
+  "denominator": 295,
+  "rate": 0.166,
+  "share_of_failures": 0.193,
+  "n_tasks": 32,
+  "tried": [
+   {
+    "id": "E4-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": -2.6,
+    "verdict": "the only stable gain in the project: efficiency, not pass rate"
+   },
+   {
+    "id": "SWEV-adaptive-wait",
+    "switches": "adaptive_wait",
+    "model": "Seed lite",
+    "pass_delta_pp": 0.0,
+    "verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+   },
+   {
+    "id": "E4v2-checkpoint",
+    "switches": "deliverable_checkpoint",
+    "model": "Seed lite",
+    "pass_delta_pp": -5.1,
+    "verdict": "mechanism works, pass rate did not go up (D-047)"
+   }
+  ]
+ },
+ {
+  "mode": "format_error",
+  "label": "出现过格式错误（回复不是 harness 要的 JSON）",
+  "among": "all",
+  "prior": "HARNESS",
+  "evidence": "Qwen 四臂：H0 57% → H1 8%（宽松解析）→ H3 0%（原生工具调用）；D-055 / QWEN_PLAN §2–3",
+  "levers": [
+   "interface_fixes"
+  ],
+  "n": 47,
+  "denominator": 295,
+  "rate": 0.159,
+  "share_of_failures": 0.177,
+  "n_tasks": 32,
+  "tried": [
+   {
+    "id": "QARM-H1",
+    "switches": "interface_fixes",
+    "model": "Qwen3-Coder-30B",
+    "pass_delta_pp": 5.0,
+    "verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+   },
+   {
+    "id": "QEVAL-2x2",
+    "switches": "interface_fixes+completion_gate",
+    "model": "Qwen3-Coder-30B (base / SFT)",
+    "pass_delta_pp": -0.9,
+    "verdict": "not significant"
+   }
+  ]
+ },
+ {
+  "mode": "turn_cap",
+  "label": "跑满轮数上限",
+  "among": "all",
+  "prior": "MIXED",
+  "evidence": "Qwen 四臂：H0 9 → H1 1（多半是写坏 JSON 或把代码拆成一行行追加把轮数耗光）",
+  "levers": [
+   "interface_fixes",
+   "deliverable_checkpoint"
+  ],
+  "n": 43,
+  "denominator": 295,
+  "rate": 0.146,
+  "share_of_failures": 0.173,
+  "n_tasks": 33,
+  "tried": [
+   {
+    "id": "E4v2-checkpoint",
+    "switches": "deliverable_checkpoint",
+    "model": "Seed lite",
+    "pass_delta_pp": -5.1,
+    "verdict": "mechanism works, pass rate did not go up (D-047)"
+   },
+   {
+    "id": "QARM-H1",
+    "switches": "interface_fixes",
+    "model": "Qwen3-Coder-30B",
+    "pass_delta_pp": 5.0,
+    "verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+   },
+   {
+    "id": "QEVAL-2x2",
+    "switches": "interface_fixes+completion_gate",
+    "model": "Qwen3-Coder-30B (base / SFT)",
+    "pass_delta_pp": -0.9,
+    "verdict": "not significant"
+   }
+  ]
+ }
+]
+
+HISTORY of harness changes already tested in this project (with outcomes):
+[
+ {
+  "id": "E4-contract",
+  "change": "task contract v1 + assumption ledger: first turn read-only, list requirements and ambiguities",
+  "switches": "task_contract+assumption_ledger",
+  "model": "Seed lite",
+  "pass_delta_pp": 7.7,
+  "ci_low": -1.3,
+  "ci_high": 17.9,
+  "mechanism_effects": "judge SPEC_MISINTERPRETATION 13->9 failures",
+  "cost_effects": "cost +7%, timeouts 10->14",
+  "manual_verdict": "not significant; the ambiguous-task subset effect did not replicate over 4 batches (D-050)"
+ },
+ {
+  "id": "E4-selfcheck",
+  "change": "verifier_gate=self_check: before completion the model is asked to check its own work",
+  "switches": "verifier_gate=self_check",
+  "model": "Seed lite",
+  "pass_delta_pp": 6.4,
+  "ci_low": -2.6,
+  "ci_high": 15.4,
+  "mechanism_effects": "judge INSUFFICIENT_VERIFICATION 5->4 only",
+  "cost_effects": "cost +35%, turns 14.4->16.8, timeouts 10->14",
+  "manual_verdict": "not significant; on gpt-6-sol it was -2.1 pp with turns nearly doubled (E4s)"
+ },
+ {
+  "id": "E4-auditor",
+  "change": "verifier_gate=auditor: separate auditor call reviews the work before completion (option since removed)",
+  "switches": "verifier_gate=auditor",
+  "model": "Seed lite",
+  "pass_delta_pp": 0.0,
+  "ci_low": -11.5,
+  "ci_high": 10.3,
+  "mechanism_effects": "89 audits, 22 rejections",
+  "cost_effects": "cost +29%, timeouts 10->17 (rejections pushed 7 trials into the time limit)",
+  "manual_verdict": "retired (D-039)"
+ },
+ {
+  "id": "E4-hygiene",
+  "change": "stuck reminder + budget hint + exit-code prompt (options since removed)",
+  "switches": "stuck_reminder+budget_hint+exit_code_prompt",
+  "model": "Seed lite",
+  "pass_delta_pp": -1.3,
+  "ci_low": -12.8,
+  "ci_high": 10.3,
+  "mechanism_effects": "stuck reminder never fired",
+  "cost_effects": "input tokens -17%, cost -5%",
+  "manual_verdict": "retired (D-039): no failure pattern behind it"
+ },
+ {
+  "id": "E4-adaptive-wait",
+  "change": "adaptive_wait: sentinel + timeout + interactive-prompt detection instead of fixed waits",
+  "switches": "adaptive_wait",
+  "model": "Seed lite",
+  "pass_delta_pp": -2.6,
+  "ci_low": -14.1,
+  "ci_high": 9.0,
+  "mechanism_effects": "empty-wait turns -27% per trial; POLLING share of failures 13%->4%",
+  "cost_effects": "input tokens -11 to -16%, turns -0.6 to -1.0, wall clock +4%",
+  "manual_verdict": "the only stable gain in the project: efficiency, not pass rate"
+ },
+ {
+  "id": "SWEV-adaptive-wait",
+  "change": "adaptive_wait on SWE-bench Verified smoke",
+  "switches": "adaptive_wait",
+  "model": "Seed lite",
+  "pass_delta_pp": 0.0,
+  "ci_low": null,
+  "ci_high": null,
+  "mechanism_effects": "same 5 failures in both arms",
+  "cost_effects": "time -32% [-51%, +4%], cost -21% [-48%, +30%]",
+  "manual_verdict": "same direction as the TB efficiency gain; k=1, intervals cross zero"
+ },
+ {
+  "id": "E4v2-checkpoint",
+  "change": "deliverable_checkpoint: at a time threshold, remind the model to write the deliverable if it does not exist",
+  "switches": "deliverable_checkpoint",
+  "model": "Seed lite",
+  "pass_delta_pp": -5.1,
+  "ci_low": -15.4,
+  "ci_high": 3.8,
+  "mechanism_effects": "failed-without-deliverable 11->6; fired 51 times",
+  "cost_effects": "cost -17%, turns 15.9->14.0",
+  "manual_verdict": "mechanism works, pass rate did not go up (D-047)"
+ },
+ {
+  "id": "E4v2-gradercheck",
+  "change": "verifier_gate=grader_check: acceptance-style self-test checklist before completion",
+  "switches": "verifier_gate=grader_check",
+  "model": "Seed lite",
+  "pass_delta_pp": -6.4,
+  "ci_low": -19.2,
+  "ci_high": 6.4,
+  "mechanism_effects": "-",
+  "cost_effects": "timeouts 9->34, turns 15.9->43.3, cost +110%",
+  "manual_verdict": "harmful under a hard time limit: extra verification turns crowd out the budget (D-047)"
+ },
+ {
+  "id": "E4p-contract-v1",
+  "change": "task contract v1 on 41 tasks",
+  "switches": "task_contract contract_version=1",
+  "model": "Seed lite",
+  "pass_delta_pp": -2.4,
+  "ci_low": -8.9,
+  "ci_high": 4.1,
+  "mechanism_effects": "ambiguous tasks +7.1, clear tasks -7.4 (later not replicated)",
+  "cost_effects": "cost +3%, timeouts 13->16",
+  "manual_verdict": "no reproducible effect (D-050)"
+ },
+ {
+  "id": "E4p-contract-v2",
+  "change": "task contract v2: checklist of 7 ambiguity types, forced resolutions",
+  "switches": "task_contract contract_version=2",
+  "model": "Seed lite",
+  "pass_delta_pp": 0.0,
+  "ci_low": -9.8,
+  "ci_high": 8.9,
+  "mechanism_effects": "ledger hit the decisive detail 12/15, but passes when hit 3/12 (v1: 8/12)",
+  "cost_effects": "cost +3%",
+  "manual_verdict": "no effect; forcing written resolutions changed correct decisions"
+ },
+ {
+  "id": "H17-conditional",
+  "change": "contract only when a pre-run clarity score says the task is ambiguous",
+  "switches": "task_contract+contract_conditional",
+  "model": "Seed lite",
+  "pass_delta_pp": 0.0,
+  "ci_low": -6.5,
+  "ci_high": 6.5,
+  "mechanism_effects": "ambiguous tasks -4.8 [-21.4, +11.9]",
+  "cost_effects": "timeouts 12->15; scoring call median 48 s inside the time limit",
+  "manual_verdict": "pre-registered prediction falsified (D-050)"
+ },
+ {
+  "id": "E4s-contract",
+  "change": "task contract on a strong model",
+  "switches": "task_contract",
+  "model": "gpt-6-sol",
+  "pass_delta_pp": 0.0,
+  "ci_low": -12.0,
+  "ci_high": 12.0,
+  "mechanism_effects": "-",
+  "cost_effects": "cost +57%",
+  "manual_verdict": "crutch test: weak model +7.7, strong model 0"
+ },
+ {
+  "id": "E4s-selfcheck",
+  "change": "self_check on a strong model",
+  "switches": "verifier_gate=self_check",
+  "model": "gpt-6-sol",
+  "pass_delta_pp": -2.1,
+  "ci_low": -12.5,
+  "ci_high": 8.3,
+  "mechanism_effects": "-",
+  "cost_effects": "turns 11.6->20.5, cost +79%",
+  "manual_verdict": "harmful for the strong model"
+ },
+ {
+  "id": "QARM-H1",
+  "change": "interface_fixes: lenient JSON parsing, pre-run environment probe, continuation-prompt note",
+  "switches": "interface_fixes",
+  "model": "Qwen3-Coder-30B",
+  "pass_delta_pp": 5.0,
+  "ci_low": -5.0,
+  "ci_high": 16.7,
+  "mechanism_effects": "trials with format errors 57%->8% (turns per trial 2.6->0.17); turn-cap hits 9->1; command-not-found 40%->38%",
+  "cost_effects": "-",
+  "manual_verdict": "mechanism confirmed (format-error turns -93%); pass rate not significant"
+ },
+ {
+  "id": "QARM-H2-vs-H1",
+  "change": "completion_gate on top of interface_fixes: bounce the first completion claim once if nothing ran after the last edit or the model admits failure",
+  "switches": "completion_gate",
+  "model": "Qwen3-Coder-30B",
+  "pass_delta_pp": 0.8,
+  "ci_low": -4.2,
+  "ci_high": 6.7,
+  "mechanism_effects": "bounced 37/120 trials, only 4 of them passed later; echo-instead-of-check 42%->49%; false success 31%->29%",
+  "cost_effects": "turn-cap hits 1->6",
+  "manual_verdict": "pre-registered prediction falsified: the gate forces checking, the model cannot fix what it finds"
+ },
+ {
+  "id": "QARM-H3",
+  "change": "qwen-code agent (native tool calls): a different harness, not an option of ours",
+  "switches": "(different agent)",
+  "model": "Qwen3-Coder-30B",
+  "pass_delta_pp": 5.8,
+  "ci_low": -3.3,
+  "ci_high": 16.7,
+  "mechanism_effects": "format errors 0%; echo-instead-of-check 2%; command-not-found 17%",
+  "cost_effects": "-",
+  "manual_verdict": "upper reference for interface fit; tied with H2 on pass rate"
+ },
+ {
+  "id": "QEVAL-2x2",
+  "change": "H2 (interface_fixes+completion_gate) vs H0 on held-out synthetic tasks, base model and SFT model",
+  "switches": "interface_fixes+completion_gate",
+  "model": "Qwen3-Coder-30B (base / SFT)",
+  "pass_delta_pp": -0.9,
+  "ci_low": null,
+  "ci_high": null,
+  "mechanism_effects": "on the SFT model +2.7; interaction +3.6 [-0.9, +9.0]; format errors under H0 still 53% after training",
+  "cost_effects": "-",
+  "manual_verdict": "not significant"
+ }
+]
+
+PREVIOUS CANDIDATES in this loop (re-proposing the same configuration is rejected as a duplicate):
+[
+ {
+  "version": "v0+c01",
+  "status": "withdrawn",
+  "change": {
+   "wait_cap_sec": 30.0,
+   "adaptive_wait": true,
+   "wait_stable_sec": 3.0
+  },
+  "notes": [
+   "headroom below the gate: empty-wait turns are 0.045 per trial on the dev set (8 of 222 trials), which is what adaptive_wait mainly removes; on Seed its token saving (-11%) was not significant in the backtest"
+  ]
+ },
+ {
+  "version": "v0+c02",
+  "status": "withdrawn",
+  "change": {
+   "completion_gate": false
+  },
+  "notes": [
+   "headroom below the gate: turns spent after the gate bounce are 2.8% of all dev-set turns and 5.7% of input tokens (< 10% efficiency threshold); none of the 28 bounced trials passed, so removing the gate cannot gain passes either"
+  ]
+ },
+ {
+  "version": "v0+c03",
+  "status": "withdrawn",
+  "change": {
+   "wait_cap_sec": 30.0,
+   "completion_gate": false,
+   "adaptive_wait": true,
+   "wait_stable_sec": 3.0
+  },
+  "notes": [
+   "headroom below the gate: the two single changes together bound the saving at about 3% of turns and 6% of input tokens"
+  ]
+ },
+ {
+  "version": "v0+c04",
+  "status": "evaluated",
+  "change": {
+   "append_nudge": true
+  },
+  "notes": [
+   "D-088 correction (2026-10-14): the give-up guard that made this INCONCLUSIVE was confounded: turn-cap endings fell from 43 to 1, so trials that used to run out of turns now submitted (and mostly still failed). Among submitted attempts the share that failed was unchanged (80.7% vs 80.5%, paired by task, -0.2 pp [-6.1, +5.8]). There is no evidence of earlier giving up. The guard was replaced and this version is retested on fresh runs."
+  ]
+ }
+]

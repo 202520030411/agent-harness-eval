@@ -1,0 +1,301 @@
+{
+ "jobs": [
+  "qroll-h2-synth-train"
+ ],
+ "summary": {
+  "n_trials": 222,
+  "n_infra": 0,
+  "n_tasks": 74,
+  "pass_rate": 0.14864864864864866,
+  "timeouts": 6,
+  "mean_turns": 49.84234234234234,
+  "mean_minutes": 4.753370211261261,
+  "mean_tokens_in": 874161.0405405406
+ },
+ "modes": [
+  {
+   "mode": "format_error",
+   "label": "出现过格式错误（回复不是 harness 要的 JSON）",
+   "among": "all",
+   "prior": "HARNESS",
+   "evidence": "Qwen 四臂：H0 57% → H1 8%（宽松解析）→ H3 0%（原生工具调用）；D-055 / QWEN_PLAN §2–3",
+   "levers": [
+    "interface_fixes"
+   ],
+   "n": 42,
+   "denominator": 222,
+   "rate": 0.1891891891891892,
+   "share_of_failures": 0.21164021164021163,
+   "n_tasks": 30,
+   "examples": [
+    "data-transform--iot-daily-readin__fSV2jdE",
+    "data-transform--library-loan-sna__J2bvS26",
+    "data-transform--meter-daily-bill__9xRudDx"
+   ]
+  },
+  {
+   "mode": "format_stuck",
+   "label": "最后 3 步都是格式错误（卡死）",
+   "among": "all",
+   "prior": "HARNESS",
+   "evidence": "同上；阶段 0 3/90",
+   "levers": [
+    "interface_fixes"
+   ],
+   "n": 0,
+   "denominator": 222,
+   "rate": 0.0,
+   "share_of_failures": 0.0,
+   "n_tasks": 0,
+   "examples": []
+  },
+  {
+   "mode": "turn_cap",
+   "label": "跑满轮数上限",
+   "among": "all",
+   "prior": "MIXED",
+   "evidence": "Qwen 四臂：H0 9 → H1 1（多半是写坏 JSON 或把代码拆成一行行追加把轮数耗光）",
+   "levers": [
+    "interface_fixes",
+    "deliverable_checkpoint"
+   ],
+   "n": 42,
+   "denominator": 222,
+   "rate": 0.1891891891891892,
+   "share_of_failures": 0.2222222222222222,
+   "n_tasks": 31,
+   "examples": [
+    "data-transform--fleet-rental-mon__PVbNYM4",
+    "data-transform--game-event-score__SmvDy5V",
+    "data-transform--hospital-appoint__HjmDskM"
+   ]
+  },
+  {
+   "mode": "timeout",
+   "label": "超时（agent 时限用完）",
+   "among": "all",
+   "prior": "MIXED",
+   "evidence": "Seed：验证类改动把超时推高（grader_check 9→34）；adaptive_wait 不改通过率、省轮数",
+   "levers": [
+    "adaptive_wait",
+    "deliverable_checkpoint"
+   ],
+   "n": 6,
+   "denominator": 222,
+   "rate": 0.02702702702702703,
+   "share_of_failures": 0.031746031746031744,
+   "n_tasks": 6,
+   "examples": [
+    "data-transform--bus-stop-departu__Ru3KcYP",
+    "data-transform--recipe-shopping__yhFzWAu",
+    "data-transform--warehouse-moveme__vRQQqpv"
+   ]
+  },
+  {
+   "mode": "polling",
+   "label": "连续空等待（POLLING）",
+   "among": "failed",
+   "prior": "HARNESS",
+   "evidence": "Seed E4：adaptive_wait 让空等待轮 −27%、失败里 POLLING 13%→4%",
+   "levers": [
+    "adaptive_wait"
+   ],
+   "n": 0,
+   "denominator": 189,
+   "rate": 0.0,
+   "share_of_failures": 0.0,
+   "n_tasks": 0,
+   "examples": []
+  },
+  {
+   "mode": "stuck_at_prompt",
+   "label": "卡在交互提示（分页器、y/N、续行）",
+   "among": "failed",
+   "prior": "HARNESS",
+   "evidence": "taxonomy：交互提示归 harness；adaptive_wait 识别提示、interface_fixes 续行提示",
+   "levers": [
+    "adaptive_wait",
+    "interface_fixes"
+   ],
+   "n": 2,
+   "denominator": 189,
+   "rate": 0.010582010582010581,
+   "share_of_failures": 0.010582010582010581,
+   "n_tasks": 2,
+   "examples": [
+    "git-repair--recover-approved-win__JgytrxU",
+    "git-repair--recover-enrollment-b__fMMhJdd"
+   ]
+  },
+  {
+   "mode": "loop",
+   "label": "重复同一个失败动作（LOOP）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "Seed 上 stuck_reminder 从未触发（已退役，D-039）",
+   "levers": [],
+   "n": 0,
+   "denominator": 189,
+   "rate": 0.0,
+   "share_of_failures": 0.0,
+   "n_tasks": 0,
+   "examples": []
+  },
+  {
+   "mode": "truncated_read",
+   "label": "读类命令的输出被截断（TRUNCATED_READ）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "证据互相矛盾：README 归责节说换强模型后消失、改 harness 不变；但 E4 adaptive_wait 臂失败里占比 33%→14%（未同时跑，约 10→4 条）；D-043：判官给的证据 0/11 提到截断 → 更像伴随症状而不是原因。规则本身把它标成 harness 侧候选",
+   "levers": [
+    "adaptive_wait"
+   ],
+   "n": 76,
+   "denominator": 189,
+   "rate": 0.4021164021164021,
+   "share_of_failures": 0.4021164021164021,
+   "n_tasks": 36,
+   "examples": [
+    "data-transform--course-roster-js__KjvVyjA",
+    "data-transform--course-roster-js__PVNJd5F",
+    "data-transform--fleet-rental-mon__8CFNbNK"
+   ]
+  },
+  {
+   "mode": "command_not_found",
+   "label": "用了环境里没有的命令",
+   "among": "all",
+   "prior": "UNKNOWN",
+   "evidence": "Qwen 40% / gpt-6-sol 同规则 31%：不是 Qwen 特有；开跑前环境探测没用（40%→38%）",
+   "levers": [
+    "interface_fixes"
+   ],
+   "n": 99,
+   "denominator": 222,
+   "rate": 0.44594594594594594,
+   "share_of_failures": 0.4497354497354497,
+   "n_tasks": 49,
+   "examples": [
+    "data-transform--course-roster-js__KjvVyjA",
+    "data-transform--hospital-appoint__8C2GCHX",
+    "data-transform--hospital-appoint__HjmDskM"
+   ]
+  },
+  {
+   "mode": "echo_theater",
+   "label": "用 echo 打印“完成”代替真正的检查",
+   "among": "failed",
+   "prior": "HARNESS",
+   "evidence": "接口产物：Terminus 里失败 trial 59%，qwen-code 2%；交卷把关压不下去（42%→49%）——要靠新机制（需人审）",
+   "levers": [
+    "completion_gate"
+   ],
+   "n": 82,
+   "denominator": 189,
+   "rate": 0.43386243386243384,
+   "share_of_failures": 0.43386243386243384,
+   "n_tasks": 52,
+   "examples": [
+    "data-transform--bird-survey-form__B8rzG7e",
+    "data-transform--bus-stop-departu__9oQDjP9",
+    "data-transform--course-roster-js__KjvVyjA"
+   ]
+  },
+  {
+   "mode": "false_success",
+   "label": "明知没做成仍宣布完成",
+   "among": "failed",
+   "prior": "MODEL",
+   "evidence": "任何 harness 下都占失败的 23–31%，交卷把关压不下去 → 训练目标（QWEN_PLAN §3）",
+   "levers": [],
+   "n": 23,
+   "denominator": 189,
+   "rate": 0.12169312169312169,
+   "share_of_failures": 0.12169312169312169,
+   "n_tasks": 16,
+   "examples": [
+    "data-transform--game-event-score__S45UP52",
+    "data-transform--game-event-score__iLZEf8V",
+    "git-repair--recover-podcast-dige__MRKf6vJ"
+   ]
+  },
+  {
+   "mode": "claim_without_run",
+   "label": "宣布完成前最后一次改文件后没运行过任何东西",
+   "among": "all",
+   "prior": "MIXED",
+   "evidence": "H2 交卷把关打回 37/120，只有 4 个最终通过：能逼它查，查出来修不好",
+   "levers": [
+    "completion_gate",
+    "verifier_gate"
+   ],
+   "n": 19,
+   "denominator": 222,
+   "rate": 0.08558558558558559,
+   "share_of_failures": 0.10052910052910052,
+   "n_tasks": 17,
+   "examples": [
+    "data-transform--bus-stop-departu__KUjEiQL",
+    "data-transform--podcast-daily-do__QYN2YU4",
+    "git-repair--recover-approved-win__JgytrxU"
+   ]
+  },
+  {
+   "mode": "premature_completion",
+   "label": "宣布完成但判分失败（PREMATURE_COMPLETION）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "Seed：规则层 64% 的失败；判官把它拆成误读 / 验证不足 / 题面不清",
+   "levers": [
+    "completion_gate",
+    "verifier_gate",
+    "task_contract"
+   ],
+   "n": 140,
+   "denominator": 189,
+   "rate": 0.7407407407407407,
+   "share_of_failures": 0.7407407407407407,
+   "n_tasks": 65,
+   "examples": [
+    "data-transform--bird-survey-form__B8rzG7e",
+    "data-transform--bus-stop-departu__9oQDjP9",
+    "data-transform--bus-stop-departu__KUjEiQL"
+   ]
+  },
+  {
+   "mode": "budget_exhausted",
+   "label": "没宣布完成就用完预算（BUDGET_EXHAUSTED）",
+   "among": "failed",
+   "prior": "MIXED",
+   "evidence": "Seed 归责：强模型上消失、改 harness 不变 → 偏模型；交付检查点让无交付 11→6",
+   "levers": [
+    "deliverable_checkpoint",
+    "adaptive_wait"
+   ],
+   "n": 48,
+   "denominator": 189,
+   "rate": 0.25396825396825395,
+   "share_of_failures": 0.25396825396825395,
+   "n_tasks": 34,
+   "examples": [
+    "data-transform--bus-stop-departu__Ru3KcYP",
+    "data-transform--fleet-rental-mon__PVbNYM4",
+    "data-transform--game-event-score__SmvDy5V"
+   ]
+  },
+  {
+   "mode": "integrity_suspect",
+   "label": "碰过判题文件或日志（作弊嫌疑）",
+   "among": "all",
+   "prior": "MODEL",
+   "evidence": "规则层；通过 + 嫌疑 = 可能的 reward hacking，送人看",
+   "levers": [],
+   "n": 0,
+   "denominator": 222,
+   "rate": 0.0,
+   "share_of_failures": 0.0,
+   "n_tasks": 0,
+   "examples": []
+  }
+ ]
+}

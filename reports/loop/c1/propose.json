@@ -1,0 +1,98 @@
+{
+ "added": [
+  "v0+c01",
+  "v0+c02",
+  "v0+c03"
+ ],
+ "rejected": [
+  {
+   "from": "gpt-6-sol#1",
+   "changes": {
+    "adaptive_wait": true
+   },
+   "errors": [
+    "duplicate of existing version v0+c01 (status proposed)"
+   ]
+  },
+  {
+   "from": "claude-sonnet-5#0",
+   "changes": {
+    "adaptive_wait": true
+   },
+   "errors": [
+    "duplicate of existing version v0+c01 (status proposed)"
+   ]
+  },
+  {
+   "from": "claude-sonnet-5#0",
+   "changes": {
+    "completion_gate": false
+   },
+   "errors": [
+    "duplicate of existing version v0+c02 (status proposed)"
+   ]
+  }
+ ],
+ "review_proposals": [
+  {
+   "from": "gpt-6-sol#0",
+   "title": "Distinguish echo-only commands from verification in tool feedback",
+   "target_mode": "echo_theater",
+   "what_to_build": "Instrument executed commands to flag echo-only success claims in the existing tool result; do not count those commands as a post-edit check in the existing one-bounce completion gate. Avoid extra model calls or a second bounce.",
+   "why": "Echo theater affected 82 of 189 failed trials, and the broad completion gate did not reduce it. This targets what counts as checking rather than adding another verification request.",
+   "how_to_test": "First test command classification against legitimate echo-based fixtures. Then run a paired v0 comparison tracking echo_theater, no_run_before_claim, passes, turns, and timeouts.",
+   "risk": "Echo can be a legitimate part of a test; misclassification or additional gate bounces could consume time without helping the model fix failures."
+  },
+  {
+   "from": "gpt-6-sol#0",
+   "title": "Assess a native-tool bridge for the Terminus agent",
+   "target_mode": "echo_theater",
+   "what_to_build": "Determine whether vLLM native tool calls can be bridged into Terminus while retaining the evaluation's turn limit, summarization, and terminal semantics. Do not build it if the JSON keystroke protocol is mandatory.",
+   "why": "The different qwen-code harness had much less echo theater (2% versus 49%) and fewer missing-command failures, but its pass-rate advantage was uncertain; this is an interface hypothesis, not an established gain.",
+   "how_to_test": "Check protocol eligibility and tool-call reliability first. If eligible, compare paired trials against v0 on echo_theater, cnf, passes, turns, tokens, and minutes.",
+   "risk": "This is a substantial interface change, may be ineligible under the evaluation protocol, and may not reproduce qwen-code's behavior."
+  },
+  {
+   "from": "gpt-6-sol#1",
+   "title": "Native tool-call adapter for Terminus",
+   "target_mode": "echo_theater",
+   "what_to_build": "A human-reviewed adapter that accepts native tool calls in place of the JSON keystroke protocol while preserving the evaluation limits and logging.",
+   "why": "The qwen-code reference had 2% echo-instead-of-check versus roughly 49% with H2, without adding a verification prompt. That comparison changed agents, so it is a mechanism lead, not causal evidence.",
+   "how_to_test": "First validate tool execution and log equivalence; then run paired v0 comparisons measuring echo_theater, pass rate, turns, and timeouts.",
+   "risk": "Substantial interface work; the reference tied H2 on pass rate, and differences between agents may explain the echo result."
+  },
+  {
+   "from": "claude-sonnet-5#0",
+   "title": "Harness-side automatic post-claim test re-run (no model turn)",
+   "target_mode": "echo_theater",
+   "what_to_build": "When the model claims completion, have the harness itself re-execute the last known test/validation command (or a task-declared check command) server-side and compare output, without spending an agent turn asking the model to verify. Only if this silent check fails does the harness send one corrective message back with the failing output.",
+   "why": "echo_theater (43% of failures) and premature_completion are not fixed by prompting the model to check itself (completion_gate, self_check, grader_check all failed or were neutral/harmful), because the model cannot act on its own unreliable self-report and verification turns eat the time budget. A check that costs zero model turns sidesteps the turn-budget problem that sank grader_check (timeouts 9->34).",
+   "how_to_test": "A/B against v0 on the same dev set; measure echo_theater rate, false_success rate, and turns/timeouts (should be ~unchanged since no extra agent turn is spent).",
+   "risk": "Requires reliably identifying a 'last known test command' per task, which may not exist for all task types; could misfire on tasks without a clear check command."
+  },
+  {
+   "from": "claude-sonnet-5#0",
+   "title": "Automatic truncated-output continuation",
+   "target_mode": "truncated_read",
+   "what_to_build": "Detect truncation markers/heuristics in command output server-side and automatically issue a continuation read (e.g. further pagination) and append it to context, instead of relying on the model to notice and re-request.",
+   "why": "truncated_read affects 40% of failures but judge evidence says it's more a symptom than the root cause; a cheap, turn-free harness fix would let us separate genuine effect from confound without spending agent turns.",
+   "how_to_test": "Compare truncated_read incidence and downstream pass rate against v0 and against the adaptive_wait arm to see if it's additive.",
+   "risk": "Needs new truncation-detection code; risk of false positives injecting irrelevant extra output into context, raising tokens_in."
+  },
+  {
+   "from": "claude-sonnet-5#0",
+   "title": "Deliverable-conditioned completion_gate",
+   "target_mode": "premature_completion",
+   "what_to_build": "Only trigger the completion-gate bounce when a concrete declared deliverable file is missing or unchanged since the last run, instead of gating every first completion claim; skip the gate when the deliverable looks present and tested.",
+   "why": "completion_gate's bounce fires broadly (37/120 trials) but fixes almost nothing (4/37) and raises turn_cap hits; a narrower trigger tied to the deliverable-checkpoint signal (which precisely detects missing deliverables) might cut wasted bounces while keeping the few cases where it helps.",
+   "how_to_test": "Compare bounce rate, turn_cap rate, and pass rate against v0 and against completion_gate=false.",
+   "risk": "New conditional logic to write and validate; could reduce to no-op if deliverable detection is unreliable across task families."
+  }
+ ],
+ "notes": [
+  "gpt-6-sol sample 0: $0.045; 1 auto, 2 review, 5 rejected-by-model",
+  "gpt-6-sol sample 1: $0.043; 2 auto, 1 review, 4 rejected-by-model",
+  "claude-sonnet-5 sample 0: $0.136; 3 auto, 3 review, 4 rejected-by-model"
+ ],
+ "spent_usd": 0.2238
+}

@@ -1,0 +1,39 @@
+{
+  "auto_candidates": [],
+  "review_proposals": [
+    {
+      "title": "Notice for an observed failed check",
+      "target_mode": "premature_completion after the agent has seen an error or mismatch",
+      "what_to_build": "Detect explicit command failures or comparison mismatches and append one brief notice to that terminal output asking the agent to reconcile the result before claiming success; do not require a new check or add a model turn.",
+      "why": "In the review of 80 failed trajectories, many agents claimed completion despite their own last check showing a problem. The existing completion gate rarely rescued bounced attempts. The frequency of *detectable* mismatches is not yet measured, so an 8 pp pass gain is not justified.",
+      "how_to_test": "First measure trigger frequency and false positives on v0 logs, including whether the mismatch preceded a completion claim. Proceed to fresh paired runs only if coverage is substantial; report passes, turns, tokens, minutes, timeouts, and terminal-outcome mix separately.",
+      "risk": "A heuristic may mistake acceptable differences for failures, or prompt unproductive repair that consumes the remaining time."
+    },
+    {
+      "title": "Review native tool-call interface",
+      "target_mode": "echo-theater and interface-induced command behavior",
+      "what_to_build": "Investigate a native tool-call adapter for the existing agent, with equivalent terminal access and evaluation limits; this is a new mechanism, not a configuration switch.",
+      "why": "The separate qwen-code agent had far less echo-theater, but its pass rate was tied with the current-style harness. That comparison motivates investigation, not a predicted pass gain.",
+      "how_to_test": "Check protocol and tool equivalence first, then compare paired fresh runs against v0 for echo-theater, passes, turns, tokens, minutes, and timeouts.",
+      "risk": "The apparent difference may come from other agent behavior; implementation is substantial and may not improve passes."
+    }
+  ],
+  "rejected_ideas": [
+    {
+      "idea": "Re-propose adaptive_wait, disable completion_gate, or combine them for efficiency",
+      "why": "These were withdrawn, not evaluated failures. Their measured targets bound the combined saving at about 3% of turns and 6% of input tokens, below the 10% gate."
+    },
+    {
+      "idea": "Use a same_error, repeat_command, or turn_budget custom note to address completion after a mismatch",
+      "why": "Those triggers do not identify the observed last-check mismatch; their relevant firing frequency and coverage are unknown. A note at an unrelated turn has no defensible path to the required pass gain."
+    },
+    {
+      "idea": "Add an optional verification skill or enable verifier_gate",
+      "why": "A skill must be opened and may cost turns without reliably being used at the mismatch. Prior verification gates added cost and did not establish a pass gain under the time limit."
+    },
+    {
+      "idea": "Re-propose append_nudge",
+      "why": "It is already scheduled for a fresh retest. Its earlier result was inconclusive under a confounded guard, not a confirmed win or failure."
+    }
+  ]
+}

@@ -1,0 +1,2172 @@
+{
+ "pairs": [
+  {
+   "id": "E4 契约",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4-contract"
+   ],
+   "concurrent": false,
+   "expected": "不确定 +7.7 [−1.3, +17.9]；之后四批没复现",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass +7.7 pp [-1.3, +17.9]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 69.2,
+    "delta": 7.7,
+    "ci": [
+     -1.3,
+     17.9
+    ],
+    "rel": 0.125
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 13.667,
+     "delta": -0.577,
+     "ci": [
+      -1.821,
+      0.538
+     ],
+     "rel": -0.041
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 223065.436,
+     "delta": -4522.487,
+     "ci": [
+      -60504.167,
+      37936.218
+     ],
+     "rel": -0.02
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 8.119,
+     "delta": 0.519,
+     "ci": [
+      -0.111,
+      1.206
+     ],
+     "rel": 0.068
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 17.9,
+    "delta": 5.1,
+    "ci": [
+     0.0,
+     11.5
+    ],
+    "rel": 0.4
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4 self_check",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4-selfcheck"
+   ],
+   "concurrent": false,
+   "expected": "不确定 +6.4 [−2.6, +15.4]；成本 +35%",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "cost up without a pass-rate gain: turns +17%, tokens_in +42%"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 67.9,
+    "delta": 6.4,
+    "ci": [
+     -2.6,
+     15.4
+    ],
+    "rel": 0.104
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 16.667,
+     "delta": 2.423,
+     "ci": [
+      0.103,
+      4.923
+     ],
+     "rel": 0.17
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 323389.821,
+     "delta": 95801.897,
+     "ci": [
+      3199.09,
+      221792.846
+     ],
+     "rel": 0.421
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 8.157,
+     "delta": 0.557,
+     "ci": [
+      -0.286,
+      1.474
+     ],
+     "rel": 0.073
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 17.9,
+    "delta": 5.1,
+    "ci": [
+     0.0,
+     11.5
+    ],
+    "rel": 0.4
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4 auditor",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4-auditor"
+   ],
+   "concurrent": false,
+   "expected": "退役：+0.0，超时 10→17，成本 +29%",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "cost up without a pass-rate gain: turns +13%, minutes +29%"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 61.5,
+    "delta": 0.0,
+    "ci": [
+     -11.5,
+     10.3
+    ],
+    "rel": 0.0
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 16.141,
+     "delta": 1.897,
+     "ci": [
+      0.013,
+      4.128
+     ],
+     "rel": 0.133
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 316088.0,
+     "delta": 88500.077,
+     "ci": [
+      -3255.282,
+      209256.974
+     ],
+     "rel": 0.389
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 9.806,
+     "delta": 2.206,
+     "ci": [
+      1.382,
+      3.077
+     ],
+     "rel": 0.29
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 21.8,
+    "delta": 9.0,
+    "ci": [
+     -1.3,
+     20.5
+    ],
+    "rel": 0.7
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4 hygiene",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4-hygiene"
+   ],
+   "concurrent": false,
+   "expected": "退役：−1.3",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass -1.3 pp [-12.8, +10.3]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 60.3,
+    "delta": -1.3,
+    "ci": [
+     -12.8,
+     10.3
+    ],
+    "rel": -0.021
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 13.808,
+     "delta": -0.436,
+     "ci": [
+      -2.026,
+      1.231
+     ],
+     "rel": -0.031
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 187814.526,
+     "delta": -39773.397,
+     "ci": [
+      -116911.679,
+      18121.397
+     ],
+     "rel": -0.175
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 8.089,
+     "delta": 0.489,
+     "ci": [
+      -0.11,
+      1.126
+     ],
+     "rel": 0.064
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 15.4,
+    "delta": 2.6,
+    "ci": [
+     0.0,
+     6.4
+    ],
+    "rel": 0.2
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4 adaptive_wait",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4-adaptive-wait"
+   ],
+   "concurrent": false,
+   "expected": "只省资源：空等待轮 −27%、token −11%",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass -2.6 pp [-14.1, +9.0]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 59.0,
+    "delta": -2.6,
+    "ci": [
+     -14.1,
+     9.0
+    ],
+    "rel": -0.042
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 13.59,
+     "delta": -0.654,
+     "ci": [
+      -2.615,
+      1.038
+     ],
+     "rel": -0.046
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 201819.038,
+     "delta": -25768.885,
+     "ci": [
+      -99175.628,
+      26710.692
+     ],
+     "rel": -0.113
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 8.293,
+     "delta": 0.693,
+     "ci": [
+      -0.103,
+      1.632
+     ],
+     "rel": 0.091
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 15.4,
+    "delta": 2.6,
+    "ci": [
+     -3.8,
+     10.3
+    ],
+    "rel": 0.2
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4t 契约（模糊题）",
+   "baseline": [
+    "e4t-baseline"
+   ],
+   "candidate": [
+    "e4t-contract"
+   ],
+   "concurrent": false,
+   "expected": "+3.6 [−8.3, +20.2]",
+   "null": false,
+   "decision": "INVALID",
+   "reasons": [
+    "baseline: 1 tasks have fewer than 3 usable attempts"
+   ],
+   "pass": {
+    "n_tasks": 14,
+    "base": 65.5,
+    "cand": 69.0,
+    "delta": 3.6,
+    "ci": [
+     -8.3,
+     20.2
+    ],
+    "rel": 0.055
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 14,
+     "base": 15.619,
+     "cand": 12.738,
+     "delta": -2.881,
+     "ci": [
+      -5.857,
+      -0.024
+     ],
+     "rel": -0.184
+    },
+    "tokens_in": {
+     "n_tasks": 14,
+     "base": 228461.798,
+     "cand": 152275.095,
+     "delta": -76186.702,
+     "ci": [
+      -167624.881,
+      -106.226
+     ],
+     "rel": -0.333
+    },
+    "minutes": {
+     "n_tasks": 14,
+     "base": 6.648,
+     "cand": 6.123,
+     "delta": -0.526,
+     "ci": [
+      -1.607,
+      0.513
+     ],
+     "rel": -0.079
+    }
+   },
+   "timeout": {
+    "n_tasks": 14,
+    "base": 19.0,
+    "cand": 9.5,
+    "delta": -9.5,
+    "ci": [
+     -16.7,
+     -2.4
+    ],
+    "rel": -0.5
+   },
+   "anchors": {
+    "n_anchors": 7,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": "PROVISIONAL",
+   "relaxed_reasons": [
+    "cheaper, but the pass-rate CI cannot rule out a drop larger than the noise floor (+3.6 pp [-8.3, +20.2]); needs a larger confirmation batch"
+   ],
+   "n_tasks": 14,
+   "attempts": [
+    42,
+    42
+   ]
+  },
+  {
+   "id": "E4v2 交付检查点",
+   "baseline": [
+    "e4v2-baseline"
+   ],
+   "candidate": [
+    "e4v2-checkpoint"
+   ],
+   "concurrent": true,
+   "expected": "机制成立，通过率 −5.1，成本 −17%",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass -5.1 pp [-15.4, +3.8]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 65.4,
+    "cand": 60.3,
+    "delta": -5.1,
+    "ci": [
+     -15.4,
+     3.8
+    ],
+    "rel": -0.078
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 15.795,
+     "cand": 13.91,
+     "delta": -1.885,
+     "ci": [
+      -4.038,
+      0.013
+     ],
+     "rel": -0.119
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 299932.192,
+     "cand": 233387.679,
+     "delta": -66544.513,
+     "ci": [
+      -139373.718,
+      -2748.103
+     ],
+     "rel": -0.222
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.672,
+     "cand": 7.268,
+     "delta": -0.404,
+     "ci": [
+      -1.094,
+      0.261
+     ],
+     "rel": -0.053
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 11.5,
+    "cand": 10.3,
+    "delta": -1.3,
+    "ci": [
+     -7.7,
+     3.8
+    ],
+    "rel": -0.111
+   },
+   "anchors": {
+    "n_anchors": 13,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4v2 grader_check",
+   "baseline": [
+    "e4v2-baseline"
+   ],
+   "candidate": [
+    "e4v2-gradercheck"
+   ],
+   "concurrent": true,
+   "expected": "有害：超时 9→34，成本 +110%",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "anchor tasks dropped to 0: ['pytorch-model-cli']",
+    "timeouts up +32.1 pp [+17.9, +46.2] without a pass-rate gain",
+    "cost up without a pass-rate gain: turns +171%, tokens_in +298%, minutes +66%"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 65.4,
+    "cand": 59.0,
+    "delta": -6.4,
+    "ci": [
+     -19.2,
+     6.4
+    ],
+    "rel": -0.098
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 15.795,
+     "cand": 42.859,
+     "delta": 27.064,
+     "ci": [
+      18.962,
+      35.821
+     ],
+     "rel": 1.713
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 299932.192,
+     "cand": 1195077.167,
+     "delta": 895144.974,
+     "ci": [
+      579819.449,
+      1225538.846
+     ],
+     "rel": 2.984
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.672,
+     "cand": 12.72,
+     "delta": 5.048,
+     "ci": [
+      3.736,
+      6.407
+     ],
+     "rel": 0.658
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 11.5,
+    "cand": 43.6,
+    "delta": 32.1,
+    "ci": [
+     17.9,
+     46.2
+    ],
+    "rel": 2.778
+   },
+   "anchors": {
+    "n_anchors": 13,
+    "dropped_to_zero": [
+     "pytorch-model-cli"
+    ],
+    "failed": true
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "E4p 契约 v1",
+   "baseline": [
+    "e4p-baseline"
+   ],
+   "candidate": [
+    "e4p-contract-v1"
+   ],
+   "concurrent": true,
+   "expected": "无效 −2.4 [−8.9, +4.1]",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass -2.4 pp [-8.9, +4.1]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 41,
+    "base": 76.4,
+    "cand": 74.0,
+    "delta": -2.4,
+    "ci": [
+     -8.9,
+     4.1
+    ],
+    "rel": -0.032
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 41,
+     "base": 13.472,
+     "cand": 12.52,
+     "delta": -0.951,
+     "ci": [
+      -1.797,
+      -0.146
+     ],
+     "rel": -0.071
+    },
+    "tokens_in": {
+     "n_tasks": 41,
+     "base": 204363.967,
+     "cand": 207296.976,
+     "delta": 2933.008,
+     "ci": [
+      -30317.488,
+      36537.789
+     ],
+     "rel": 0.014
+    },
+    "minutes": {
+     "n_tasks": 41,
+     "base": 6.073,
+     "cand": 6.397,
+     "delta": 0.324,
+     "ci": [
+      -0.126,
+      0.769
+     ],
+     "rel": 0.053
+    }
+   },
+   "timeout": {
+    "n_tasks": 41,
+    "base": 10.6,
+    "cand": 13.0,
+    "delta": 2.4,
+    "ci": [
+     -0.8,
+     5.7
+    ],
+    "rel": 0.231
+   },
+   "anchors": {
+    "n_anchors": 23,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 41,
+   "attempts": [
+    123,
+    123
+   ]
+  },
+  {
+   "id": "E4p 契约 v2",
+   "baseline": [
+    "e4p-baseline"
+   ],
+   "candidate": [
+    "e4p-contract-v2"
+   ],
+   "concurrent": true,
+   "expected": "无效 +0.0 [−9.8, +8.9]",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "anchor tasks dropped to 0: ['configure-git-webserver']",
+    "cost up without a pass-rate gain: minutes +14%"
+   ],
+   "pass": {
+    "n_tasks": 41,
+    "base": 76.4,
+    "cand": 76.4,
+    "delta": 0.0,
+    "ci": [
+     -9.8,
+     8.9
+    ],
+    "rel": 0.0
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 41,
+     "base": 13.472,
+     "cand": 12.78,
+     "delta": -0.691,
+     "ci": [
+      -2.016,
+      0.642
+     ],
+     "rel": -0.051
+    },
+    "tokens_in": {
+     "n_tasks": 41,
+     "base": 204363.967,
+     "cand": 198599.618,
+     "delta": -5764.35,
+     "ci": [
+      -74412.715,
+      47118.398
+     ],
+     "rel": -0.028
+    },
+    "minutes": {
+     "n_tasks": 41,
+     "base": 6.073,
+     "cand": 6.93,
+     "delta": 0.857,
+     "ci": [
+      0.145,
+      1.622
+     ],
+     "rel": 0.141
+    }
+   },
+   "timeout": {
+    "n_tasks": 41,
+    "base": 10.6,
+    "cand": 11.4,
+    "delta": 0.8,
+    "ci": [
+     -5.7,
+     8.1
+    ],
+    "rel": 0.077
+   },
+   "anchors": {
+    "n_anchors": 23,
+    "dropped_to_zero": [
+     "configure-git-webserver"
+    ],
+    "failed": true
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 41,
+   "attempts": [
+    123,
+    123
+   ]
+  },
+  {
+   "id": "H17 条件式契约",
+   "baseline": [
+    "h17-baseline"
+   ],
+   "candidate": [
+    "h17-conditional"
+   ],
+   "concurrent": true,
+   "expected": "预测证伪 +0.0 [−6.5, +6.5]",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "cost up without a pass-rate gain: minutes +18%"
+   ],
+   "pass": {
+    "n_tasks": 41,
+    "base": 76.4,
+    "cand": 76.4,
+    "delta": 0.0,
+    "ci": [
+     -6.5,
+     6.5
+    ],
+    "rel": 0.0
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 41,
+     "base": 12.301,
+     "cand": 12.276,
+     "delta": -0.024,
+     "ci": [
+      -0.699,
+      0.61
+     ],
+     "rel": -0.002
+    },
+    "tokens_in": {
+     "n_tasks": 41,
+     "base": 175026.504,
+     "cand": 158200.252,
+     "delta": -16826.252,
+     "ci": [
+      -40699.106,
+      2859.179
+     ],
+     "rel": -0.096
+    },
+    "minutes": {
+     "n_tasks": 41,
+     "base": 5.851,
+     "cand": 6.891,
+     "delta": 1.04,
+     "ci": [
+      0.556,
+      1.489
+     ],
+     "rel": 0.178
+    }
+   },
+   "timeout": {
+    "n_tasks": 41,
+    "base": 9.8,
+    "cand": 12.2,
+    "delta": 2.4,
+    "ci": [
+     -0.8,
+     6.5
+    ],
+    "rel": 0.25
+   },
+   "anchors": {
+    "n_anchors": 25,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 41,
+   "attempts": [
+    123,
+    123
+   ]
+  },
+  {
+   "id": "E4s 契约（gpt-6-sol，k=2）",
+   "baseline": [
+    "e4s-baseline"
+   ],
+   "candidate": [
+    "e4s-contract"
+   ],
+   "concurrent": false,
+   "expected": "拐杖：+0.0，成本 +57%",
+   "null": false,
+   "decision": "INVALID",
+   "reasons": [
+    "baseline: 25 tasks have fewer than 3 usable attempts",
+    "candidate: infrastructure-error rate 12% > 5%",
+    "candidate: 25 tasks have fewer than 3 usable attempts"
+   ],
+   "pass": null,
+   "efficiency": null,
+   "timeout": null,
+   "anchors": null,
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    52,
+    52
+   ]
+  },
+  {
+   "id": "E4s self_check（gpt-6-sol，k=2）",
+   "baseline": [
+    "e4s-baseline"
+   ],
+   "candidate": [
+    "e4s-selfcheck"
+   ],
+   "concurrent": false,
+   "expected": "有害：−2.1，轮数近翻倍",
+   "null": false,
+   "decision": "INVALID",
+   "reasons": [
+    "baseline: 25 tasks have fewer than 3 usable attempts",
+    "candidate: infrastructure-error rate 13% > 5%",
+    "candidate: 24 tasks have fewer than 3 usable attempts"
+   ],
+   "pass": null,
+   "efficiency": null,
+   "timeout": null,
+   "anchors": null,
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    52,
+    52
+   ]
+  },
+  {
+   "id": "Qwen H1 接口修补",
+   "baseline": [
+    "qarm-h0-baseline",
+    "qarm2-h0-baseline"
+   ],
+   "candidate": [
+    "qarm-h1-interface",
+    "qarm2-h1-interface"
+   ],
+   "concurrent": true,
+   "expected": "+5.0 [−5.0, +16.7] 不显著；格式错误轮 −93%",
+   "null": false,
+   "decision": "ACCEPT_EFFICIENCY",
+   "reasons": [
+    "cheaper and non-inferior: turns -18%, tokens_in -41%; pass +5.0 pp, CI lower -5.0 ≥ −8.0"
+   ],
+   "pass": {
+    "n_tasks": 30,
+    "base": 15.8,
+    "cand": 20.8,
+    "delta": 5.0,
+    "ci": [
+     -5.0,
+     16.7
+    ],
+    "rel": 0.316
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 30,
+     "base": 33.658,
+     "cand": 27.65,
+     "delta": -6.008,
+     "ci": [
+      -11.275,
+      -1.217
+     ],
+     "rel": -0.179
+    },
+    "tokens_in": {
+     "n_tasks": 30,
+     "base": 513192.842,
+     "cand": 302442.717,
+     "delta": -210750.125,
+     "ci": [
+      -393606.908,
+      -58495.258
+     ],
+     "rel": -0.411
+    },
+    "minutes": {
+     "n_tasks": 30,
+     "base": 2.65,
+     "cand": 2.667,
+     "delta": 0.017,
+     "ci": [
+      -0.531,
+      0.699
+     ],
+     "rel": 0.006
+    }
+   },
+   "timeout": {
+    "n_tasks": 30,
+    "base": 0.8,
+    "cand": 3.3,
+    "delta": 2.5,
+    "ci": [
+     0.0,
+     6.7
+    ],
+    "rel": 3.0
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 30,
+   "attempts": [
+    120,
+    120
+   ]
+  },
+  {
+   "id": "Qwen H2 vs H0",
+   "baseline": [
+    "qarm-h0-baseline",
+    "qarm2-h0-baseline"
+   ],
+   "candidate": [
+    "qarm-h2-gate",
+    "qarm2-h2-gate"
+   ],
+   "concurrent": true,
+   "expected": "+5.8 [−5.0, +17.5] 不显著",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass +5.8 pp [-5.0, +17.5]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 30,
+    "base": 15.8,
+    "cand": 21.7,
+    "delta": 5.8,
+    "ci": [
+     -5.0,
+     17.5
+    ],
+    "rel": 0.368
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 30,
+     "base": 33.658,
+     "cand": 33.158,
+     "delta": -0.5,
+     "ci": [
+      -5.867,
+      4.475
+     ],
+     "rel": -0.015
+    },
+    "tokens_in": {
+     "n_tasks": 30,
+     "base": 513192.842,
+     "cand": 506183.667,
+     "delta": -7009.175,
+     "ci": [
+      -191742.542,
+      168244.3
+     ],
+     "rel": -0.014
+    },
+    "minutes": {
+     "n_tasks": 30,
+     "base": 2.65,
+     "cand": 3.239,
+     "delta": 0.589,
+     "ci": [
+      -0.188,
+      1.547
+     ],
+     "rel": 0.222
+    }
+   },
+   "timeout": {
+    "n_tasks": 30,
+    "base": 0.8,
+    "cand": 3.3,
+    "delta": 2.5,
+    "ci": [
+     0.0,
+     6.7
+    ],
+    "rel": 3.0
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 30,
+   "attempts": [
+    120,
+    120
+   ]
+  },
+  {
+   "id": "Qwen 交卷把关（H2 vs H1）",
+   "baseline": [
+    "qarm-h1-interface",
+    "qarm2-h1-interface"
+   ],
+   "candidate": [
+    "qarm-h2-gate",
+    "qarm2-h2-gate"
+   ],
+   "concurrent": true,
+   "expected": "+0.8 [−4.2, +6.7]，预注册预测证伪",
+   "null": false,
+   "decision": "REJECT",
+   "reasons": [
+    "cost up without a pass-rate gain: turns +20%, tokens_in +67%"
+   ],
+   "pass": {
+    "n_tasks": 30,
+    "base": 20.8,
+    "cand": 21.7,
+    "delta": 0.8,
+    "ci": [
+     -4.2,
+     6.7
+    ],
+    "rel": 0.04
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 30,
+     "base": 27.65,
+     "cand": 33.158,
+     "delta": 5.508,
+     "ci": [
+      1.142,
+      10.042
+     ],
+     "rel": 0.199
+    },
+    "tokens_in": {
+     "n_tasks": 30,
+     "base": 302442.717,
+     "cand": 506183.667,
+     "delta": 203740.95,
+     "ci": [
+      47257.35,
+      438125.183
+     ],
+     "rel": 0.674
+    },
+    "minutes": {
+     "n_tasks": 30,
+     "base": 2.667,
+     "cand": 3.239,
+     "delta": 0.573,
+     "ci": [
+      -0.08,
+      1.456
+     ],
+     "rel": 0.215
+    }
+   },
+   "timeout": {
+    "n_tasks": 30,
+    "base": 3.3,
+    "cand": 3.3,
+    "delta": 0.0,
+    "ci": [
+     -2.5,
+     2.5
+    ],
+    "rel": 0.0
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 30,
+   "attempts": [
+    120,
+    120
+   ]
+  },
+  {
+   "id": "合成留出题 H2 vs H0（原版）",
+   "baseline": [
+    "qeval-base-synth-h0"
+   ],
+   "candidate": [
+    "qeval-base-synth"
+   ],
+   "concurrent": true,
+   "expected": "−0.9 不显著",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass -0.9 pp [-5.4, +3.6]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 37,
+    "base": 14.4,
+    "cand": 13.5,
+    "delta": -0.9,
+    "ci": [
+     -5.4,
+     3.6
+    ],
+    "rel": -0.062
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 37,
+     "base": 45.117,
+     "cand": 43.874,
+     "delta": -1.243,
+     "ci": [
+      -7.532,
+      5.072
+     ],
+     "rel": -0.028
+    },
+    "tokens_in": {
+     "n_tasks": 37,
+     "base": 682040.91,
+     "cand": 735230.297,
+     "delta": 53189.387,
+     "ci": [
+      -100502.91,
+      206464.171
+     ],
+     "rel": 0.078
+    },
+    "minutes": {
+     "n_tasks": 37,
+     "base": 6.501,
+     "cand": 7.164,
+     "delta": 0.663,
+     "ci": [
+      -0.214,
+      1.521
+     ],
+     "rel": 0.102
+    }
+   },
+   "timeout": {
+    "n_tasks": 37,
+    "base": 3.6,
+    "cand": 7.2,
+    "delta": 3.6,
+    "ci": [
+     -0.9,
+     8.1
+    ],
+    "rel": 1.0
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 37,
+   "attempts": [
+    111,
+    111
+   ]
+  },
+  {
+   "id": "合成留出题 H2 vs H0（SFT）",
+   "baseline": [
+    "qeval-teach-synth-h0"
+   ],
+   "candidate": [
+    "qeval-teach-synth"
+   ],
+   "concurrent": true,
+   "expected": "+2.7 不显著",
+   "null": false,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass +2.7 pp [-3.6, +9.0]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 37,
+    "base": 13.5,
+    "cand": 16.2,
+    "delta": 2.7,
+    "ci": [
+     -3.6,
+     9.0
+    ],
+    "rel": 0.2
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 37,
+     "base": 55.099,
+     "cand": 49.829,
+     "delta": -5.27,
+     "ci": [
+      -11.838,
+      1.252
+     ],
+     "rel": -0.096
+    },
+    "tokens_in": {
+     "n_tasks": 37,
+     "base": 952279.955,
+     "cand": 871164.82,
+     "delta": -81115.135,
+     "ci": [
+      -275492.523,
+      116848.883
+     ],
+     "rel": -0.085
+    },
+    "minutes": {
+     "n_tasks": 37,
+     "base": 7.362,
+     "cand": 7.131,
+     "delta": -0.231,
+     "ci": [
+      -1.019,
+      0.59
+     ],
+     "rel": -0.031
+    }
+   },
+   "timeout": {
+    "n_tasks": 37,
+    "base": 11.7,
+    "cand": 12.6,
+    "delta": 0.9,
+    "ci": [
+     -5.4,
+     7.2
+    ],
+    "rel": 0.077
+   },
+   "anchors": {
+    "n_anchors": 1,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 37,
+   "attempts": [
+    111,
+    111
+   ]
+  },
+  {
+   "id": "SWE-bench Verified adaptive_wait（k=1）",
+   "baseline": [
+    "swev-smoke-baseline"
+   ],
+   "candidate": [
+    "swev-smoke-adaptive"
+   ],
+   "concurrent": true,
+   "expected": "通过相同；用时 −32%",
+   "null": false,
+   "decision": "INVALID",
+   "reasons": [
+    "baseline: 20 tasks have fewer than 3 usable attempts",
+    "candidate: 20 tasks have fewer than 3 usable attempts"
+   ],
+   "pass": {
+    "n_tasks": 20,
+    "base": 75.0,
+    "cand": 75.0,
+    "delta": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "rel": 0.0
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 20,
+     "base": 26.9,
+     "cand": 25.05,
+     "delta": -1.85,
+     "ci": [
+      -8.45,
+      4.15
+     ],
+     "rel": -0.069
+    },
+    "tokens_in": {
+     "n_tasks": 20,
+     "base": 493120.7,
+     "cand": 412092.2,
+     "delta": -81028.5,
+     "ci": [
+      -283550.05,
+      107455.35
+     ],
+     "rel": -0.164
+    },
+    "minutes": {
+     "n_tasks": 20,
+     "base": 13.706,
+     "cand": 9.319,
+     "delta": -4.387,
+     "ci": [
+      -9.408,
+      0.305
+     ],
+     "rel": -0.32
+    }
+   },
+   "timeout": {
+    "n_tasks": 20,
+    "base": 0.0,
+    "cand": 0.0,
+    "delta": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "rel": null
+   },
+   "anchors": {
+    "n_anchors": 15,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": "INCONCLUSIVE",
+   "relaxed_reasons": [
+    "no reliable difference: pass +0.0 pp [+0.0, +0.0]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "n_tasks": 20,
+   "attempts": [
+    20,
+    20
+   ]
+  },
+  {
+   "id": "空对照 E1 → E4 基线（隔 3 小时）",
+   "baseline": [
+    "e1-baseline-seed"
+   ],
+   "candidate": [
+    "e4-baseline-rerun"
+   ],
+   "concurrent": false,
+   "expected": "D-040 记为批次漂移 +11.5 [+2.6, +21.8]",
+   "null": true,
+   "decision": "PROVISIONAL",
+   "reasons": [
+    "pass rate +11.5 pp [+2.6, +21.8] ≥ noise floor 8.0 pp",
+    "arms were not run concurrently (D-040): downgraded to PROVISIONAL"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 50.0,
+    "cand": 61.5,
+    "delta": 11.5,
+    "ci": [
+     2.6,
+     21.8
+    ],
+    "rel": 0.231
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 15.923,
+     "cand": 14.244,
+     "delta": -1.679,
+     "ci": [
+      -3.513,
+      -0.128
+     ],
+     "rel": -0.105
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 294602.013,
+     "cand": 227587.923,
+     "delta": -67014.09,
+     "ci": [
+      -178410.244,
+      6373.179
+     ],
+     "rel": -0.227
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.947,
+     "cand": 7.6,
+     "delta": -0.347,
+     "ci": [
+      -1.188,
+      0.433
+     ],
+     "rel": -0.044
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 19.2,
+    "cand": 12.8,
+    "delta": -6.4,
+    "ci": [
+     -14.1,
+     0.0
+    ],
+    "rel": -0.333
+   },
+   "anchors": {
+    "n_anchors": 5,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "空对照 E4 → E4v2 基线",
+   "baseline": [
+    "e4-baseline-rerun"
+   ],
+   "candidate": [
+    "e4v2-baseline"
+   ],
+   "concurrent": false,
+   "expected": "+3.8 [−7.7, +14.1]",
+   "null": true,
+   "decision": "REJECT",
+   "reasons": [
+    "cost up without a pass-rate gain: tokens_in +32%"
+   ],
+   "pass": {
+    "n_tasks": 26,
+    "base": 61.5,
+    "cand": 65.4,
+    "delta": 3.8,
+    "ci": [
+     -7.7,
+     14.1
+    ],
+    "rel": 0.063
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 26,
+     "base": 14.244,
+     "cand": 15.795,
+     "delta": 1.551,
+     "ci": [
+      -0.231,
+      3.628
+     ],
+     "rel": 0.109
+    },
+    "tokens_in": {
+     "n_tasks": 26,
+     "base": 227587.923,
+     "cand": 299932.192,
+     "delta": 72344.269,
+     "ci": [
+      3764.333,
+      155638.551
+     ],
+     "rel": 0.318
+    },
+    "minutes": {
+     "n_tasks": 26,
+     "base": 7.6,
+     "cand": 7.672,
+     "delta": 0.072,
+     "ci": [
+      -0.568,
+      0.723
+     ],
+     "rel": 0.01
+    }
+   },
+   "timeout": {
+    "n_tasks": 26,
+    "base": 12.8,
+    "cand": 11.5,
+    "delta": -1.3,
+    "ci": [
+     -5.1,
+     2.6
+    ],
+    "rel": -0.1
+   },
+   "anchors": {
+    "n_anchors": 9,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 26,
+   "attempts": [
+    78,
+    78
+   ]
+  },
+  {
+   "id": "空对照 E4p → H17 基线（41 题）",
+   "baseline": [
+    "e4p-baseline"
+   ],
+   "candidate": [
+    "h17-baseline"
+   ],
+   "concurrent": false,
+   "expected": "76.4% vs 76.4%",
+   "null": true,
+   "decision": "INCONCLUSIVE",
+   "reasons": [
+    "no reliable difference: pass +0.0 pp [-8.1, +7.3]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "pass": {
+    "n_tasks": 41,
+    "base": 76.4,
+    "cand": 76.4,
+    "delta": 0.0,
+    "ci": [
+     -8.1,
+     7.3
+    ],
+    "rel": 0.0
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 41,
+     "base": 13.472,
+     "cand": 12.301,
+     "delta": -1.171,
+     "ci": [
+      -2.537,
+      0.163
+     ],
+     "rel": -0.087
+    },
+    "tokens_in": {
+     "n_tasks": 41,
+     "base": 204363.967,
+     "cand": 175026.504,
+     "delta": -29337.463,
+     "ci": [
+      -108162.634,
+      26011.61
+     ],
+     "rel": -0.144
+    },
+    "minutes": {
+     "n_tasks": 41,
+     "base": 6.073,
+     "cand": 5.851,
+     "delta": -0.222,
+     "ci": [
+      -0.83,
+      0.404
+     ],
+     "rel": -0.037
+    }
+   },
+   "timeout": {
+    "n_tasks": 41,
+    "base": 10.6,
+    "cand": 9.8,
+    "delta": -0.8,
+    "ci": [
+     -4.1,
+     2.4
+    ],
+    "rel": -0.077
+   },
+   "anchors": {
+    "n_anchors": 23,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 41,
+   "attempts": [
+    123,
+    123
+   ]
+  },
+  {
+   "id": "空对照 Qwen H0 两批（k=2）",
+   "baseline": [
+    "qarm-h0-baseline"
+   ],
+   "candidate": [
+    "qarm2-h0-baseline"
+   ],
+   "concurrent": false,
+   "expected": "−1.7",
+   "null": true,
+   "decision": "INVALID",
+   "reasons": [
+    "baseline: 30 tasks have fewer than 3 usable attempts",
+    "candidate: 30 tasks have fewer than 3 usable attempts"
+   ],
+   "pass": {
+    "n_tasks": 30,
+    "base": 16.7,
+    "cand": 15.0,
+    "delta": -1.7,
+    "ci": [
+     -11.7,
+     8.3
+    ],
+    "rel": -0.1
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 30,
+     "base": 34.7,
+     "cand": 32.617,
+     "delta": -2.083,
+     "ci": [
+      -8.183,
+      4.583
+     ],
+     "rel": -0.06
+    },
+    "tokens_in": {
+     "n_tasks": 30,
+     "base": 539656.417,
+     "cand": 486729.267,
+     "delta": -52927.15,
+     "ci": [
+      -321025.367,
+      203883.2
+     ],
+     "rel": -0.098
+    },
+    "minutes": {
+     "n_tasks": 30,
+     "base": 2.683,
+     "cand": 2.617,
+     "delta": -0.065,
+     "ci": [
+      -0.853,
+      0.668
+     ],
+     "rel": -0.024
+    }
+   },
+   "timeout": {
+    "n_tasks": 30,
+    "base": 0.0,
+    "cand": 1.7,
+    "delta": 1.7,
+    "ci": [
+     0.0,
+     5.0
+    ],
+    "rel": null
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": "INCONCLUSIVE",
+   "relaxed_reasons": [
+    "no reliable difference: pass -1.7 pp [-11.7, +8.3]; efficiency changes turns, tokens_in, minutes not significant"
+   ],
+   "n_tasks": 30,
+   "attempts": [
+    60,
+    60
+   ]
+  },
+  {
+   "id": "空对照 Qwen 原版 合成留出题（隔一天）",
+   "baseline": [
+    "qeval-base-synth"
+   ],
+   "candidate": [
+    "qfinal-base-synth"
+   ],
+   "concurrent": false,
+   "expected": "14% vs 16%",
+   "null": true,
+   "decision": "PROVISIONAL",
+   "reasons": [
+    "cheaper and non-inferior: minutes -22%; pass +2.7 pp, CI lower -0.9 ≥ −8.0",
+    "arms were not run concurrently (D-040): downgraded to PROVISIONAL"
+   ],
+   "pass": {
+    "n_tasks": 37,
+    "base": 13.5,
+    "cand": 16.2,
+    "delta": 2.7,
+    "ci": [
+     -0.9,
+     6.3
+    ],
+    "rel": 0.2
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 37,
+     "base": 43.874,
+     "cand": 49.198,
+     "delta": 5.324,
+     "ci": [
+      -2.135,
+      12.775
+     ],
+     "rel": 0.121
+    },
+    "tokens_in": {
+     "n_tasks": 37,
+     "base": 735230.297,
+     "cand": 926672.036,
+     "delta": 191441.739,
+     "ci": [
+      -3605.18,
+      385806.207
+     ],
+     "rel": 0.26
+    },
+    "minutes": {
+     "n_tasks": 37,
+     "base": 7.164,
+     "cand": 5.608,
+     "delta": -1.556,
+     "ci": [
+      -2.361,
+      -0.768
+     ],
+     "rel": -0.217
+    }
+   },
+   "timeout": {
+    "n_tasks": 37,
+    "base": 7.2,
+    "cand": 3.6,
+    "delta": -3.6,
+    "ci": [
+     -9.0,
+     1.8
+    ],
+    "rel": -0.5
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 37,
+   "attempts": [
+    111,
+    111
+   ]
+  },
+  {
+   "id": "空对照 Qwen 原版 TB（隔一天）",
+   "baseline": [
+    "qeval-base-tb"
+   ],
+   "candidate": [
+    "qfinal-base-tb"
+   ],
+   "concurrent": false,
+   "expected": "—",
+   "null": true,
+   "decision": "PROVISIONAL",
+   "reasons": [
+    "cheaper and non-inferior: minutes -20%; pass +5.8 pp, CI lower -4.2 ≥ −8.0",
+    "arms were not run concurrently (D-040): downgraded to PROVISIONAL"
+   ],
+   "pass": {
+    "n_tasks": 30,
+    "base": 18.3,
+    "cand": 24.2,
+    "delta": 5.8,
+    "ci": [
+     -4.2,
+     17.5
+    ],
+    "rel": 0.318
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 30,
+     "base": 31.575,
+     "cand": 31.658,
+     "delta": 0.083,
+     "ci": [
+      -3.742,
+      3.667
+     ],
+     "rel": 0.003
+    },
+    "tokens_in": {
+     "n_tasks": 30,
+     "base": 378068.208,
+     "cand": 423166.508,
+     "delta": 45098.3,
+     "ci": [
+      -32553.95,
+      132003.833
+     ],
+     "rel": 0.119
+    },
+    "minutes": {
+     "n_tasks": 30,
+     "base": 5.197,
+     "cand": 4.136,
+     "delta": -1.061,
+     "ci": [
+      -1.709,
+      -0.429
+     ],
+     "rel": -0.204
+    }
+   },
+   "timeout": {
+    "n_tasks": 30,
+    "base": 8.3,
+    "cand": 4.2,
+    "delta": -4.2,
+    "ci": [
+     -10.0,
+     0.8
+    ],
+    "rel": -0.5
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 30,
+   "attempts": [
+    120,
+    120
+   ]
+  },
+  {
+   "id": "空对照 Qwen SFT 合成留出题（隔一天）",
+   "baseline": [
+    "qeval-teach-synth"
+   ],
+   "candidate": [
+    "qfinal-teach-synth"
+   ],
+   "concurrent": false,
+   "expected": "16% vs 14%",
+   "null": true,
+   "decision": "PROVISIONAL",
+   "reasons": [
+    "cheaper, but the pass-rate CI cannot rule out a drop larger than the noise floor (-2.7 pp [-9.0, +2.7]); needs a larger confirmation batch"
+   ],
+   "pass": {
+    "n_tasks": 37,
+    "base": 16.2,
+    "cand": 13.5,
+    "delta": -2.7,
+    "ci": [
+     -9.0,
+     2.7
+    ],
+    "rel": -0.167
+   },
+   "efficiency": {
+    "turns": {
+     "n_tasks": 37,
+     "base": 49.829,
+     "cand": 54.054,
+     "delta": 4.225,
+     "ci": [
+      -2.495,
+      10.261
+     ],
+     "rel": 0.085
+    },
+    "tokens_in": {
+     "n_tasks": 37,
+     "base": 871164.82,
+     "cand": 1060180.216,
+     "delta": 189015.396,
+     "ci": [
+      -15056.739,
+      377991.586
+     ],
+     "rel": 0.217
+    },
+    "minutes": {
+     "n_tasks": 37,
+     "base": 7.131,
+     "cand": 5.861,
+     "delta": -1.271,
+     "ci": [
+      -2.001,
+      -0.57
+     ],
+     "rel": -0.178
+    }
+   },
+   "timeout": {
+    "n_tasks": 37,
+    "base": 12.6,
+    "cand": 9.0,
+    "delta": -3.6,
+    "ci": [
+     -9.9,
+     1.8
+    ],
+    "rel": -0.286
+   },
+   "anchors": {
+    "n_anchors": 2,
+    "dropped_to_zero": [],
+    "failed": false
+   },
+   "relaxed_decision": null,
+   "relaxed_reasons": null,
+   "n_tasks": 37,
+   "attempts": [
+    111,
+    111
+   ]
+  }
+ ],
+ "null_splits": {
+  "qeval-base-synth+qfinal-base-synth": {
+   "draws": 200,
+   "decisions": {
+    "ACCEPT_QUALITY": 2,
+    "INCONCLUSIVE": 162,
+    "REJECT": 25,
+    "ACCEPT_EFFICIENCY": 9,
+    "PROVISIONAL": 2
+   },
+   "false_accept_rate": 0.055
+  },
+  "qeval-base-tb+qfinal-base-tb": {
+   "draws": 200,
+   "decisions": {
+    "INCONCLUSIVE": 154,
+    "REJECT": 22,
+    "ACCEPT_EFFICIENCY": 13,
+    "ACCEPT_QUALITY": 5,
+    "PROVISIONAL": 6
+   },
+   "false_accept_rate": 0.09
+  },
+  "e4p-baseline+h17-baseline": {
+   "draws": 200,
+   "decisions": {
+    "INCONCLUSIVE": 154,
+    "REJECT": 29,
+    "ACCEPT_QUALITY": 8,
+    "PROVISIONAL": 3,
+    "ACCEPT_EFFICIENCY": 6
+   },
+   "false_accept_rate": 0.07
+  },
+  "qarm-h0-baseline+qarm2-h0-baseline": {
+   "draws": 200,
+   "decisions": {
+    "REJECT": 91,
+    "INCONCLUSIVE": 93,
+    "ACCEPT_QUALITY": 7,
+    "PROVISIONAL": 3,
+    "ACCEPT_EFFICIENCY": 6
+   },
+   "false_accept_rate": 0.065
+  }
+ }
+}

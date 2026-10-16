@@ -1,0 +1,54 @@
+{
+  "auto_candidates": [
+    {
+      "changes": {"adaptive_wait": true},
+      "target_mode": "budget_exhausted",
+      "mechanism": "Detecting command completion instead of repeatedly waiting on an empty screen should save turns and input tokens without asking the model to verify more.",
+      "mechanism_metric": "polling_turns",
+      "predicted_mechanism_change": "15–30% fewer empty-wait turns, if polling is common in this development set",
+      "predicted_pass_change": "-4 to +2 pp",
+      "falsified_if": "Polling turns do not fall by at least 10%, or neither input tokens nor turns improve by 10% while the paired pass-rate CI lower bound remains at least -8 pp.",
+      "why_now": "Seed lite showed a repeatable efficiency mechanism, not a pass gain. This is a different model and failure profile: v0 averages nearly 50 turns per trial and has 48 budget-exhausted failures, although its polling rate is not yet known.",
+      "risk": "Earlier wall-clock time rose 4% and the pass-rate interval included meaningful harm; command-completion detection could behave differently on Qwen workloads."
+    },
+    {
+      "changes": {"completion_gate": false},
+      "target_mode": "turn_cap",
+      "mechanism": "Removing the one-time completion bounce should avoid spending scarce turns on checks that rarely led to a passing repair.",
+      "mechanism_metric": "turn_cap",
+      "predicted_mechanism_change": "2–5 pp fewer turn-cap hits, from 18.9% under v0",
+      "predicted_pass_change": "-4 to +2 pp",
+      "falsified_if": "Turn-cap hits do not decrease, neither turns nor input tokens improve by at least 10%, or the paired pass-rate CI lower bound is below -8 pp.",
+      "why_now": "This reverses an already tested switch for a different objective, not a renewed pass-rate claim: H2 gained only 0.8 pp over H1, while turn-cap hits rose from 1 to 6. The current development set has a substantially higher turn-cap rate (42/222), and only 4 of 37 previously bounced trials ultimately passed.",
+      "risk": "The gate may prevent some unsupported completion claims and was part of the selected v0; removing it could lose passes despite saving turns."
+    }
+  ],
+  "review_proposals": [
+    {
+      "title": "Native tool-call adapter for Terminus",
+      "target_mode": "echo_theater",
+      "what_to_build": "A human-reviewed adapter that accepts native tool calls in place of the JSON keystroke protocol while preserving the evaluation limits and logging.",
+      "why": "The qwen-code reference had 2% echo-instead-of-check versus roughly 49% with H2, without adding a verification prompt. That comparison changed agents, so it is a mechanism lead, not causal evidence.",
+      "how_to_test": "First validate tool execution and log equivalence; then run paired v0 comparisons measuring echo_theater, pass rate, turns, and timeouts.",
+      "risk": "Substantial interface work; the reference tied H2 on pass rate, and differences between agents may explain the echo result."
+    }
+  ],
+  "rejected_ideas": [
+    {
+      "idea": "Enable grader_check or self_check",
+      "why": "Both consume model turns; grader_check sharply increased timeouts, and neither has a reliable pass gain under the hard limit."
+    },
+    {
+      "idea": "Enable task_contract, including its conditional version",
+      "why": "The ambiguity-subset effect did not replicate, and conditional scoring consumed time inside the limit."
+    },
+    {
+      "idea": "Enable deliverable_checkpoint",
+      "why": "It reduced missing deliverables but lowered the observed pass rate by 5.1 pp; the same mechanism is not a new reason to retry it."
+    },
+    {
+      "idea": "Tune adaptive-wait timing or combine both AUTO changes immediately",
+      "why": "There is no Qwen result establishing adaptive_wait's baseline effect; separate configurations give a clearer attribution before tuning or combining them."
+    }
+  ]
+}

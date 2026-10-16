@@ -1,0 +1,110 @@
+{
+ "decision": "INCONCLUSIVE",
+ "reasons": [
+  "cheaper, but 'declared complete but failed' is up +8.2 pp [+0.5, +16.1]: the saving looks like giving up earlier",
+  "no reliable difference: pass +1.6 pp [-3.2, +6.2]; efficiency changes turns, tokens_in, minutes not significant"
+ ],
+ "concurrent": true,
+ "validity": [],
+ "pass": {
+  "n_tasks": 74,
+  "base": 15.7,
+  "cand": 17.2,
+  "delta": 1.6,
+  "ci": [
+   -3.2,
+   6.2
+  ],
+  "rel": 0.101
+ },
+ "timeout": {
+  "n_tasks": 74,
+  "base": 16.6,
+  "cand": 19.6,
+  "delta": 3.0,
+  "ci": [
+   -2.4,
+   8.4
+  ],
+  "rel": 0.184
+ },
+ "efficiency": {
+  "turns": {
+   "n_tasks": 74,
+   "base": 45.66,
+   "cand": 33.571,
+   "delta": -12.089,
+   "ci": [
+    -16.528,
+    -7.58
+   ],
+   "rel": -0.265
+  },
+  "tokens_in": {
+   "n_tasks": 74,
+   "base": 734063.702,
+   "cand": 503648.318,
+   "delta": -230415.384,
+   "ci": [
+    -324943.358,
+    -135728.622
+   ],
+   "rel": -0.314
+  },
+  "minutes": {
+   "n_tasks": 74,
+   "base": 8.136,
+   "cand": 7.982,
+   "delta": -0.154,
+   "ci": [
+    -0.943,
+    0.588
+   ],
+   "rel": -0.019
+  }
+ },
+ "guards": {
+  "declared_fail": {
+   "n_tasks": 74,
+   "base": 54.6,
+   "cand": 62.8,
+   "delta": 8.2,
+   "ci": [
+    0.5,
+    16.1
+   ],
+   "rel": 0.151
+  },
+  "integrity_flag": {
+   "n_tasks": 74,
+   "base": 0.0,
+   "cand": 0.0,
+   "delta": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "rel": null
+  }
+ },
+ "anchors": {
+  "n_anchors": 2,
+  "dropped_to_zero": [],
+  "failed": false
+ },
+ "mechanism": {
+  "metric": "append_turns",
+  "direction": "decrease",
+  "n_tasks": 74,
+  "base": 14.919,
+  "cand": 0.929,
+  "delta": -13.99,
+  "ci": [
+   -17.895,
+   -10.189
+  ],
+  "rel": -0.938,
+  "confirmed": true
+ },
+ "margin_pp": 3.9
+}

@@ -1,0 +1,55 @@
+{
+  "auto_candidates": [
+    {
+      "changes": {"adaptive_wait": true},
+      "target_mode": "budget_exhausted",
+      "mechanism": "Detecting command completion and interactive prompts should replace empty polling turns without asking the model to do more work.",
+      "mechanism_metric": "tokens_in",
+      "predicted_mechanism_change": "Input tokens down roughly 10–16%; empty-wait turns down roughly 15–30%.",
+      "predicted_pass_change": "-4 to +4 pp",
+      "falsified_if": "Input tokens fall less than 10%, polling turns do not fall, the pass-rate CI lower bound is below -8 pp, or timeouts or wall-clock cost rise without a pass-rate gain.",
+      "why_now": "This was the only previously stable efficiency mechanism, but it was tested on Seed lite rather than this Qwen model. The development set still averages 49.8 turns and 874k input tokens per trial; this is a test of efficiency, not a claimed fix for truncated reads.",
+      "risk": "Prompt detection could mishandle interactive commands, and the earlier test reduced tokens while increasing wall-clock time about 4%."
+    }
+  ],
+  "review_proposals": [
+    {
+      "title": "Distinguish echo-only commands from verification in tool feedback",
+      "target_mode": "echo_theater",
+      "what_to_build": "Instrument executed commands to flag echo-only success claims in the existing tool result; do not count those commands as a post-edit check in the existing one-bounce completion gate. Avoid extra model calls or a second bounce.",
+      "why": "Echo theater affected 82 of 189 failed trials, and the broad completion gate did not reduce it. This targets what counts as checking rather than adding another verification request.",
+      "how_to_test": "First test command classification against legitimate echo-based fixtures. Then run a paired v0 comparison tracking echo_theater, no_run_before_claim, passes, turns, and timeouts.",
+      "risk": "Echo can be a legitimate part of a test; misclassification or additional gate bounces could consume time without helping the model fix failures."
+    },
+    {
+      "title": "Assess a native-tool bridge for the Terminus agent",
+      "target_mode": "echo_theater",
+      "what_to_build": "Determine whether vLLM native tool calls can be bridged into Terminus while retaining the evaluation's turn limit, summarization, and terminal semantics. Do not build it if the JSON keystroke protocol is mandatory.",
+      "why": "The different qwen-code harness had much less echo theater (2% versus 49%) and fewer missing-command failures, but its pass-rate advantage was uncertain; this is an interface hypothesis, not an established gain.",
+      "how_to_test": "Check protocol eligibility and tool-call reliability first. If eligible, compare paired trials against v0 on echo_theater, cnf, passes, turns, tokens, and minutes.",
+      "risk": "This is a substantial interface change, may be ineligible under the evaluation protocol, and may not reproduce qwen-code's behavior."
+    }
+  ],
+  "rejected_ideas": [
+    {
+      "idea": "Add self_check or grader_check.",
+      "why": "Prior extra-verification turns raised cost or timeouts without a reliable pass gain under the hard limit."
+    },
+    {
+      "idea": "Enable task_contract, including its conditional variant.",
+      "why": "The apparent ambiguous-task benefit did not replicate; conditional scoring also consumed time inside the limit."
+    },
+    {
+      "idea": "Enable deliverable_checkpoint.",
+      "why": "It reduced missing deliverables but did not improve pass rate, and the development data do not identify a different failure profile that justifies retesting it."
+    },
+    {
+      "idea": "Disable completion_gate now.",
+      "why": "Its Qwen pass benefit was small and uncertain, but there is no measured evidence that removing it would reach the 10% efficiency threshold; it did help a few bounced trials."
+    },
+    {
+      "idea": "Shorten the adaptive-wait command cap or remove interface_fixes.",
+      "why": "A shorter cap risks interrupting real tests without supporting evidence; interface_fixes already sharply reduced Qwen format-error turns."
+    }
+  ]
+}

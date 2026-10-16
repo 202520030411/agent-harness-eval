@@ -1,0 +1,10 @@
+{
+ "target_mode": "line_by_line_write",
+ "mechanism": "when the same file is appended to with echo/printf in 3 executed turns in a row (and again at 10), the harness appends one note telling the model to write the whole file in one command; no extra model turn",
+ "mechanism_metric": "append_turns",
+ "predicted_mechanism_change": "append_turns per trial down by at least 30%; secondary: total turns down 10% to 25%",
+ "predicted_pass_change": "0 to +4 pp",
+ "falsified_if": "append_turns per trial not down by at least 30%, or total turns not down by at least 10%, or the pass-rate drop exceeds the allowed margin",
+ "why_now": "26% of dev trials write files one echo line per turn until the 100-turn cap; about 230 such trials across runs and 1 passed; no existing switch (H0 vs H2) or training (SFT/RL) reduced it",
+ "risk": "one-command writes put long strings into the JSON reply, so format errors could rise"
+}
