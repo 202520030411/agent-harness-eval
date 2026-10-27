@@ -1,10 +1,12 @@
-# Coding Agent 失败模式自动诊断与 Harness 迭代闭环
+# Coding Agent 失败归因与 Harness–模型协同迭代
 
-**一句话：** 在 Terminal-Bench 2.1 上，固定被测模型（火山方舟 Seed 2.1 lite），只改 Terminus 2 的 harness：先用评测流水线自动找出失败模式（规则 + LLM 判官 + 第二家判官 + 人工校验 + rubric 偏序验证），再按"机制 → 失败类"逐个改 harness、逐个消融，最后把每类失败归到 **模型侧 / harness 侧 / 混合**，并把模型侧的打成交接包。
+[English](README.md) | **中文**
+
+**一句话：** coding agent 在终端任务上失败时，问题出在模型、**harness**（模型外面那层控制程序：提示、工具接口、等待方式、交卷检查）还是题目本身？本项目在 [Terminal-Bench 2.1](https://github.com/harbor-framework/terminal-bench-2-1)（通过 [Harbor](https://github.com/laude-institute/harbor)）上用对照实验回答这个问题：先用评测流水线自动归因失败（规则 + 两家 LLM 判官 + 人工校验 + rubric 偏序验证）；能靠 harness 修的失败逐个改、逐个消融；模型侧的残余做成合成题去训练；最后把 harness 这一侧做成带统计门的自进化闭环。研究了两个模型：**Seed 2.1 lite**（API）和 **Qwen3-Coder-30B-A3B**（自己用 vLLM 部署在一张 H200 上）。每个设计决定都记在 [`decisions.md`](decisions.md)（D-001 – D-097），每个预测都在跑之前写进 [`HYPOTHESES.md`](HYPOTHESES.md)。
 
 **这不是 toy 的四个理由：** 先测噪声底（δ = 8 pp）再谈"有效"；先写预测再跑（`HYPOTHESES.md`，跑完只填不改）；每个改动都在强模型上再跑一遍做"拐杖判定"；判官自己也被验证（两家一致率、不变性测试、人工标注）。
 
-## 到目前为止的结论（2026-09-24）
+## Seed 2.1 lite 上的结论（2026-09-24）
 
 - **基线**：Seed lite × Terminus 2，41 题 × k=3：trial 级 68.3%，pass@3 82.9%，0.155 元/trial。同题 gpt-6-sol k=1：92.7%（+27.5 pp [16.7, 39.2]）。
 - **噪声底**：同配置两次重跑（10 题 × k=5）差 8 pp → 任何 < 8 pp 的"提升"都不算数（M1 证伪了"δ ≤ 3 pp"的预期）。
@@ -15,7 +17,7 @@
 - **判官自己靠不靠谱**：换一家判官（claude-sonnet-5）重判同样 39 条失败，主标签 κ 只有 0.49（预注册要求 0.80，证伪）；分歧几乎都在"题意误读 / 验证不足 / 过早完成"三者之间，而"预算耗尽"10/13 一致；把对方的次标签也算上（失败是因果链，两家常各指一环），一致率 79.5%。所以报告里细粒度标签只当线索，结论用 TB 三大类 + 人工仲裁。
 - **改题不改 harness（E8）**：把判官指出的接口约定写进 5 道“题面模糊”题的说明后重跑。extract-elf 从 0/6 变 3/3，cancel-async 2/6 变 3/3；raman-fitting 和 dna-insert 仍 0/3；再把缺口补到底（E8b，泄露式）：dna 3/3（是题 + 环境的锅：边界约定和 oligotm 版本），raman 给了 1e7/x 换算后峰位全对、仍卡在题面没说的拟合窗口上。判官的“题目不清”要拆成接口约定 / 领域知识 / 环境工具三类，只有第一类改题就好。
 - **判官对措辞敏感（M3）**：只把模型自述改写得更自信 / 更犹豫，命令和输出不动，gpt-6-sol 的主标签翻转 27% / 30%（预注册 ≤ 5%，证伪）；翻转发生在“题目不清 ↔ 题意误读”“预算耗尽 ↔ 能力不足”这两对相邻标签之间，和两家判官互相的分歧模式一致。但对照（原文不改、重判一次）也翻 23%，所以措辞本身的净效应在噪声内；真正的发现是判官自身复判一致率只有 77%，判官要用 temperature=0 或多数投票才能当尺子。
-- **判官 vs 人工**（39 条 E1 失败全部人工定案）：旧判官（半盲、单次）κ 0.40；给全 context 并三票 κ 0.50；再加上人工仲裁提炼的五条判定规则（v3）κ 0.62、宽松一致 97%、无弃权。严格口径的样本外检验（15 条未参与写规则）v3 与旧判官持平（0.57 vs 0.58）——规则消掉的是系统性归责错误（题面缺信息命中 3/8 → 6/8），剩下的是主次颠倒；同样的规则给 claude-sonnet-5 后它在样本外 15 条上 κ 0.66，说明规则不是只拟合了一家的错法。两家 v3 互相 κ 只有 0.47，但一致的 22/39 条对人工正确 86%——所以最终的判官设计是“双判官一致就采信、不一致送人工”，自动处理 56% 的案子，人工只看剩下的。换 5 倍价格的 gpt-6-astra 当判官并不更准（κ 0.55 vs 0.62），瓶颈不在模型强度。人工定案分布：题面缺信息 8、验证不足 8、能力 9、预算耗尽 8、题意误读 5、环境 1。
+- **判官 vs 参考标签**：39 条 E1 失败的参考标签里，16 条由作者定案、16 条在模型辅助下核对或改判、2 条未标来源、5 条是三家判官一致后直接采用；最后这 5 条有循环之嫌，下面的主要数字去掉它们。剩下 34 条上，给判官隐藏测试和参考解、再加上人工仲裁提炼的五条判定规则（v3），严格一致率从 **44% 升到 65%**（κ 0.33 → 0.56）；规则是从同一批的一部分写出来的，所以部分是样本内。严格口径的样本外检验（15 条未参与写规则）v3 与旧判官持平（0.57 vs 0.58）——规则消掉的是系统性归责错误（题面缺信息命中 3/8 → 6/8），剩下的是主次颠倒；同样的规则给 claude-sonnet-5 后它在样本外 15 条上 κ 0.66，说明规则不是只拟合了一家的错法。两家判官在这 34 条里一致 **50%**，一致的那部分准确 **82%**——所以最终的判官设计是“双判官一致就采信、不一致送人工”。换 5 倍价格的 gpt-6-astra 当判官并不更准（39 条口径 κ 0.55 vs 0.62），瓶颈不在模型强度。39 条参考标签的分布：题面缺信息 8、验证不足 8、能力 9、预算耗尽 8、题意误读 5、环境 1。
 
 ## Qwen3-Coder-30B-A3B 的四臂实验（2026-09-27，自己的 H200 + vLLM，TB 2.1 干净 30 题 × 4 次/臂）
 
@@ -24,6 +26,13 @@
 - **echo 代替检查是接口产物**：Terminus 里失败 trial 的 59% 这样做，qwen-code 里只有 2%——模型有了直接用文字回复的地方就不再借 echo“说话”；但“明知没做成仍宣布完成”只是从 echo 挪进了文字（任何 harness 下都占失败的 23–31%）。
 - **交卷把关**打回了 37/120 个 trial，最后通过的只有 4 个：能逼模型去查，查出来也修不好。预注册的 H2 预测被证伪。
 - **归责**：格式错误 → harness；假成功与能力缺口（17 道三次全挂的题里 15 道在任何 harness 下都不过）→ 模型侧，是训练目标。细节见 `docs/QWEN_PLAN.md` 的“2–3 的结果”与 D-053–D-059。
+
+## 针对模型侧残余的训练（2026-09-27 – 09-28，Qwen，D-073、D-076、D-083）
+
+- **合成题**：111 道 Harbor 格式的合成题（验证过：参考解能过、什么都不做不能过、和 TB 去重），74 道开发、37 道留出。
+- **拒绝采样微调**：只用 Qwen 自己做对的轨迹做 LoRA SFT；再做 GRPO，由强模型看着它做题、在走偏时插一句提示。在它从没做对过的题上，实时提示在采样时把通过率做到 **25%**，开头只给一次提示只有 **5–6%**。
+- **结果（留出 37 题 × 3 次，三组同时跑）**：原版 16%、SFT 14%、RL 16%；RL − 原版 **+0.0 pp**，95% 区间 [−7.2, +7.2]。TB 30 题 × 4 次：24% / 18% / 21%，都不显著。提示的帮助没有迁移：撤掉提示后 72% → 8%（不带提示的试做合计 8/282）。第一次 SFT 评测里看起来显著的"明知没做成仍宣布完成"下降（11% → 4%），在同时跑的重复评测里没有复现（10% vs 9%）。
+- **结论**：这一轮训练在新题和 TB 上都没有带来可测的提升；预注册的三条 RL 预测都不成立（D-083）。
 
 ## Harness 自进化闭环（2026-10-11 – 10-15，Qwen，D-084 – D-097）
 
@@ -67,7 +76,9 @@ harbor run ──▶ jobs/<job>/<task>__<id>/{result.json, agent/trajectory.json
 | `agenteval blame --weak-base … --strong-mod … [--handoff]` | 归责 2×2 + 交接包 | `blame_*.md`, `handoff_*.md` |
 | `agenteval regress <A> <B> --tasks regression_tasks.txt` | 回归门，退化则退出码 1 | 表 + `GATE PASSED/FAILED` |
 
-Harness 侧：`terminus2_patches/agent.py::Terminus2Patched`（`-a terminus2_patches.agent:Terminus2Patched`），开关 `verifier_gate`、`adaptive_wait`、`task_contract`、`assumption_ledger`、`budget_hint`、`stuck_reminder`、`exit_code_prompt`；全关时与上游逐字相同（golden 测试）。
+自进化闭环：`python tools/loop_cycle.py observe | reflect | discover | propose | rewrite-playbook | plan | evaluate | promote …`（产物在 `reports/loop/`；`plan` 只写配置、不启动，评测前要人批准）。
+
+Harness 侧：`terminus2_patches/agent.py::Terminus2Patched`（`-a terminus2_patches.agent:Terminus2Patched`），开关 `interface_fixes`、`completion_gate`、`adaptive_wait`、`deliverable_checkpoint`、`verifier_gate`、`task_contract`、`append_nudge`，闭环用的文字类选项 `custom_notes`、`skills`，以及只用于训练采样的 `teacher_hint`；全关时与上游逐字相同（golden 测试）。已退役的开关（`stuck_reminder`、`budget_hint`、`exit_code_prompt`、`assumption_ledger`）见 D-039。
 
 ## 文件索引
 
@@ -83,13 +94,16 @@ Harness 侧：`terminus2_patches/agent.py::Terminus2Patched`（`-a terminus2_pat
 | `docs/TRAINING_PLAN.md` | **针对性训练计划**（预注册）：把评测找出的坏模式变成合成任务，拒绝采样 + LoRA SFT，回到同一条流水线验证；代码在 `train/ambig/` |
 | `docs/DESIGN_alignment.md` | 第三圈蓝图：题面—验收对齐层（五段流水线、每段指标、横切规则） |
 | `docs/harbor_pr_draft.md` | 给 Harbor 上游的 PR 草稿（死超时分支 + 可选哨兵等待） |
-| `decisions.md` | D-001–D-059：每个设计决定的备选、理由、代价 |
+| `decisions.md` | D-001–D-097：每个设计决定的备选、理由、代价 |
+| `experiments/loop/README.md` | **自进化闭环**：各步做什么、接受门怎么校准、判分加固和作弊演习、每一轮的结果 |
+| `agenteval/loop/` | 闭环代码：失败模式、找毛病、提议与 playbook 改写、防泄题过滤、可改范围、版本登记、接受门 |
+| `experiments/loop/` | 闭环的版本登记表、预注册、playbook（P0 / P1） |
 | `reports/` | 本地报告副本：E1 交叉表、E4 compare、图、归责表、交接包 |
 | `PLAN.md` | 原排期（已被"做完就继续"取代，留作预算/风险参考） |
 
 ## 钉死版本
 
-Harbor 0.23.0；数据集 `terminal-bench/terminal-bench-2-1`（89 题，用 41 + 12 备选，3 题因验证器问题排除）；被测 `doubao-seed-2-1-lite-260915`（1024k，thinking 默认开）；强模型 / 判官 `gpt-6-sol`；第二判官 `claude-sonnet-5`；辅助判官 `gpt-6-luna`。运行机：Hetzner CPX62（16 vCPU / 30 GB）。
+Harbor 0.23.0；数据集 `terminal-bench/terminal-bench-2-1`（89 题，用 41 + 12 备选，3 题因验证器问题排除）；被测 `doubao-seed-2-1-lite-260915`（1024k，thinking 默认开）和 `Qwen3-Coder-30B-A3B-Instruct`（自己的 vLLM，H200，bf16）；强模型 / 判官 `gpt-6-sol`；第二判官 `claude-sonnet-5`；辅助判官 `gpt-6-luna`。运行机：Hetzner CPX62（16 vCPU / 30 GB）。
 
 ## 数据说明
 

@@ -1,5 +1,7 @@
 # Coding-Agent Failure Attribution and Harness–Model Co-iteration
 
+**English** | [中文](README.zh.md)
+
 When a coding agent fails a terminal task, is it the model, the **harness** (the control program around the model: prompts, tool interface, waiting strategy, completion check), or the task itself? This repo is a solo project (September–October 2026) that answers that question with controlled experiments on [Terminal-Bench 2.1](https://github.com/harbor-framework/terminal-bench-2-1) via [Harbor](https://github.com/laude-institute/harbor), feeds the answer back into harness changes and training data, and finally wraps the harness side into a self-improving loop with a calibrated statistical gate.
 
 Two models were studied: **Seed 2.1 lite** (API) and **Qwen3-Coder-30B-A3B** (self-hosted with vLLM on one H200).
